@@ -21,14 +21,12 @@ setVersionType('web')
 
 import { install } from './standalone-analytics'
 import '../lib/csp-detection'
-import { shouldPolyfill } from '../lib/browser-polyfill'
 import { RemoteMetrics } from '../core/stats/remote-metrics'
 import { embeddedWriteKey } from '../lib/embedded-write-key'
 import {
   loadAjsClassicFallback,
   isAnalyticsCSPError,
 } from '../lib/csp-detection'
-import { setGlobalAnalyticsKey } from '../lib/global-analytics-helper'
 
 let ajsIdentifiedCSP = false
 
@@ -72,35 +70,4 @@ async function attempt<T>(promise: () => Promise<T>) {
   }
 }
 
-const globalAnalyticsKey = (
-  document.querySelector(
-    'script[data-global-segment-analytics-key]'
-  ) as HTMLScriptElement
-)?.dataset.globalSegmentAnalyticsKey
-
-if (globalAnalyticsKey) {
-  setGlobalAnalyticsKey(globalAnalyticsKey)
-}
-
-if (shouldPolyfill()) {
-  // load polyfills in order to get AJS to work with old browsers
-  const script = document.createElement('script')
-  script.setAttribute(
-    'src',
-    'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.7.0/polyfill.min.js'
-  )
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () =>
-      document.body.appendChild(script)
-    )
-  } else {
-    document.body.appendChild(script)
-  }
-
-  script.onload = function (): void {
-    attempt(install)
-  }
-} else {
-  attempt(install)
-}
+attempt(install)
