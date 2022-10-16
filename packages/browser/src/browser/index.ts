@@ -245,13 +245,13 @@ async function registerPlugins(
   //   })
   // }
 
-  const schemaFilter = options.plan?.track
-    ? await import(
-        /* webpackChunkName: "schemaFilter" */ '../plugins/schema-filter'
-      ).then((mod) => {
-        return mod.schemaFilter(options.plan?.track, cdnSettings)
-      })
-    : undefined
+  // const schemaFilter = options.plan?.track
+  //   ? await import(
+  //       /* webpackChunkName: "schemaFilter" */ '../plugins/schema-filter'
+  //     ).then((mod) => {
+  //       return mod.schemaFilter(options.plan?.track, cdnSettings)
+  //     })
+  //   : undefined
 
   const mergedSettings = mergedOptions(cdnSettings, options)
   const remotePlugins = await remoteLoader(
@@ -270,9 +270,9 @@ async function registerPlugins(
     ...remotePlugins,
   ]
 
-  if (schemaFilter) {
-    toRegister.push(schemaFilter)
-  }
+  // if (schemaFilter) {
+  //   toRegister.push(schemaFilter)
+  // }
 
   const shouldIgnoreSegmentio =
     (options.integrations?.All === false &&
