@@ -1,4 +1,4 @@
-import { getProcessEnv } from '../lib/get-process-env'
+// import { getProcessEnv } from '../lib/get-process-env'
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
 import { fetch } from '../lib/fetch'
@@ -32,7 +32,7 @@ import {
   flushOn,
   PreInitMethodCall,
 } from '../core/buffer'
-import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
+// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector'
 import { Stats } from '../core/stats'
 import { setGlobalAnalyticsKey } from '../lib/global-analytics-helper'
@@ -138,20 +138,20 @@ export function loadLegacySettings(
     })
 }
 
-function hasLegacyDestinations(settings: LegacySettings): boolean {
-  return (
-    getProcessEnv().NODE_ENV !== 'test' &&
-    // just one integration means segmentio
-    Object.keys(settings.integrations).length > 1
-  )
-}
+// function hasLegacyDestinations(settings: LegacySettings): boolean {
+//   return (
+//     getProcessEnv().NODE_ENV !== 'test' &&
+//     // just one integration means segmentio
+//     Object.keys(settings.integrations).length > 1
+//   )
+// }
 
-function hasTsubMiddleware(settings: LegacySettings): boolean {
-  return (
-    getProcessEnv().NODE_ENV !== 'test' &&
-    (settings.middlewareSettings?.routingRules?.length ?? 0) > 0
-  )
-}
+// function hasTsubMiddleware(settings: LegacySettings): boolean {
+//   return (
+//     getProcessEnv().NODE_ENV !== 'test' &&
+//     (settings.middlewareSettings?.routingRules?.length ?? 0) > 0
+//   )
+// }
 
 /**
  * With AJS classic, we allow users to call setAnonymousId before the library initialization.
@@ -190,7 +190,7 @@ async function registerPlugins(
   analytics: Analytics,
   options: InitOptions,
   pluginLikes: (Plugin | PluginFactory)[] = [],
-  legacyIntegrationSources: ClassicIntegrationSource[]
+  // legacyIntegrationSources: ClassicIntegrationSource[]
 ): Promise<Context> {
   const plugins = pluginLikes?.filter(
     (pluginLike) => typeof pluginLike === 'object'
@@ -202,39 +202,39 @@ async function registerPlugins(
       typeof pluginLike.pluginName === 'string'
   ) as PluginFactory[]
 
-  const tsubMiddleware = hasTsubMiddleware(legacySettings)
-    ? await import(
-        /* webpackChunkName: "tsub-middleware" */ '../plugins/routing-middleware'
-      ).then((mod) => {
-        return mod.tsubMiddleware(
-          legacySettings.middlewareSettings!.routingRules
-        )
-      })
-    : undefined
+  // const tsubMiddleware = hasTsubMiddleware(legacySettings)
+  //   ? await import(
+  //       /* webpackChunkName: "tsub-middleware" */ '../plugins/routing-middleware'
+  //     ).then((mod) => {
+  //       return mod.tsubMiddleware(
+  //         legacySettings.middlewareSettings!.routingRules
+  //       )
+  //     })
+  //   : undefined
 
-  const legacyDestinations =
-    hasLegacyDestinations(legacySettings) || legacyIntegrationSources.length > 0
-      ? await import(
-          /* webpackChunkName: "ajs-destination" */ '../plugins/ajs-destination'
-        ).then((mod) => {
-          return mod.ajsDestinations(
-            writeKey,
-            legacySettings,
-            analytics.integrations,
-            options,
-            tsubMiddleware,
-            legacyIntegrationSources
-          )
-        })
-      : []
+  // const legacyDestinations =
+  //   hasLegacyDestinations(legacySettings) || legacyIntegrationSources.length > 0
+  //     ? await import(
+  //         /* webpackChunkName: "ajs-destination" */ '../plugins/ajs-destination'
+  //       ).then((mod) => {
+  //         return mod.ajsDestinations(
+  //           writeKey,
+  //           legacySettings,
+  //           analytics.integrations,
+  //           options,
+  //           tsubMiddleware,
+  //           legacyIntegrationSources
+  //         )
+  //       })
+  //     : []
 
-  if (legacySettings.legacyVideoPluginsEnabled) {
-    await import(
-      /* webpackChunkName: "legacyVideos" */ '../plugins/legacy-video-plugins'
-    ).then((mod) => {
-      return mod.loadLegacyVideoPlugins(analytics)
-    })
-  }
+  // if (legacySettings.legacyVideoPluginsEnabled) {
+  //   await import(
+  //     /* webpackChunkName: "legacyVideos" */ '../plugins/legacy-video-plugins'
+  //   ).then((mod) => {
+  //     return mod.loadLegacyVideoPlugins(analytics)
+  //   })
+  // }
 
   const schemaFilter = options.plan?.track
     ? await import(
@@ -250,7 +250,7 @@ async function registerPlugins(
     analytics.integrations,
     mergedSettings,
     options,
-    tsubMiddleware,
+    undefined, // tsubMiddleware
     pluginSources
   ).catch(() => [])
 
@@ -258,7 +258,7 @@ async function registerPlugins(
     validation,
     envEnrichment,
     ...plugins,
-    ...legacyDestinations,
+    // ...legacyDestinations,
     ...remotePlugins,
   ]
 
@@ -356,7 +356,7 @@ async function loadAnalytics(
 
   const plugins = settings.plugins ?? []
 
-  const classicIntegrations = settings.classicIntegrations ?? []
+  // const classicIntegrations = settings.classicIntegrations ?? []
 
   const segmentLoadOptions = options.integrations?.['Segment.io'] as
     | SegmentioSettings
@@ -377,7 +377,7 @@ async function loadAnalytics(
     analytics,
     options,
     plugins,
-    classicIntegrations
+    // classicIntegrations
   )
 
   const search = window.location.search ?? ''
