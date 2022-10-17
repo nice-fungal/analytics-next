@@ -314,25 +314,25 @@ async function registerPlugins(
   // register user-defined plugins registered via analytics.register()
   await flushRegister(analytics, preInitBuffer)
 
-  if (
-    Object.entries(cdnSettings.enabledMiddleware ?? {}).some(
-      ([, enabled]) => enabled
-    )
-  ) {
-    await import(
-      /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
-    ).then(async ({ remoteMiddlewares }) => {
-      const middleware = await remoteMiddlewares(
-        ctx,
-        cdnSettings,
-        options.obfuscate
-      )
-      const promises = middleware.map((mdw) =>
-        analytics.addSourceMiddleware(mdw)
-      )
-      return Promise.all(promises)
-    })
-  }
+  // if (
+  //   Object.entries(cdnSettings.enabledMiddleware ?? {}).some(
+  //     ([, enabled]) => enabled
+  //   )
+  // ) {
+  //   await import(
+  //     /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
+  //   ).then(async ({ remoteMiddlewares }) => {
+  //     const middleware = await remoteMiddlewares(
+  //       ctx,
+  //       cdnSettings,
+  //       options.obfuscate
+  //     )
+  //     const promises = middleware.map((mdw) =>
+  //       analytics.addSourceMiddleware(mdw)
+  //     )
+  //     return Promise.all(promises)
+  //   })
+  // }
 
   return ctx
 }
