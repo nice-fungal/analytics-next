@@ -283,25 +283,25 @@ async function registerPlugins(
 
   const ctx = await analytics.register(...toRegister)
 
-  if (
-    Object.entries(legacySettings.enabledMiddleware ?? {}).some(
-      ([, enabled]) => enabled
-    )
-  ) {
-    await import(
-      /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
-    ).then(async ({ remoteMiddlewares }) => {
-      const middleware = await remoteMiddlewares(
-        ctx,
-        legacySettings,
-        options.obfuscate
-      )
-      const promises = middleware.map((mdw) =>
-        analytics.addSourceMiddleware(mdw)
-      )
-      return Promise.all(promises)
-    })
-  }
+  // if (
+  //   Object.entries(legacySettings.enabledMiddleware ?? {}).some(
+  //     ([, enabled]) => enabled
+  //   )
+  // ) {
+  //   await import(
+  //     /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
+  //   ).then(async ({ remoteMiddlewares }) => {
+  //     const middleware = await remoteMiddlewares(
+  //       ctx,
+  //       legacySettings,
+  //       options.obfuscate
+  //     )
+  //     const promises = middleware.map((mdw) =>
+  //       analytics.addSourceMiddleware(mdw)
+  //     )
+  //     return Promise.all(promises)
+  //   })
+  // }
 
   return ctx
 }
