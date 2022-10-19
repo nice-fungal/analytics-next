@@ -14,24 +14,48 @@
   </style>
 
   <script>
-    var ANALYTICS_WRITE_KEY = 'WRITE_KEY';
+    var ANALYTICS_WRITE_KEY = 'GW4vMpvTuG8m29dHAj1K1udTScVuDoAa';
     var ANALYTICS_LEGACY_SETTINGS = {
       analyticsNextEnabled: true,
       integrations: {
+        // "Actions Google Analytic 4": {
+        //   versionSettings: { componentTypes: ['browser'], version: '' } },
+        // "Segment.io": { "apiKey": "GW4vMpvTuG8m29dHAj1K1udTScVuDoAa", "unbundledIntegrations": [], "addBundledMetadata": true, "maybeBundledConfigIds": {},
+        //   versionSettings: { componentTypes: ['browser'], version: '4.4.7' } }
       },
       remotePlugins: [
         {
           name: 'Console',
-          settings: { id: 'ak', token: 'token', endpoint: 'endpoint' },
+          settings: { id: 'ak', endpoint: 'endpoint', writeKey: 'writeKeyValue', sampleRate: 100 },
           // @head/o11y
           url: 'http://127.0.0.1:8000/analytics-plugin-console.js',
         },
-        {
-          name: 'Segmentio',
-          settings: { token: ANALYTICS_WRITE_KEY, endpoint: 'https://api.segment.io/v1' },
-          // @head/o11y
-          url: 'http://127.0.0.1:8000/analytics-plugin-segmentio.js',
-        },
+        // {
+        //   name: 'Guancecom',
+        //   settings: { id: 'ak', endpoint: 'https://api.bo7.co',
+        //     // allowedTracingOrigins: ['https://api.bo7.co'],
+        //   },
+        //   // @head/o11y
+        //   // url: 'http://127.0.0.1:8000/analytics-plugin-guancecom.js',
+        // },
+        // {
+        //   name: 'Datadogcom',
+        //   settings: { id: 'b2646746-e670-41ce-9450-74ac9d969301', token: 'pube17b7c0087821dcb33e06f3d94eb67f4', endpoint: 'datadoghq.eu',
+        //     sampleRate: 100,
+        //     sessionReplaySampleRate: 20,
+        //     trackInteractions: true,
+        //     trackResources: true,
+        //     trackLongTasks: true,
+        //     defaultPrivacyLevel:'mask-user-input',
+        //     allowedTracingOrigins: ['https://api.bo7.co'],
+        //   },
+        // },
+        // {
+        //   name: 'Segmentio',
+        //   settings: { endpoint: 'https://api.segment.io/v1', token: ANALYTICS_WRITE_KEY },
+        //   // @head/o11y
+        //   // url: 'http://127.0.0.1:8000/analytics-plugin-segmentio.js',
+        // },
       ],
       metrics: { sampleRate: 1 },
       plan: {
@@ -112,10 +136,10 @@
             app: {
               service: 'ak.bo7.co',
               profile: 'local',
-              version: '0.0.1',
+              version: 1,
             },
             rum: {
-              denyResourceOrigins: [ 'datadoghq.eu' ],
+              denyResourceOrigins: [ 'datadoghq.eu', 'datakit-api.lisitede.com' ],
             },
           };
 
