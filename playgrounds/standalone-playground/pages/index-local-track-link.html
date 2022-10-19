@@ -13,81 +13,94 @@
     }
   </style>
 
-  <form method="get">
-    <input type="text" name="writeKey" placeholder="Writekey" />
-    <button>Load</button>
-  </form>
+  <script>
+    var ANALYTICS_WRITE_KEY = 'GW4vMpvTuG8m29dHAj1K1udTScVuDoAa';
+    var ANALYTICS_LEGACY_SETTINGS = {
+      "integrations": {
+        "Actions Google Analytic 4": {
+          "versionSettings": { "componentTypes": [] } },
+        "Segment.io": { "apiKey": "GW4vMpvTuG8m29dHAj1K1udTScVuDoAa", "unbundledIntegrations": [], "addBundledMetadata": true, "maybeBundledConfigIds": {},
+          "versionSettings": { "version": "4.4.7", "componentTypes": ["browser"] } }
+       },
+      "plan": {
+        "track": { "__default": { "enabled": true, "integrations": {} } },
+        "identify": { "__default": { "enabled": true } },
+        "group": { "__default": { "enabled": true } }
+      },
+      "edgeFunction": {},
+      "analyticsNextEnabled": true,
+      "middlewareSettings": {},
+      "enabledMiddleware": {},
+      "metrics": { "sampleRate": 0.1 },
+      "legacyVideoPluginsEnabled": true,
+      "remotePlugins": []
+    };
+  </script>
 
   <script>
-    const { searchParams } = new URL(document.location);
-    const writeKey = searchParams.get("writeKey");
-    document.querySelector("input").value = writeKey;
-
-    if (writeKey) {
-      console.profile('snippet')
-      console.time('snippet')
-      !(function () {
-        var analytics = (window.analytics = window.analytics || [])
-        if (!analytics.initialize)
-          if (analytics.invoked)
-            window.console &&
-              console.error &&
-              console.error('Segment snippet included twice.')
-          else {
-            analytics.invoked = !0
-            analytics.methods = [
-              'screen',
-              'register',
-              'deregister',
-              'trackSubmit',
-              'trackClick',
-              'trackLink',
-              'trackForm',
-              'pageview',
-              'identify',
-              'reset',
-              'group',
-              'track',
-              'ready',
-              'alias',
-              'debug',
-              'page',
-              'once',
-              'off',
-              'on',
-              'addSourceMiddleware',
-              'addIntegrationMiddleware',
-              'setAnonymousId',
-              'addDestinationMiddleware',
-            ]
-            analytics.factory = function (e) {
-              return function () {
-                var t = Array.prototype.slice.call(arguments)
-                t.unshift(e)
-                analytics.push(t)
-                return analytics
-              }
+    console.profile('snippet')
+    console.time('snippet')
+    !(function () {
+      var analytics = (window.analytics = window.analytics || [])
+      if (!analytics.initialize)
+        if (analytics.invoked)
+          window.console &&
+            console.error &&
+            console.error('Segment snippet included twice.')
+        else {
+          analytics.invoked = !0
+          analytics.methods = [
+            'screen',
+            'register',
+            'deregister',
+            'trackSubmit',
+            'trackClick',
+            'trackLink',
+            'trackForm',
+            'pageview',
+            'identify',
+            'reset',
+            'group',
+            'track',
+            'ready',
+            'alias',
+            'debug',
+            'page',
+            'once',
+            'off',
+            'on',
+            'addSourceMiddleware',
+            'addIntegrationMiddleware',
+            'setAnonymousId',
+            'addDestinationMiddleware',
+          ]
+          analytics.factory = function (e) {
+            return function () {
+              var t = Array.prototype.slice.call(arguments)
+              t.unshift(e)
+              analytics.push(t)
+              return analytics
             }
-            for (var e = 0; e < analytics.methods.length; e++) {
-              var key = analytics.methods[e]
-              analytics[key] = analytics.factory(key)
-            }
-            analytics.load = function (key, e) {
-              var t = document.createElement('script')
-              t.type = 'text/javascript'
-              t.async = !0
-              t.src = '/node_modules/@segment/analytics-next/dist/umd/standalone.js'
-              var n = document.getElementsByTagName('script')[0]
-              n.parentNode.insertBefore(t, n)
-              analytics._loadOptions = e
-            }
-            analytics.SNIPPET_VERSION = '4.13.1'
-            analytics._writeKey = writeKey
-            analytics.load()
-            analytics.page()
           }
-      })()
-    }
+          for (var e = 0; e < analytics.methods.length; e++) {
+            var key = analytics.methods[e]
+            analytics[key] = analytics.factory(key)
+          }
+          analytics.load = function (key, e) {
+            var t = document.createElement('script')
+            t.type = 'text/javascript'
+            t.async = !0
+            t.src = '/node_modules/@segment/analytics-next/dist/umd/standalone.js'
+            var n = document.getElementsByTagName('script')[0]
+            n.parentNode.insertBefore(t, n)
+            analytics._loadOptions = e
+          }
+          analytics.SNIPPET_VERSION = '4.13.1'
+
+          analytics.load(ANALYTICS_WRITE_KEY, ANALYTICS_LEGACY_SETTINGS)
+          analytics.page()
+        }
+    })()
   </script>
 </head>
 
@@ -106,24 +119,22 @@
   </form>
 
   <script type="text/javascript">
-    if (writeKey) {
-      window.analytics.ready(function onReady() {
-        console.profileEnd('snippet')
-        console.timeEnd('snippet')
-        document.querySelector('#ready-logs').textContent = 'ready!'
+    window.analytics.ready(function onReady() {
+      console.profileEnd('snippet')
+      console.timeEnd('snippet')
+      document.querySelector('#ready-logs').textContent = 'ready!'
 
-        const link = document.getElementById('root')
-        analytics.trackLink(link, 'Clicked Root', {
-          plan: 'Enterprise',
-        })
-
-        const form = document.getElementById('form')
-        analytics.trackForm(form, 'Signed Up', {
-          plan: 'Premium',
-          revenue: 99.0,
-        })
+      const link = document.getElementById('root')
+      analytics.trackLink(link, 'Clicked Root', {
+        plan: 'Enterprise',
       })
-    }
+
+      const form = document.getElementById('form')
+      analytics.trackForm(form, 'Signed Up', {
+        plan: 'Premium',
+        revenue: 99.0,
+      })
+    })
   </script>
 </body>
 
