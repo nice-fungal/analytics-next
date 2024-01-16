@@ -1,10 +1,7 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 2559:
-/*!*********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/clone.js ***!
-  \*********************************************************************/
+/***/ 559:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -31,10 +28,7 @@ exports.clone = clone;
 
 /***/ }),
 
-/***/ 1717:
-/*!**********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/delete.js ***!
-  \**********************************************************************/
+/***/ 717:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -44,8 +38,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Delete = void 0;
-var inherits_1 = __importDefault(__webpack_require__(/*! inherits */ 1285));
-var facade_1 = __webpack_require__(/*! ./facade */ 6526);
+var inherits_1 = __importDefault(__webpack_require__(285));
+var facade_1 = __webpack_require__(526);
 function Delete(dictionary, opts) {
     facade_1.Facade.call(this, dictionary, opts);
 }
@@ -58,10 +52,7 @@ Delete.prototype.type = function () {
 
 /***/ }),
 
-/***/ 6526:
-/*!**********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/facade.js ***!
-  \**********************************************************************/
+/***/ 526:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -71,11 +62,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Facade = void 0;
-var clone_1 = __webpack_require__(/*! ./clone */ 2559);
-var is_enabled_1 = __importDefault(__webpack_require__(/*! ./is-enabled */ 3243));
-var new_date_1 = __importDefault(__webpack_require__(/*! new-date */ 5870));
-var analytics_js_obj_case_1 = __importDefault(__webpack_require__(/*! @head.js/analytics.js-obj-case */ 9174));
-var analytics_js_isodate_traverse_1 = __importDefault(__webpack_require__(/*! @head.js/analytics.js-isodate-traverse */ 1564));
+var clone_1 = __webpack_require__(559);
+var is_enabled_1 = __importDefault(__webpack_require__(243));
+var new_date_1 = __importDefault(__webpack_require__(870));
+var analytics_js_obj_case_1 = __importDefault(__webpack_require__(174));
+var analytics_js_isodate_traverse_1 = __importDefault(__webpack_require__(564));
 function Facade(obj, opts) {
     opts = opts || {};
     this.raw = clone_1.clone(obj);
@@ -257,10 +248,7 @@ function transform(obj) {
 
 /***/ }),
 
-/***/ 3994:
-/*!************************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/identify.js ***!
-  \************************************************************************/
+/***/ 994:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -270,11 +258,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Identify = void 0;
-var facade_1 = __webpack_require__(/*! ./facade */ 6526);
-var analytics_js_obj_case_1 = __importDefault(__webpack_require__(/*! @head.js/analytics.js-obj-case */ 9174));
-var inherits_1 = __importDefault(__webpack_require__(/*! inherits */ 1285));
-var is_email_1 = __importDefault(__webpack_require__(/*! ./is-email */ 3266));
-var new_date_1 = __importDefault(__webpack_require__(/*! new-date */ 5870));
+var facade_1 = __webpack_require__(526);
+var analytics_js_obj_case_1 = __importDefault(__webpack_require__(174));
+var inherits_1 = __importDefault(__webpack_require__(285));
+var is_email_1 = __importDefault(__webpack_require__(266));
+var new_date_1 = __importDefault(__webpack_require__(870));
 var trim = function (str) { return str.trim(); };
 function Identify(dictionary, opts) {
     facade_1.Facade.call(this, dictionary, opts);
@@ -341,10 +329,7 @@ i.username = facade_1.Facade.proxy("traits.username");
 
 /***/ }),
 
-/***/ 6445:
-/*!*********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/index.js ***!
-  \*********************************************************************/
+/***/ 445:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -362,17 +347,17 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Delete = exports.Screen = exports.Page = exports.Track = exports.Identify = exports.Facade = void 0;
-var facade_1 = __webpack_require__(/*! ./facade */ 6526);
+var facade_1 = __webpack_require__(526);
 Object.defineProperty(exports, "Facade", ({ enumerable: true, get: function () { return facade_1.Facade; } }));
-var identify_1 = __webpack_require__(/*! ./identify */ 3994);
+var identify_1 = __webpack_require__(994);
 Object.defineProperty(exports, "Identify", ({ enumerable: true, get: function () { return identify_1.Identify; } }));
-var track_1 = __webpack_require__(/*! ./track */ 9085);
+var track_1 = __webpack_require__(85);
 Object.defineProperty(exports, "Track", ({ enumerable: true, get: function () { return track_1.Track; } }));
-var page_1 = __webpack_require__(/*! ./page */ 1351);
+var page_1 = __webpack_require__(351);
 Object.defineProperty(exports, "Page", ({ enumerable: true, get: function () { return page_1.Page; } }));
-var screen_1 = __webpack_require__(/*! ./screen */ 1525);
+var screen_1 = __webpack_require__(525);
 Object.defineProperty(exports, "Screen", ({ enumerable: true, get: function () { return screen_1.Screen; } }));
-var delete_1 = __webpack_require__(/*! ./delete */ 1717);
+var delete_1 = __webpack_require__(717);
 Object.defineProperty(exports, "Delete", ({ enumerable: true, get: function () { return delete_1.Delete; } }));
 exports["default"] = __assign(__assign({}, facade_1.Facade), { Identify: identify_1.Identify,
     Track: track_1.Track,
@@ -383,10 +368,7 @@ exports["default"] = __assign(__assign({}, facade_1.Facade), { Identify: identif
 
 /***/ }),
 
-/***/ 3266:
-/*!************************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/is-email.js ***!
-  \************************************************************************/
+/***/ 266:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -401,10 +383,7 @@ exports["default"] = isEmail;
 
 /***/ }),
 
-/***/ 3243:
-/*!**************************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/is-enabled.js ***!
-  \**************************************************************************/
+/***/ 243:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -421,10 +400,7 @@ exports["default"] = default_1;
 
 /***/ }),
 
-/***/ 1351:
-/*!********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/page.js ***!
-  \********************************************************************/
+/***/ 351:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -434,10 +410,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Page = void 0;
-var inherits_1 = __importDefault(__webpack_require__(/*! inherits */ 1285));
-var facade_1 = __webpack_require__(/*! ./facade */ 6526);
-var track_1 = __webpack_require__(/*! ./track */ 9085);
-var is_email_1 = __importDefault(__webpack_require__(/*! ./is-email */ 3266));
+var inherits_1 = __importDefault(__webpack_require__(285));
+var facade_1 = __webpack_require__(526);
+var track_1 = __webpack_require__(85);
+var is_email_1 = __importDefault(__webpack_require__(266));
 function Page(dictionary, opts) {
     facade_1.Facade.call(this, dictionary, opts);
 }
@@ -504,10 +480,7 @@ p.track = function (name) {
 
 /***/ }),
 
-/***/ 1525:
-/*!**********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/screen.js ***!
-  \**********************************************************************/
+/***/ 525:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -517,9 +490,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Screen = void 0;
-var inherits_1 = __importDefault(__webpack_require__(/*! inherits */ 1285));
-var page_1 = __webpack_require__(/*! ./page */ 1351);
-var track_1 = __webpack_require__(/*! ./track */ 9085);
+var inherits_1 = __importDefault(__webpack_require__(285));
+var page_1 = __webpack_require__(351);
+var track_1 = __webpack_require__(85);
 function Screen(dictionary, opts) {
     page_1.Page.call(this, dictionary, opts);
 }
@@ -543,10 +516,7 @@ Screen.prototype.track = function (name) {
 
 /***/ }),
 
-/***/ 9085:
-/*!*********************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-facade/dist/track.js ***!
-  \*********************************************************************/
+/***/ 85:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -556,10 +526,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Track = void 0;
-var inherits_1 = __importDefault(__webpack_require__(/*! inherits */ 1285));
-var facade_1 = __webpack_require__(/*! ./facade */ 6526);
-var identify_1 = __webpack_require__(/*! ./identify */ 3994);
-var is_email_1 = __importDefault(__webpack_require__(/*! ./is-email */ 3266));
+var inherits_1 = __importDefault(__webpack_require__(285));
+var facade_1 = __webpack_require__(526);
+var identify_1 = __webpack_require__(994);
+var is_email_1 = __importDefault(__webpack_require__(266));
 function Track(dictionary, opts) {
     facade_1.Facade.call(this, dictionary, opts);
 }
@@ -644,16 +614,13 @@ function currency(val) {
 
 /***/ }),
 
-/***/ 1564:
-/*!******************************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-isodate-traverse/lib/index.js ***!
-  \******************************************************************************/
+/***/ 564:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
 
-var isodate = __webpack_require__(/*! @segment/isodate */ 8264);
+var isodate = __webpack_require__(264);
 
 /**
  * Expose `traverse`.
@@ -711,10 +678,7 @@ function traverseArray(arr, strict) {
 
 /***/ }),
 
-/***/ 9174:
-/*!******************************************************************!*\
-  !*** ../../node_modules/@head.js/analytics.js-obj-case/index.js ***!
-  \******************************************************************/
+/***/ 174:
 /***/ (function(module) {
 
 
@@ -873,10 +837,7 @@ function isFunction(val) {
 
 /***/ }),
 
-/***/ 8264:
-/*!********************************************************!*\
-  !*** ../../node_modules/@segment/isodate/lib/index.js ***!
-  \********************************************************/
+/***/ 264:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -963,10 +924,7 @@ exports.is = function(string, strict) {
 
 /***/ }),
 
-/***/ 1285:
-/*!*******************************************************!*\
-  !*** ../../node_modules/inherits/inherits_browser.js ***!
-  \*******************************************************/
+/***/ 285:
 /***/ (function(module) {
 
 if (typeof Object.create === 'function') {
@@ -1000,18 +958,15 @@ if (typeof Object.create === 'function') {
 
 /***/ }),
 
-/***/ 5870:
-/*!************************************************!*\
-  !*** ../../node_modules/new-date/lib/index.js ***!
-  \************************************************/
+/***/ 870:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
 
-var isodate = __webpack_require__(/*! @segment/isodate */ 8264);
-var milliseconds = __webpack_require__(/*! ./milliseconds */ 5228);
-var seconds = __webpack_require__(/*! ./seconds */ 6076);
+var isodate = __webpack_require__(264);
+var milliseconds = __webpack_require__(228);
+var seconds = __webpack_require__(76);
 
 var objProto = Object.prototype;
 var toStr = objProto.toString;
@@ -1063,10 +1018,7 @@ function toMs(num) {
 
 /***/ }),
 
-/***/ 5228:
-/*!*******************************************************!*\
-  !*** ../../node_modules/new-date/lib/milliseconds.js ***!
-  \*******************************************************/
+/***/ 228:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1102,10 +1054,7 @@ exports.parse = function (millis) {
 
 /***/ }),
 
-/***/ 6076:
-/*!**************************************************!*\
-  !*** ../../node_modules/new-date/lib/seconds.js ***!
-  \**************************************************/
+/***/ 76:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1141,10 +1090,7 @@ exports.parse = function (seconds) {
 
 /***/ }),
 
-/***/ 4791:
-/*!*************************************************!*\
-  !*** ../../node_modules/spark-md5/spark-md5.js ***!
-  \*************************************************/
+/***/ 791:
 /***/ (function(module) {
 
 (function (factory) {
@@ -1886,3247 +1832,84 @@ exports.parse = function (seconds) {
 }));
 
 
-/***/ }),
+/***/ })
 
-/***/ 4403:
-/*!******************************!*\
-  !*** ./src/browser/index.ts ***!
-  \******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+!function() {
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AnalyticsBrowser": function() { return /* binding */ AnalyticsBrowser; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lib_parse_cdn__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../lib/parse-cdn */ 7566);
-/* harmony import */ var _core_analytics__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../core/analytics */ 1555);
-/* harmony import */ var _lib_merged_options__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../lib/merged-options */ 5944);
-/* harmony import */ var _lib_create_deferred__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../lib/create-deferred */ 6022);
-/* harmony import */ var _plugins_page_enrichment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../plugins/page-enrichment */ 9603);
-/* harmony import */ var _plugins_remote_loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../plugins/remote-loader */ 3208);
-/* harmony import */ var _plugins_validation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../plugins/validation */ 1067);
-/* harmony import */ var _core_buffer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/buffer */ 1444);
-/* harmony import */ var _core_buffer_snippet__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/buffer/snippet */ 8461);
-/* harmony import */ var _core_inspector__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../core/inspector */ 9778);
-/* harmony import */ var _core_stats__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../core/stats */ 6218);
 
-// import { getProcessEnv } from '../lib/get-process-env'
-
-// import { fetch } from '../lib/fetch'
-
-
-
-
-
-// import { segmentio, SegmentioSettings } from '../plugins/segmentio'
-
-
-
-// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
-
-
-// export function loadLegacySettings(
-//   writeKey: string,
-//   cdnURL?: string
-// ): Promise<LegacySettings> {
-//   const baseUrl = cdnURL ?? getCDN()
-//   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
-//     .then((res) => {
-//       if (!res.ok) {
-//         return res.text().then((errorResponseMessage) => {
-//           throw new Error(errorResponseMessage)
-//         })
-//       }
-//       return res.json()
-//     })
-//     .catch((err) => {
-//       console.error(err.message)
-//       throw err
-//     })
-// }
-// function hasLegacyDestinations(settings: LegacySettings): boolean {
-//   return (
-//     getProcessEnv().NODE_ENV !== 'test' &&
-//     // just one integration means segmentio
-//     Object.keys(settings.integrations).length > 1
-//   )
-// }
-// function hasTsubMiddleware(settings: LegacySettings): boolean {
-//   return (
-//     getProcessEnv().NODE_ENV !== 'test' &&
-//     (settings.middlewareSettings?.routingRules?.length ?? 0) > 0
-//   )
-// }
-/**
- * With AJS classic, we allow users to call setAnonymousId before the library initialization.
- * This is important because some of the destinations will use the anonymousId during the initialization,
- * and if we set anonId afterwards, that wouldn’t impact the destination.
- *
- * Also Ensures events can be registered before library initialization.
- * This is important so users can register to 'initialize' and any events that may fire early during setup.
- */
-function flushPreBuffer(analytics, buffer) {
-    buffer.push.apply(buffer, (0,_core_buffer_snippet__WEBPACK_IMPORTED_MODULE_0__.popSnippetWindowBuffer)());
-    (0,_core_buffer__WEBPACK_IMPORTED_MODULE_1__.flushSetAnonymousID)(analytics, buffer);
-    (0,_core_buffer__WEBPACK_IMPORTED_MODULE_1__.flushOn)(analytics, buffer);
-}
-/**
- * Finish flushing buffer and cleanup.
- */
-function flushFinalBuffer(analytics, buffer) {
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__awaiter)(this, void 0, Promise, function () {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__generator)(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    // Call popSnippetWindowBuffer before each flush task since there may be
-                    // analytics calls during async function calls.
-                    buffer.push.apply(buffer, (0,_core_buffer_snippet__WEBPACK_IMPORTED_MODULE_0__.popSnippetWindowBuffer)());
-                    return [4 /*yield*/, (0,_core_buffer__WEBPACK_IMPORTED_MODULE_1__.flushAddSourceMiddleware)(analytics, buffer)];
-                case 1:
-                    _a.sent();
-                    buffer.push.apply(buffer, (0,_core_buffer_snippet__WEBPACK_IMPORTED_MODULE_0__.popSnippetWindowBuffer)());
-                    (0,_core_buffer__WEBPACK_IMPORTED_MODULE_1__.flushAnalyticsCallsInNewTask)(analytics, buffer);
-                    // Clear buffer, just in case analytics is loaded twice; we don't want to fire events off again.
-                    buffer.clear();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-function registerPlugins(legacySettings, analytics, options, plugins) {
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__awaiter)(this, void 0, Promise, function () {
-        var mergedSettings, remotePlugins, toRegister, ctx;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__generator)(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    mergedSettings = (0,_lib_merged_options__WEBPACK_IMPORTED_MODULE_3__.mergedOptions)(legacySettings, options);
-                    return [4 /*yield*/, (0,_plugins_remote_loader__WEBPACK_IMPORTED_MODULE_4__.remoteLoader)(analytics, legacySettings, 
-                        // analytics.integrations,
-                        mergedSettings).catch(function () { return []; })];
-                case 1:
-                    remotePlugins = _a.sent();
-                    toRegister = (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__spreadArray)((0,tslib__WEBPACK_IMPORTED_MODULE_2__.__spreadArray)([
-                        _plugins_validation__WEBPACK_IMPORTED_MODULE_5__.validation,
-                        _plugins_page_enrichment__WEBPACK_IMPORTED_MODULE_6__.pageEnrichment
-                    ], plugins, true), remotePlugins, true);
-                    return [4 /*yield*/, analytics.register.apply(analytics, toRegister)];
-                case 2:
-                    ctx = _a.sent();
-                    // if (
-                    //   Object.entries(legacySettings.enabledMiddleware ?? {}).some(
-                    //     ([, enabled]) => enabled
-                    //   )
-                    // ) {
-                    //   await import(
-                    //     /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
-                    //   ).then(async ({ remoteMiddlewares }) => {
-                    //     const middleware = await remoteMiddlewares(
-                    //       ctx,
-                    //       legacySettings,
-                    //       options.obfuscate
-                    //     )
-                    //     const promises = middleware.map((mdw) =>
-                    //       analytics.addSourceMiddleware(mdw)
-                    //     )
-                    //     return Promise.all(promises)
-                    //   })
-                    // }
-                    return [2 /*return*/, ctx];
-            }
-        });
-    });
-}
-function loadAnalytics(settings, options, preInitBuffer) {
-    var _a, _b, _c;
-    if (options === void 0) { options = {}; }
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__awaiter)(this, void 0, Promise, function () {
-        var legacySettings, retryQueue, opts, analytics, plugins, ctx;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__generator)(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
-                    if (settings.cdnURL)
-                        (0,_lib_parse_cdn__WEBPACK_IMPORTED_MODULE_7__.setGlobalCDNUrl)(settings.cdnURL);
-                    legacySettings = settings.cdnSettings;
-                    retryQueue = (_b = (_a = legacySettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
-                    opts = (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__assign)({ retryQueue: retryQueue }, options);
-                    analytics = new _core_analytics__WEBPACK_IMPORTED_MODULE_8__.Analytics(settings, opts);
-                    (0,_core_inspector__WEBPACK_IMPORTED_MODULE_9__.attachInspector)(analytics);
-                    plugins = (_c = settings.plugins) !== null && _c !== void 0 ? _c : [];
-                    // const classicIntegrations = settings.classicIntegrations ?? []
-                    _core_stats__WEBPACK_IMPORTED_MODULE_10__.Stats.initRemoteMetrics(legacySettings.metrics);
-                    // needs to be flushed before plugins are registered
-                    flushPreBuffer(analytics, preInitBuffer);
-                    return [4 /*yield*/, registerPlugins(legacySettings, analytics, options, plugins)
-                        // const search = window.location.search ?? ''
-                        // const hash = window.location.hash ?? ''
-                        // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
-                        // if (term.includes('ajs_')) {
-                        //   await analytics.queryString(term).catch(console.error)
-                        // }
-                    ];
-                case 1:
-                    ctx = _d.sent();
-                    // const search = window.location.search ?? ''
-                    // const hash = window.location.hash ?? ''
-                    // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
-                    // if (term.includes('ajs_')) {
-                    //   await analytics.queryString(term).catch(console.error)
-                    // }
-                    analytics.initialized = true;
-                    analytics.emit('initialize', settings, options);
-                    if (options.initialPageview) {
-                        analytics.page().catch(console.error);
-                    }
-                    return [4 /*yield*/, flushFinalBuffer(analytics, preInitBuffer)];
-                case 2:
-                    _d.sent();
-                    return [2 /*return*/, [analytics, ctx]];
-            }
-        });
-    });
-}
-/**
- * The public browser interface for Segment Analytics
- *
- * @example
- * ```ts
- *  export const analytics = new AnalyticsBrowser()
- *  analytics.load({ writeKey: 'foo' })
- * ```
- * @link https://github.com/segmentio/analytics-next/#readme
- */
-var AnalyticsBrowser = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__extends)(AnalyticsBrowser, _super);
-    function AnalyticsBrowser() {
-        var _this = this;
-        var _a = (0,_lib_create_deferred__WEBPACK_IMPORTED_MODULE_11__.createDeferred)(), loadStart = _a.promise, resolveLoadStart = _a.resolve;
-        _this = _super.call(this, function (buffer) {
-            return loadStart.then(function (_a) {
-                var settings = _a[0], options = _a[1];
-                return loadAnalytics(settings, options, buffer);
-            });
-        }) || this;
-        _this._resolveLoadStart = function (settings, options) {
-            return resolveLoadStart([settings, options]);
-        };
-        return _this;
-    }
-    /**
-     * Fully initialize an analytics instance, including:
-     *
-     * * Fetching settings from the segment CDN (by default).
-     * * Fetching all remote destinations configured by the user (if applicable).
-     * * Flushing buffered analytics events.
-     * * Loading all middleware.
-     *
-     * Note:️  This method should only be called *once* in your application.
-     *
-     * @example
-     * ```ts
-     * export const analytics = new AnalyticsBrowser()
-     * analytics.load({ writeKey: 'foo' })
-     * ```
-     */
-    AnalyticsBrowser.prototype.load = function (settings, options) {
-        if (options === void 0) { options = {}; }
-        this._resolveLoadStart(settings, options);
-        return this;
-    };
-    /**
-     * Instantiates an object exposing Analytics methods.
-     *
-     * @example
-     * ```ts
-     * const ajs = AnalyticsBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
-     *
-     * ajs.track("foo")
-     * ...
-     * ```
-     */
-    AnalyticsBrowser.load = function (settings, options) {
-        if (options === void 0) { options = {}; }
-        return new AnalyticsBrowser().load(settings, options);
-    };
-    AnalyticsBrowser.standalone = function (settings, options) {
-        return AnalyticsBrowser.load(settings, options).then(function (res) { return res[0]; });
-    };
-    return AnalyticsBrowser;
-}(_core_buffer__WEBPACK_IMPORTED_MODULE_1__.AnalyticsBuffered));
-
-
-
-/***/ }),
-
-/***/ 2703:
-/*!*********************************************!*\
-  !*** ./src/browser/standalone-analytics.ts ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "install": function() { return /* binding */ install; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! . */ 4403);
-
-
-// function getWriteKey(): string | undefined {
-//   if (embeddedWriteKey()) {
-//     return embeddedWriteKey()
-//   }
-//   if (window.analytics._writeKey) {
-//     return window.analytics._writeKey
-//   }
-//   const regex = /http.*\/analytics\.js\/v1\/([^/]*)(\/platform)?\/analytics.*/
-//   const scripts = Array.prototype.slice.call(
-//     document.querySelectorAll('script')
-//   )
-//   let writeKey: string | undefined = undefined
-//   for (const s of scripts) {
-//     const src = s.getAttribute('src') ?? ''
-//     const result = regex.exec(src)
-//     if (result && result[1]) {
-//       writeKey = result[1]
-//       break
-//     }
-//   }
-//   if (!writeKey && document.currentScript) {
-//     const script = document.currentScript as HTMLScriptElement
-//     const src = script.src
-//     const result = regex.exec(src)
-//     if (result && result[1]) {
-//       writeKey = result[1]
-//     }
-//   }
-//   return writeKey
-// }
-function install() {
-    var _a, _b, _c, _d;
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-        var settings, options, _e;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_f) {
-            switch (_f.label) {
-                case 0:
-                    settings = (_b = (_a = window.analytics) === null || _a === void 0 ? void 0 : _a._loadSettings) !== null && _b !== void 0 ? _b : { writeKey: 'REQUIRED' };
-                    options = (_d = (_c = window.analytics) === null || _c === void 0 ? void 0 : _c._loadOptions) !== null && _d !== void 0 ? _d : {};
-                    // if (!writeKey) {
-                    //   console.error(
-                    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
-                    //   )
-                    //   return
-                    // }
-                    _e = window;
-                    return [4 /*yield*/, ___WEBPACK_IMPORTED_MODULE_1__.AnalyticsBrowser.standalone(settings, options)];
-                case 1:
-                    // if (!writeKey) {
-                    //   console.error(
-                    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
-                    //   )
-                    //   return
-                    // }
-                    _e.analytics = (_f.sent());
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-
-
-/***/ }),
-
-/***/ 1555:
-/*!*************************************!*\
-  !*** ./src/core/analytics/index.ts ***!
-  \*************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Analytics": function() { return /* binding */ Analytics; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _arguments_resolver__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../arguments-resolver */ 6333);
-/* harmony import */ var _connection__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../connection */ 94);
-/* harmony import */ var _context__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../context */ 8404);
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @segment/analytics-core */ 9433);
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @segment/analytics-core */ 7127);
-/* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../events */ 6513);
-/* harmony import */ var _queue_event_queue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../queue/event-queue */ 7112);
-/* harmony import */ var _user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../user */ 8166);
-/* harmony import */ var _lib_bind_all__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../lib/bind-all */ 8232);
-/* harmony import */ var _lib_priority_queue_persisted__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/priority-queue/persisted */ 3061);
-/* harmony import */ var _lib_priority_queue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/priority-queue */ 3874);
-
-
-// import type { FormArgs, LinkArgs } from '../auto-track'
-
-
-
-
-
-
-
-
-// import { version } from '../../generated/version'
-
-var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Analytics JS';
-// // reference any pre-existing "analytics" object so a user can restore the reference
-// const global: any = getGlobal()
-// const _analytics = global?.analytics
-function createDefaultQueue(retryQueue, disablePersistance) {
-    if (retryQueue === void 0) { retryQueue = false; }
-    if (disablePersistance === void 0) { disablePersistance = false; }
-    var maxAttempts = retryQueue ? 4 : 1;
-    var priorityQueue = disablePersistance
-        ? new _lib_priority_queue__WEBPACK_IMPORTED_MODULE_0__.PriorityQueue(maxAttempts, [])
-        : new _lib_priority_queue_persisted__WEBPACK_IMPORTED_MODULE_1__.PersistedPriorityQueue(maxAttempts, 'event-queue');
-    return new _queue_event_queue__WEBPACK_IMPORTED_MODULE_2__.EventQueue(priorityQueue);
-}
-// /* analytics-classic stubs */
-// function _stub(this: never) {
-//   console.warn(deprecationWarning)
-// }
-var Analytics = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__extends)(Analytics, _super);
-    function Analytics(settings, options) {
-        var _this = this;
-        var _a, _b, _c;
-        _this = _super.call(this) || this;
-        _this._debug = false;
-        _this.initialized = false;
-        _this.user = function () {
-            return _this._user;
-        };
-        var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
-        var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
-        _this.settings = settings;
-        _this.settings.timeout = (_b = _this.settings.timeout) !== null && _b !== void 0 ? _b : 300;
-        _this.queue =
-            // queue ??
-            createDefaultQueue(options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
-        _this._universalStorage = new _user__WEBPACK_IMPORTED_MODULE_4__.UniversalStorage(disablePersistance ? ['memory'] : ['localStorage', 'cookie', 'memory'], (0,_user__WEBPACK_IMPORTED_MODULE_4__.getAvailableStorageOptions)(cookieOptions));
-        _this._user =
-            // user ??
-            new _user__WEBPACK_IMPORTED_MODULE_4__.User(disablePersistance
-                ? (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, options === null || options === void 0 ? void 0 : options.user), { persist: false }) : options === null || options === void 0 ? void 0 : options.user, cookieOptions).load();
-        // this._group =
-        //   group ??
-        //   new Group(
-        //     disablePersistance
-        //       ? { ...options?.group, persist: false }
-        //       : options?.group,
-        //     cookieOptions
-        //   ).load()
-        _this.eventFactory = new _events__WEBPACK_IMPORTED_MODULE_5__.EventFactory(_this._user);
-        _this.integrations = (_c = options === null || options === void 0 ? void 0 : options.integrations) !== null && _c !== void 0 ? _c : {};
-        _this.options = options !== null && options !== void 0 ? options : {};
-        (0,_lib_bind_all__WEBPACK_IMPORTED_MODULE_6__["default"])(_this);
-        return _this;
-    }
-    Object.defineProperty(Analytics.prototype, "storage", {
-        get: function () {
-            return this._universalStorage;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Analytics.prototype.track = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            var _a, name, data, opts, cb, segmentEvent;
-            var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_b) {
-                _a = _arguments_resolver__WEBPACK_IMPORTED_MODULE_7__.resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
-                segmentEvent = this.eventFactory.track(name, data, opts, this.integrations);
-                return [2 /*return*/, this._dispatch(segmentEvent, cb).then(function (ctx) {
-                        _this.emit('track', name, ctx.event.properties, ctx.event.options);
-                        return ctx;
-                    })];
-            });
-        });
-    };
-    Analytics.prototype.page = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            var _a, category, page, properties, options, callback, segmentEvent;
-            var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_b) {
-                _a = _arguments_resolver__WEBPACK_IMPORTED_MODULE_7__.resolvePageArguments.apply(void 0, args), category = _a[0], page = _a[1], properties = _a[2], options = _a[3], callback = _a[4];
-                segmentEvent = this.eventFactory.page(category, page, properties, options, this.integrations);
-                return [2 /*return*/, this._dispatch(segmentEvent, callback).then(function (ctx) {
-                        _this.emit('page', category, page, ctx.event.properties, ctx.event.options);
-                        return ctx;
-                    })];
-            });
-        });
-    };
-    // async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
-    //   const [id, _traits, options, callback] = resolveUserArguments(this._user)(
-    //     ...args
-    //   )
-    //   this._user.identify(id, _traits)
-    //   const segmentEvent = this.eventFactory.identify(
-    //     this._user.id(),
-    //     this._user.traits(),
-    //     options,
-    //     this.integrations
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit(
-    //       'identify',
-    //       ctx.event.userId,
-    //       ctx.event.traits,
-    //       ctx.event.options
-    //     )
-    //     return ctx
-    //   })
-    // }
-    // group(): Group
-    // group(...args: GroupParams): Promise<DispatchedEvent>
-    // group(...args: GroupParams): Promise<DispatchedEvent> | Group {
-    //   if (args.length === 0) {
-    //     return this._group
-    //   }
-    //   const [id, _traits, options, callback] = resolveUserArguments(this._group)(
-    //     ...args
-    //   )
-    //   this._group.identify(id, _traits)
-    //   const groupId = this._group.id()
-    //   const groupTraits = this._group.traits()
-    //   const segmentEvent = this.eventFactory.group(
-    //     groupId,
-    //     groupTraits,
-    //     options,
-    //     this.integrations
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
-    //     return ctx
-    //   })
-    // }
-    // async alias(...args: AliasParams): Promise<DispatchedEvent> {
-    //   const [to, from, options, callback] = resolveAliasArguments(...args)
-    //   const segmentEvent = this.eventFactory.alias(
-    //     to,
-    //     from,
-    //     options,
-    //     this.integrations
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit('alias', to, from, ctx.event.options)
-    //     return ctx
-    //   })
-    // }
-    // async screen(...args: PageParams): Promise<DispatchedEvent> {
-    //   const [category, page, properties, options, callback] =
-    //     resolvePageArguments(...args)
-    //   const segmentEvent = this.eventFactory.screen(
-    //     category,
-    //     page,
-    //     properties,
-    //     options,
-    //     this.integrations
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit(
-    //       'screen',
-    //       category,
-    //       page,
-    //       ctx.event.properties,
-    //       ctx.event.options
-    //     )
-    //     return ctx
-    //   })
-    // }
-    // async trackClick(...args: LinkArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.link.call(this, ...args)
-    // }
-    // async trackLink(...args: LinkArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.link.call(this, ...args)
-    // }
-    // async trackSubmit(...args: FormArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.form.call(this, ...args)
-    // }
-    // async trackForm(...args: FormArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.form.call(this, ...args)
-    // }
-    Analytics.prototype.register = function () {
-        var plugins = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            plugins[_i] = arguments[_i];
-        }
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            var ctx, registrations;
-            var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        ctx = _context__WEBPACK_IMPORTED_MODULE_8__.Context.system();
-                        registrations = plugins.map(function (xt) {
-                            return _this.queue.register(ctx, xt, _this);
-                        });
-                        return [4 /*yield*/, Promise.all(registrations)];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, ctx];
-                }
-            });
-        });
-    };
-    // async deregister(...plugins: string[]): Promise<Context> {
-    //   const ctx = Context.system()
-    //   const deregistrations = plugins.map((pl) => {
-    //     const plugin = this.queue.plugins.find((p) => p.name === pl)
-    //     if (plugin) {
-    //       return this.queue.deregister(ctx, plugin, this)
-    //     } else {
-    //       ctx.log('warn', `plugin ${pl} not found`)
-    //     }
-    //   })
-    //   await Promise.all(deregistrations)
-    //   return ctx
-    // }
-    Analytics.prototype.debug = function (toggle) {
-        // Make sure legacy ajs debug gets turned off if it was enabled before upgrading.
-        if (toggle === false && localStorage.getItem('debug')) {
-            localStorage.removeItem('debug');
-        }
-        this._debug = toggle;
-        return this;
-    };
-    // reset(): void {
-    //   this._user.reset()
-    //   this._group.reset()
-    //   this.emit('reset')
-    // }
-    Analytics.prototype.timeout = function (timeout) {
-        this.settings.timeout = timeout;
-    };
-    Analytics.prototype._dispatch = function (event, callback) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            var ctx;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_a) {
-                ctx = new _context__WEBPACK_IMPORTED_MODULE_8__.Context(event);
-                if ((0,_connection__WEBPACK_IMPORTED_MODULE_9__.isOffline)() && !this.options.retryQueue) {
-                    return [2 /*return*/, ctx];
-                }
-                return [2 /*return*/, (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_10__.dispatch)(ctx, this.queue, this, {
-                        callback: callback,
-                        debug: this._debug,
-                        timeout: this.settings.timeout,
-                    })];
-            });
-        });
-    };
-    Analytics.prototype.addSourceMiddleware = function (fn) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_a) {
-                console.debug(fn);
-                // await this.queue.criticalTasks.run(async () => {
-                //   const { sourceMiddlewarePlugin } = await import(
-                //     /* webpackChunkName: "middleware" */ '../../plugins/middleware'
-                //   )
-                //   const integrations: Record<string, boolean> = {}
-                //   this.queue.plugins.forEach((plugin) => {
-                //     if (plugin.type === 'destination') {
-                //       return (integrations[plugin.name] = true)
-                //     }
-                //   })
-                //   const plugin = sourceMiddlewarePlugin(fn, integrations)
-                //   await this.register(plugin)
-                // })
-                return [2 /*return*/, this];
-            });
-        });
-    };
-    //   /* TODO: This does not have to return a promise? */
-    //   addDestinationMiddleware(
-    //     integrationName: string,
-    //     ...middlewares: DestinationMiddlewareFunction[]
-    //   ): Promise<Analytics> {
-    //     const legacyDestinations = this.queue.plugins.filter(
-    //       (xt) => xt.name.toLowerCase() === integrationName.toLowerCase()
-    //     ) as LegacyDestination[]
-    //
-    //     legacyDestinations.forEach((destination) => {
-    //       destination.addMiddleware(...middlewares)
-    //     })
-    //     return Promise.resolve(this)
-    //   }
-    Analytics.prototype.setAnonymousId = function (id) {
-        return this._user.anonymousId(id);
-    };
-    //   async queryString(query: string): Promise<Context[]> {
-    //     if (this.options.useQueryString === false) {
-    //       return []
-    //     }
-    // 
-    //     const { queryString } = await import(
-    //       /* webpackChunkName: "queryString" */ '../query-string'
-    //     )
-    //     return queryString(this, query)
-    //   }
-    //   /**
-    //    * @deprecated This function does not register a destination plugin.
-    //    *
-    //    * Instantiates a legacy Analytics.js destination.
-    //    *
-    //    * This function does not register the destination as an Analytics.JS plugin,
-    //    * all the it does it to invoke the factory function back.
-    //    */
-    //   use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
-    //     legacyPluginFactory(this)
-    //     return this
-    //   }
-    Analytics.prototype.ready = function (callback) {
-        if (callback === void 0) { callback = function (res) { return res; }; }
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_a) {
-                return [2 /*return*/, Promise.all(this.queue.plugins.map(function (i) { return (i.ready ? i.ready() : Promise.resolve()); })).then(function (res) {
-                        callback(res);
-                        return res;
-                    })];
-            });
-        });
-    };
-    //   // analytics-classic api
-    //   noConflict(): Analytics {
-    //     console.warn(deprecationWarning)
-    //     window.analytics = _analytics ?? this
-    //     return this
-    //   }
-    //   normalize(msg: SegmentEvent): SegmentEvent {
-    //     console.warn(deprecationWarning)
-    //     return this.eventFactory.normalize(msg)
-    //   }
-    //   get failedInitializations(): string[] {
-    //     console.warn(deprecationWarning)
-    //     return this.queue.failedInitializations
-    //   }
-    //   get VERSION(): string {
-    //     return version
-    //   }
-    /* @deprecated - noop */
-    Analytics.prototype.initialize = function (_settings, _options) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, Promise, function () {
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__generator)(this, function (_a) {
-                console.warn(deprecationWarning);
-                return [2 /*return*/, Promise.resolve(this)];
-            });
-        });
-    };
-    return Analytics;
-}(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_11__.Emitter));
-
-
-
-/***/ }),
-
-/***/ 6333:
-/*!**********************************************!*\
-  !*** ./src/core/arguments-resolver/index.ts ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "resolveAliasArguments": function() { return /* binding */ resolveAliasArguments; },
-/* harmony export */   "resolveArguments": function() { return /* binding */ resolveArguments; },
-/* harmony export */   "resolvePageArguments": function() { return /* binding */ resolvePageArguments; },
-/* harmony export */   "resolveUserArguments": function() { return /* binding */ resolveUserArguments; }
-/* harmony export */ });
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @segment/analytics-core */ 7595);
-
-/**
- * Helper for the track method
- */
-function resolveArguments(eventName, properties, options, callback) {
-    var _a;
-    var args = [eventName, properties, options, callback];
-    var name = (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(eventName) ? eventName.event : eventName;
-    if (!name || !(0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isString)(name)) {
-        throw new Error('Event missing');
-    }
-    var data = (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(eventName)
-        ? (_a = eventName.properties) !== null && _a !== void 0 ? _a : {}
-        : (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(properties)
-            ? properties
-            : {};
-    var opts = {};
-    if (!(0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isFunction)(options)) {
-        opts = options !== null && options !== void 0 ? options : {};
-    }
-    if ((0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(eventName) && !(0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isFunction)(properties)) {
-        opts = properties !== null && properties !== void 0 ? properties : {};
-    }
-    var cb = args.find(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isFunction);
-    return [name, data, opts, cb];
-}
-/**
- * Helper for page, screen methods
- */
-function resolvePageArguments(category, name, properties, options, callback) {
-    var _a, _b;
-    var resolvedCategory = null;
-    var resolvedName = null;
-    var args = [category, name, properties, options, callback];
-    var strings = args.filter(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isString);
-    if (strings[0] !== undefined && strings[1] !== undefined) {
-        resolvedCategory = strings[0];
-        resolvedName = strings[1];
-    }
-    if (strings.length === 1) {
-        resolvedCategory = null;
-        resolvedName = strings[0];
-    }
-    var resolvedCallback = args.find(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isFunction);
-    var objects = args.filter(function (obj) {
-        if (resolvedName === null) {
-            return (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(obj);
-        }
-        return (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(obj) || obj === null;
-    });
-    var resolvedProperties = ((_a = objects[0]) !== null && _a !== void 0 ? _a : {});
-    var resolvedOptions = ((_b = objects[1]) !== null && _b !== void 0 ? _b : {});
-    return [
-        resolvedCategory,
-        resolvedName,
-        resolvedProperties,
-        resolvedOptions,
-        resolvedCallback,
-    ];
-}
-/**
- * Helper for group, identify methods
- */
-var resolveUserArguments = function (user) {
-    return function () {
-        var _a, _b, _c, _d, _e;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var id = null;
-        id = (_c = (_a = args.find(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isString)) !== null && _a !== void 0 ? _a : (_b = args.find(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isNumber)) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : user.id();
-        var objects = args.filter(function (obj) {
-            if (id === null) {
-                return (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(obj);
-            }
-            return (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(obj) || obj === null;
-        });
-        var traits = ((_d = objects[0]) !== null && _d !== void 0 ? _d : {});
-        var opts = ((_e = objects[1]) !== null && _e !== void 0 ? _e : {});
-        var resolvedCallback = args.find(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isFunction);
-        return [id, traits, opts, resolvedCallback];
-    };
-};
-/**
- * Helper for alias method
- */
-function resolveAliasArguments(to, from, options, callback) {
-    if ((0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isNumber)(to))
-        to = to.toString(); // Legacy behaviour - allow integers for alias calls
-    if ((0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isNumber)(from))
-        from = from.toString();
-    var args = [to, from, options, callback];
-    var _a = args.filter(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isString), _b = _a[0], aliasTo = _b === void 0 ? to : _b, _c = _a[1], aliasFrom = _c === void 0 ? null : _c;
-    var _d = args.filter(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)[0], opts = _d === void 0 ? {} : _d;
-    var resolvedCallback = args.find(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.isFunction);
-    return [aliasTo, aliasFrom, opts, resolvedCallback];
-}
-
-
-/***/ }),
-
-/***/ 1444:
-/*!**********************************!*\
-  !*** ./src/core/buffer/index.ts ***!
-  \**********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AnalyticsBuffered": function() { return /* binding */ AnalyticsBuffered; },
-/* harmony export */   "PreInitMethodCallBuffer": function() { return /* binding */ PreInitMethodCallBuffer; },
-/* harmony export */   "callAnalyticsMethod": function() { return /* binding */ callAnalyticsMethod; },
-/* harmony export */   "flushAddSourceMiddleware": function() { return /* binding */ flushAddSourceMiddleware; },
-/* harmony export */   "flushAnalyticsCallsInNewTask": function() { return /* binding */ flushAnalyticsCallsInNewTask; },
-/* harmony export */   "flushOn": function() { return /* binding */ flushOn; },
-/* harmony export */   "flushSetAnonymousID": function() { return /* binding */ flushSetAnonymousID; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lib_is_thenable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/is-thenable */ 8580);
-/* harmony import */ var _generated_version__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../generated/version */ 4278);
-
-
-
-var flushSyncAnalyticsCalls = function (name, analytics, buffer) {
-    buffer.getCalls(name).forEach(function (c) {
-        // While the underlying methods are synchronous, the callAnalyticsMethod returns a promise,
-        // which normalizes success and error states between async and non-async methods, with no perf penalty.
-        callAnalyticsMethod(analytics, c).catch(console.error);
-    });
-};
-var flushAddSourceMiddleware = function (analytics, buffer) { return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(void 0, void 0, void 0, function () {
-    var _i, _a, c;
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _i = 0, _a = buffer.getCalls('addSourceMiddleware');
-                _b.label = 1;
-            case 1:
-                if (!(_i < _a.length)) return [3 /*break*/, 4];
-                c = _a[_i];
-                return [4 /*yield*/, callAnalyticsMethod(analytics, c).catch(console.error)];
-            case 2:
-                _b.sent();
-                _b.label = 3;
-            case 3:
-                _i++;
-                return [3 /*break*/, 1];
-            case 4: return [2 /*return*/];
-        }
-    });
-}); };
-var flushOn = flushSyncAnalyticsCalls.bind(undefined, 'on');
-var flushSetAnonymousID = flushSyncAnalyticsCalls.bind(undefined, 'setAnonymousId');
-var flushAnalyticsCallsInNewTask = function (analytics, buffer) {
-    buffer.toArray().forEach(function (m) {
-        setTimeout(function () {
-            callAnalyticsMethod(analytics, m).catch(console.error);
-        }, 0);
-    });
-};
-/**
- *  Represents any and all the buffered method calls that occurred before initialization.
- */
-var PreInitMethodCallBuffer = /** @class */ (function () {
-    function PreInitMethodCallBuffer() {
-        this._value = {};
-    }
-    PreInitMethodCallBuffer.prototype.toArray = function () {
-        var _a;
-        return (_a = []).concat.apply(_a, Object.values(this._value));
-    };
-    PreInitMethodCallBuffer.prototype.getCalls = function (methodName) {
-        var _a;
-        return ((_a = this._value[methodName]) !== null && _a !== void 0 ? _a : []);
-    };
-    PreInitMethodCallBuffer.prototype.push = function () {
-        var _this = this;
-        var calls = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            calls[_i] = arguments[_i];
-        }
-        calls.forEach(function (call) {
-            if (_this._value[call.method]) {
-                _this._value[call.method].push(call);
-            }
-            else {
-                _this._value[call.method] = [call];
-            }
-        });
-        return this;
-    };
-    PreInitMethodCallBuffer.prototype.clear = function () {
-        this._value = {};
-        return this;
-    };
-    return PreInitMethodCallBuffer;
-}());
-
-/**
- *  Call method and mark as "called"
- *  This function should never throw an error
- */
-function callAnalyticsMethod(analytics, call) {
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-        var result, err_1;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    if (call.called) {
-                        return [2 /*return*/, undefined];
-                    }
-                    call.called = true;
-                    result = analytics[call.method].apply(analytics, call.args);
-                    if (!(0,_lib_is_thenable__WEBPACK_IMPORTED_MODULE_1__.isThenable)(result)) return [3 /*break*/, 2];
-                    // do not defer for non-async methods
-                    return [4 /*yield*/, result];
-                case 1:
-                    // do not defer for non-async methods
-                    _a.sent();
-                    _a.label = 2;
-                case 2:
-                    call.resolve(result);
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    call.reject(err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
-}
-var AnalyticsBuffered = /** @class */ (function () {
-    function AnalyticsBuffered(loader) {
-        var _this = this;
-        this._preInitBuffer = new PreInitMethodCallBuffer();
-        //   trackSubmit = this._createMethod('trackSubmit')
-        //   trackClick = this._createMethod('trackClick')
-        //   trackLink = this._createMethod('trackLink')
-        //   pageView = this._createMethod('pageview')
-        //   identify = this._createMethod('identify')
-        //   reset = this._createMethod('reset')
-        //   group = this._createMethod('group') as AnalyticsBrowserCore['group']
-        //   track = this._createMethod('track')
-        this.track = function () { console.log('core.buffer.not.implemented.track'); };
-        //   ready = this._createMethod('ready')
-        //   alias = this._createMethod('alias')
-        //   debug = this._createChainableMethod('debug')
-        //   page = this._createMethod('page')
-        this.page = function () { console.log('core.buffer.not.implemented.page'); };
-        //   once = this._createChainableMethod('once')
-        //   off = this._createChainableMethod('off')
-        //   on = this._createChainableMethod('on')
-        //   addSourceMiddleware = this._createMethod('addSourceMiddleware')
-        //   setAnonymousId = this._createMethod('setAnonymousId')
-        //   addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
-        //   screen = this._createMethod('screen')
-        //   register = this._createMethod('register')
-        this.register = function () { console.log('core.buffer.not.implemented.register'); return Promise.resolve(); };
-        //   deregister = this._createMethod('deregister')
-        //   user = this._createMethod('user')
-        this.VERSION = _generated_version__WEBPACK_IMPORTED_MODULE_2__.version;
-        this._promise = loader(this._preInitBuffer);
-        this._promise
-            .then(function (_a) {
-            var ajs = _a[0], ctx = _a[1];
-            _this.instance = ajs;
-            _this.ctx = ctx;
-        })
-            .catch(function () {
-            // intentionally do nothing...
-            // this result of this promise will be caught by the 'catch' block on this class.
-        });
-    }
-    AnalyticsBuffered.prototype.then = function () {
-        var _a;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (_a = this._promise).then.apply(_a, args);
-    };
-    AnalyticsBuffered.prototype.catch = function () {
-        var _a;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (_a = this._promise).catch.apply(_a, args);
-    };
-    AnalyticsBuffered.prototype.finally = function () {
-        var _a;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (_a = this._promise).finally.apply(_a, args);
-    };
-    return AnalyticsBuffered;
-}());
-
-
-
-/***/ }),
-
-/***/ 8461:
-/*!************************************!*\
-  !*** ./src/core/buffer/snippet.ts ***!
-  \************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "popSnippetWindowBuffer": function() { return /* binding */ popSnippetWindowBuffer; },
-/* harmony export */   "transformSnippetCall": function() { return /* binding */ transformSnippetCall; }
-/* harmony export */ });
-function transformSnippetCall(_a) {
-    var methodName = _a[0], args = _a.slice(1);
-    return {
-        method: methodName,
-        resolve: function () { },
-        reject: console.error,
-        args: args,
-        called: false,
-    };
-}
-var normalizeSnippetBuffer = function (buffer) {
-    return buffer.map(transformSnippetCall);
-};
-/**
- * Fetch the buffered method calls from the window object and normalize them.
- * This removes existing buffered calls from the window object.
- */
-var popSnippetWindowBuffer = function () {
-    // @ts-ignore
-    var wa = window.analytics;
-    if (!Array.isArray(wa))
-        return [];
-    var buffered = wa.splice(0, wa.length);
-    // @ts-ignore
-    return normalizeSnippetBuffer(buffered);
-};
-
-
-/***/ }),
-
-/***/ 94:
-/*!**************************************!*\
-  !*** ./src/core/connection/index.ts ***!
-  \**************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "isOffline": function() { return /* binding */ isOffline; },
-/* harmony export */   "isOnline": function() { return /* binding */ isOnline; }
-/* harmony export */ });
-// import { isBrowser } from '../environment'
-function isOnline() {
-    // if (isBrowser()) {
-    return window.navigator.onLine;
-    // }
-    // return true
-}
-function isOffline() {
-    return !isOnline();
-}
-
-
-/***/ }),
-
-/***/ 4328:
-/*!*************************************!*\
-  !*** ./src/core/constants/index.ts ***!
-  \*************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "SEGMENT_API_HOST": function() { return /* binding */ SEGMENT_API_HOST; }
-/* harmony export */ });
-var SEGMENT_API_HOST = 'api.segment.io/v1';
-
-
-/***/ }),
-
-/***/ 8404:
-/*!***********************************!*\
-  !*** ./src/core/context/index.ts ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Context": function() { return /* binding */ Context; },
-/* harmony export */   "ContextCancelation": function() { return /* reexport safe */ _segment_analytics_core__WEBPACK_IMPORTED_MODULE_2__.ContextCancelation; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @segment/analytics-core */ 7920);
-/* harmony import */ var _stats__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../stats */ 6218);
-
-
-
-var Context = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(Context, _super);
-    function Context(event, id) {
-        return _super.call(this, event, id, new _stats__WEBPACK_IMPORTED_MODULE_1__.Stats()) || this;
-    }
-    Context.system = function () {
-        return new this({ type: 'track', event: 'system' });
-    };
-    return Context;
-}(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_2__.CoreContext));
-
-
-
-
-/***/ }),
-
-/***/ 6513:
-/*!**********************************!*\
-  !*** ./src/core/events/index.ts ***!
-  \**********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "EventFactory": function() { return /* binding */ EventFactory; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lukeed_uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @lukeed/uuid */ 7831);
-/* harmony import */ var dset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dset */ 380);
-/* harmony import */ var spark_md5__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! spark-md5 */ 4791);
-/* harmony import */ var spark_md5__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(spark_md5__WEBPACK_IMPORTED_MODULE_2__);
-
-
-
-
-
-var EventFactory = /** @class */ (function () {
-    function EventFactory(user) {
-        this.user = user;
-    }
-    EventFactory.prototype.track = function (event, properties, options, globalIntegrations) {
-        return this.normalize((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, this.baseEvent()), { event: event, type: 'track', properties: properties, options: (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, options), integrations: (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, globalIntegrations) }));
-    };
-    EventFactory.prototype.page = function (category, page, properties, options, globalIntegrations) {
-        var event = {
-            type: 'page',
-            properties: (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, properties),
-            options: (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, options),
-            integrations: (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, globalIntegrations),
-        };
-        if (category !== null) {
-            event.category = category;
-            event.properties.category = category;
-        }
-        if (page !== null) {
-            event.name = page;
-        }
-        return this.normalize((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, this.baseEvent()), event));
-    };
-    // screen(
-    //   category: string | null,
-    //   screen: string | null,
-    //   properties?: EventProperties,
-    //   options?: Options,
-    //   globalIntegrations?: Integrations
-    // ): SegmentEvent {
-    //   const event: Partial<SegmentEvent> = {
-    //     type: 'screen' as const,
-    //     properties: { ...properties },
-    //     options: { ...options },
-    //     integrations: { ...globalIntegrations },
-    //   }
-    //   if (category !== null) {
-    //     event.category = category
-    //   }
-    //   if (screen !== null) {
-    //     event.name = screen
-    //   }
-    //   return this.normalize({
-    //     ...this.baseEvent(),
-    //     ...event,
-    //   } as SegmentEvent)
-    // }
-    // identify(
-    //   userId: ID,
-    //   traits?: Traits,
-    //   options?: Options,
-    //   globalIntegrations?: Integrations
-    // ): SegmentEvent {
-    //   return this.normalize({
-    //     ...this.baseEvent(),
-    //     type: 'identify' as const,
-    //     userId,
-    //     traits,
-    //     options: { ...options },
-    //     integrations: { ...globalIntegrations },
-    //   })
-    // }
-    // group(
-    //   groupId: ID,
-    //   traits?: Traits,
-    //   options?: Options,
-    //   globalIntegrations?: Integrations
-    // ): SegmentEvent {
-    //   return this.normalize({
-    //     ...this.baseEvent(),
-    //     type: 'group' as const,
-    //     traits,
-    //     options: { ...options },
-    //     integrations: { ...globalIntegrations },
-    //     groupId,
-    //   })
-    // }
-    // alias(
-    //   to: string,
-    //   from: string | null,
-    //   options?: Options,
-    //   globalIntegrations?: Integrations
-    // ): SegmentEvent {
-    //   const base: Partial<SegmentEvent> = {
-    //     userId: to,
-    //     type: 'alias' as const,
-    //     options: { ...options },
-    //     integrations: { ...globalIntegrations },
-    //   }
-    //   if (from !== null) {
-    //     base.previousId = from
-    //   }
-    //   if (to === undefined) {
-    //     return this.normalize({
-    //       ...base,
-    //       ...this.baseEvent(),
-    //     } as SegmentEvent)
-    //   }
-    //   return this.normalize({
-    //     ...this.baseEvent(),
-    //     ...base,
-    //   } as SegmentEvent)
-    // }
-    EventFactory.prototype.baseEvent = function () {
-        var base = {
-            integrations: {},
-            options: {},
-        };
-        var user = this.user;
-        if (user.id()) {
-            base.userId = user.id();
-        }
-        if (user.anonymousId()) {
-            base.anonymousId = user.anonymousId();
-        }
-        return base;
-    };
-    /**
-     * Builds the context part of an event based on "foreign" keys that
-     * are provided in the `Options` parameter for an Event
-     */
-    EventFactory.prototype.context = function (event) {
-        var _a, _b, _c;
-        var optionsKeys = ['integrations', 'anonymousId', 'timestamp', 'userId'];
-        var options = (_a = event.options) !== null && _a !== void 0 ? _a : {};
-        delete options['integrations'];
-        var providedOptionsKeys = Object.keys(options);
-        var context = (_c = (_b = event.options) === null || _b === void 0 ? void 0 : _b.context) !== null && _c !== void 0 ? _c : {};
-        var overrides = {};
-        providedOptionsKeys.forEach(function (key) {
-            if (key === 'context') {
-                return;
-            }
-            if (optionsKeys.includes(key)) {
-                (0,dset__WEBPACK_IMPORTED_MODULE_1__.dset)(overrides, key, options[key]);
-            }
-            else {
-                (0,dset__WEBPACK_IMPORTED_MODULE_1__.dset)(context, key, options[key]);
-            }
-        });
-        return [context, overrides];
-    };
-    EventFactory.prototype.normalize = function (event) {
-        var _a, _b, _c;
-        // set anonymousId globally if we encounter an override
-        //segment.com/docs/connections/sources/catalog/libraries/website/javascript/identity/#override-the-anonymous-id-using-the-options-object
-        ((_a = event.options) === null || _a === void 0 ? void 0 : _a.anonymousId) &&
-            this.user.anonymousId(event.options.anonymousId);
-        var integrationBooleans = Object.keys((_b = event.integrations) !== null && _b !== void 0 ? _b : {}).reduce(function (integrationNames, name) {
-            var _a;
-            var _b;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, integrationNames), (_a = {}, _a[name] = Boolean((_b = event.integrations) === null || _b === void 0 ? void 0 : _b[name]), _a));
-        }, {});
-        // This is pretty trippy, but here's what's going on:
-        // - a) We don't pass initial integration options as part of the event, only if they're true or false
-        // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
-        // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-        var allIntegrations = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, integrationBooleans), (_c = event.options) === null || _c === void 0 ? void 0 : _c.integrations);
-        var _d = this.context(event), context = _d[0], overrides = _d[1];
-        var options = event.options, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__rest)(event, ["options"]);
-        var body = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({ timestamp: new Date() }, rest), { context: context, integrations: allIntegrations }), overrides);
-        var messageId = 'ajs-next-' + spark_md5__WEBPACK_IMPORTED_MODULE_2___default().hash(JSON.stringify(body) + (0,_lukeed_uuid__WEBPACK_IMPORTED_MODULE_0__.v4)());
-        var evt = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_3__.__assign)({}, body), { messageId: messageId });
-        return evt;
-    };
-    return EventFactory;
-}());
-
-
-
-/***/ }),
-
-/***/ 9778:
-/*!*************************************!*\
-  !*** ./src/core/inspector/index.ts ***!
-  \*************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "attachInspector": function() { return /* binding */ attachInspector; }
-/* harmony export */ });
-/* harmony import */ var _lib_get_global__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/get-global */ 3744);
-var _a;
-var _b;
-
-var env = (0,_lib_get_global__WEBPACK_IMPORTED_MODULE_0__.getGlobal)();
-// The code below assumes the inspector extension will use Object.assign
-// to add the inspect interface on to this object reference (unless the
-// extension code ran first and has already set up the variable)
-var inspectorHost = ((_a = (_b = env)['__SEGMENT_INSPECTOR__']) !== null && _a !== void 0 ? _a : (_b['__SEGMENT_INSPECTOR__'] = {}));
-var attachInspector = function (analytics) { var _a; return (_a = inspectorHost.attach) === null || _a === void 0 ? void 0 : _a.call(inspectorHost, analytics); };
-
-
-/***/ }),
-
-/***/ 6863:
-/*!*************************************************************!*\
-  !*** ./src/core/query-string/gracefulDecodeURIComponent.ts ***!
-  \*************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "gracefulDecodeURIComponent": function() { return /* binding */ gracefulDecodeURIComponent; }
-/* harmony export */ });
-/**
- * Tries to gets the unencoded version of an encoded component of a
- * Uniform Resource Identifier (URI). If input string is malformed,
- * returns it back as-is.
- *
- * Note: All occurences of the `+` character become ` ` (spaces).
- **/
-function gracefulDecodeURIComponent(encodedURIComponent) {
-    try {
-        return decodeURIComponent(encodedURIComponent.replace(/\+/g, ' '));
-    }
-    catch (_a) {
-        return encodedURIComponent;
-    }
-}
-
-
-/***/ }),
-
-/***/ 7112:
-/*!***************************************!*\
-  !*** ./src/core/queue/event-queue.ts ***!
-  \***************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "EventQueue": function() { return /* binding */ EventQueue; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lib_priority_queue_persisted__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/priority-queue/persisted */ 3061);
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @segment/analytics-core */ 51);
-/* harmony import */ var _connection__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../connection */ 94);
-
-
-
-
-var EventQueue = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(EventQueue, _super);
-    function EventQueue(priorityQueue) {
-        return _super.call(this, priorityQueue !== null && priorityQueue !== void 0 ? priorityQueue : new _lib_priority_queue_persisted__WEBPACK_IMPORTED_MODULE_1__.PersistedPriorityQueue(4, 'event-queue')) || this;
-    }
-    EventQueue.prototype.flush = function () {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                if ((0,_connection__WEBPACK_IMPORTED_MODULE_2__.isOffline)())
-                    return [2 /*return*/, []];
-                return [2 /*return*/, _super.prototype.flush.call(this)];
-            });
-        });
-    };
-    return EventQueue;
-}(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_3__.CoreEventQueue));
-
-
-
-/***/ }),
-
-/***/ 6218:
-/*!*********************************!*\
-  !*** ./src/core/stats/index.ts ***!
-  \*********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Stats": function() { return /* binding */ Stats; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @segment/analytics-core */ 417);
-/* harmony import */ var _remote_metrics__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./remote-metrics */ 449);
-
-
-
-var remoteMetrics;
-var Stats = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(Stats, _super);
-    function Stats() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Stats.initRemoteMetrics = function (options) {
-        remoteMetrics = new _remote_metrics__WEBPACK_IMPORTED_MODULE_1__.RemoteMetrics(options);
-    };
-    Stats.prototype.increment = function (metric, by, tags) {
-        _super.prototype.increment.call(this, metric, by, tags);
-        remoteMetrics === null || remoteMetrics === void 0 ? void 0 : remoteMetrics.increment(metric, tags !== null && tags !== void 0 ? tags : []);
-    };
-    return Stats;
-}(_segment_analytics_core__WEBPACK_IMPORTED_MODULE_2__.CoreStats));
-
-
-
-/***/ }),
-
-/***/ 449:
-/*!******************************************!*\
-  !*** ./src/core/stats/remote-metrics.ts ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "RemoteMetrics": function() { return /* binding */ RemoteMetrics; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lib_fetch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../lib/fetch */ 7959);
-/* harmony import */ var _generated_version__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../generated/version */ 4278);
-/* harmony import */ var _plugins_segmentio_normalize__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../plugins/segmentio/normalize */ 719);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants */ 4328);
-
-
-
-
-
-var createRemoteMetric = function (metric, tags, versionType) {
-    var formattedTags = tags.reduce(function (acc, t) {
-        var _a = t.split(':'), k = _a[0], v = _a[1];
-        acc[k] = v;
-        return acc;
-    }, {});
-    return {
-        type: 'Counter',
-        metric: metric,
-        value: 1,
-        tags: (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? "next-".concat(_generated_version__WEBPACK_IMPORTED_MODULE_1__.version) : "npm:next-".concat(_generated_version__WEBPACK_IMPORTED_MODULE_1__.version) }),
-    };
-};
-function logError(err) {
-    console.error('Error sending segment performance metrics', err);
-}
-var RemoteMetrics = /** @class */ (function () {
-    function RemoteMetrics(options) {
-        var _this = this;
-        var _a, _b, _c, _d;
-        this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : _constants__WEBPACK_IMPORTED_MODULE_2__.SEGMENT_API_HOST;
-        this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
-        this.flushTimer = (_c = options === null || options === void 0 ? void 0 : options.flushTimer) !== null && _c !== void 0 ? _c : 30 * 1000; /* 30s */
-        this.maxQueueSize = (_d = options === null || options === void 0 ? void 0 : options.maxQueueSize) !== null && _d !== void 0 ? _d : 20;
-        this.queue = [];
-        if (this.sampleRate > 0) {
-            var flushing_1 = false;
-            var run_1 = function () {
-                if (flushing_1) {
-                    return;
-                }
-                flushing_1 = true;
-                _this.flush().catch(logError);
-                flushing_1 = false;
-                setTimeout(run_1, _this.flushTimer);
-            };
-            run_1();
-        }
-    }
-    RemoteMetrics.prototype.increment = function (metric, tags) {
-        // All metrics are part of an allow list in Tracking API
-        if (!metric.includes('analytics_js.')) {
-            return;
-        }
-        // /m doesn't like empty tags
-        if (tags.length === 0) {
-            return;
-        }
-        if (Math.random() > this.sampleRate) {
-            return;
-        }
-        if (this.queue.length >= this.maxQueueSize) {
-            return;
-        }
-        var remoteMetric = createRemoteMetric(metric, tags, (0,_plugins_segmentio_normalize__WEBPACK_IMPORTED_MODULE_3__.getVersionType)());
-        this.queue.push(remoteMetric);
-        if (metric.includes('error')) {
-            this.flush().catch(logError);
-        }
-    };
-    RemoteMetrics.prototype.flush = function () {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-            var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.queue.length <= 0) {
-                            return [2 /*return*/];
-                        }
-                        return [4 /*yield*/, this.send().catch(function (error) {
-                                logError(error);
-                                _this.sampleRate = 0;
-                            })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    RemoteMetrics.prototype.send = function () {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-            var payload, headers, url;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                payload = { series: this.queue };
-                this.queue = [];
-                headers = { 'Content-Type': 'text/plain' };
-                url = "https://".concat(this.host, "/m");
-                return [2 /*return*/, (0,_lib_fetch__WEBPACK_IMPORTED_MODULE_4__.fetch)(url, {
-                        headers: headers,
-                        body: JSON.stringify(payload),
-                        method: 'POST',
-                    })];
-            });
-        });
-    };
-    return RemoteMetrics;
-}());
-
-
-
-/***/ }),
-
-/***/ 8166:
-/*!********************************!*\
-  !*** ./src/core/user/index.ts ***!
-  \********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Cookie": function() { return /* binding */ Cookie; },
-/* harmony export */   "Group": function() { return /* binding */ Group; },
-/* harmony export */   "LocalStorage": function() { return /* binding */ LocalStorage; },
-/* harmony export */   "UniversalStorage": function() { return /* binding */ UniversalStorage; },
-/* harmony export */   "User": function() { return /* binding */ User; },
-/* harmony export */   "getAvailableStorageOptions": function() { return /* binding */ getAvailableStorageOptions; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lukeed_uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @lukeed/uuid */ 7831);
-/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! js-cookie */ 1805);
-/* harmony import */ var _tld__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./tld */ 1268);
-/* harmony import */ var _lib_bind_all__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../lib/bind-all */ 8232);
-
-
-
-
-
-var defaults = {
-    persist: true,
-    cookie: {
-        key: 'ajs_user_id',
-        oldKey: 'ajs_user',
-    },
-    localStorage: {
-        key: 'ajs_user_traits',
-    },
-};
-var Store = /** @class */ (function () {
-    function Store() {
-        this.cache = {};
-    }
-    Store.prototype.get = function (key) {
-        return this.cache[key];
-    };
-    Store.prototype.set = function (key, value) {
-        this.cache[key] = value;
-    };
-    Store.prototype.remove = function (key) {
-        delete this.cache[key];
-    };
-    Object.defineProperty(Store.prototype, "type", {
-        get: function () {
-            return 'memory';
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return Store;
-}());
-var ONE_YEAR = 365;
-var Cookie = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__extends)(Cookie, _super);
-    function Cookie(options) {
-        if (options === void 0) { options = Cookie.defaults; }
-        var _this = _super.call(this) || this;
-        _this.options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_2__.__assign)({}, Cookie.defaults), options);
-        return _this;
-    }
-    Cookie.available = function () {
-        var cookieEnabled = window.navigator.cookieEnabled;
-        if (!cookieEnabled) {
-            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set('ajs:cookies', 'test');
-            cookieEnabled = document.cookie.includes('ajs:cookies');
-            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('ajs:cookies');
-        }
-        return cookieEnabled;
-    };
-    Object.defineProperty(Cookie, "defaults", {
-        get: function () {
-            return {
-                maxage: ONE_YEAR,
-                domain: (0,_tld__WEBPACK_IMPORTED_MODULE_3__.tld)(window.location.href),
-                path: '/',
-                sameSite: 'Lax',
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Cookie.prototype.opts = function () {
-        return {
-            sameSite: this.options.sameSite,
-            expires: this.options.maxage,
-            domain: this.options.domain,
-            path: this.options.path,
-            secure: this.options.secure,
-        };
-    };
-    Cookie.prototype.get = function (key) {
-        try {
-            var value = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get(key);
-            if (!value) {
-                return null;
-            }
-            try {
-                return JSON.parse(value);
-            }
-            catch (e) {
-                return value;
-            }
-        }
-        catch (e) {
-            return null;
-        }
-    };
-    Cookie.prototype.set = function (key, value) {
-        if (typeof value === 'string') {
-            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set(key, value, this.opts());
-        }
-        else if (value === null) {
-            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove(key, this.opts());
-        }
-        else {
-            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set(key, JSON.stringify(value), this.opts());
-        }
-    };
-    Cookie.prototype.remove = function (key) {
-        return js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove(key, this.opts());
-    };
-    Object.defineProperty(Cookie.prototype, "type", {
-        get: function () {
-            return 'cookie';
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return Cookie;
-}(Store));
-
-var localStorageWarning = function (key, state) {
-    console.warn("Unable to access ".concat(key, ", localStorage may be ").concat(state));
-};
-var LocalStorage = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__extends)(LocalStorage, _super);
-    function LocalStorage() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    LocalStorage.available = function () {
-        var test = 'test';
-        try {
-            localStorage.setItem(test, test);
-            localStorage.removeItem(test);
-            return true;
-        }
-        catch (e) {
-            return false;
-        }
-    };
-    LocalStorage.prototype.get = function (key) {
-        try {
-            var val = localStorage.getItem(key);
-            if (val === null) {
-                return null;
-            }
-            try {
-                return JSON.parse(val);
-            }
-            catch (e) {
-                return val;
-            }
-        }
-        catch (err) {
-            localStorageWarning(key, 'unavailable');
-            return null;
-        }
-    };
-    LocalStorage.prototype.set = function (key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
-        catch (_a) {
-            localStorageWarning(key, 'full');
-        }
-    };
-    LocalStorage.prototype.remove = function (key) {
-        try {
-            return localStorage.removeItem(key);
-        }
-        catch (err) {
-            localStorageWarning(key, 'unavailable');
-        }
-    };
-    Object.defineProperty(LocalStorage.prototype, "type", {
-        get: function () {
-            return 'localStorage';
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return LocalStorage;
-}(Store));
-
-var UniversalStorage = /** @class */ (function () {
-    function UniversalStorage(stores, storageOptions) {
-        this.storageOptions = storageOptions;
-        this.enabledStores = stores;
-    }
-    UniversalStorage.prototype.getStores = function (storeTypes) {
-        var _this = this;
-        var stores = [];
-        this.enabledStores
-            .filter(function (i) { return !storeTypes || (storeTypes === null || storeTypes === void 0 ? void 0 : storeTypes.includes(i)); })
-            .forEach(function (storeType) {
-            var storage = _this.storageOptions[storeType];
-            if (storage !== undefined) {
-                stores.push(storage);
-            }
-        });
-        return stores;
-    };
-    /*
-      This is to support few scenarios where:
-      - value exist in one of the stores ( as a result of other stores being cleared from browser ) and we want to resync them
-      - read values in AJS 1.0 format ( for customers after 1.0 --> 2.0 migration ) and then re-write them in AJS 2.0 format
-    */
-    /**
-     * get value for the key from the stores. it will pick the first value found in the stores, and then sync the value to all the stores
-     * if the found value is a number, it will be converted to a string. this is to support legacy behavior that existed in AJS 1.0
-     * @param key key for the value to be retrieved
-     * @param storeTypes optional array of store types to be used for performing get and sync
-     * @returns value for the key or null if not found
-     */
-    UniversalStorage.prototype.getAndSync = function (key, storeTypes) {
-        var val = this.get(key, storeTypes);
-        // legacy behavior, getAndSync can change the type of a value from number to string (AJS 1.0 stores numerical values as a number)
-        var coercedValue = (typeof val === 'number' ? val.toString() : val);
-        this.set(key, coercedValue, storeTypes);
-        return coercedValue;
-    };
-    /**
-     * get value for the key from the stores. it will return the first value found in the stores
-     * @param key key for the value to be retrieved
-     * @param storeTypes optional array of store types to be used for retrieving the value
-     * @returns value for the key or null if not found
-     */
-    UniversalStorage.prototype.get = function (key, storeTypes) {
-        var val = null;
-        for (var _i = 0, _a = this.getStores(storeTypes); _i < _a.length; _i++) {
-            var store = _a[_i];
-            val = store.get(key);
-            if (val) {
-                return val;
-            }
-        }
-        return null;
-    };
-    /**
-     * it will set the value for the key in all the stores
-     * @param key key for the value to be stored
-     * @param value value to be stored
-     * @param storeTypes optional array of store types to be used for storing the value
-     * @returns value that was stored
-     */
-    UniversalStorage.prototype.set = function (key, value, storeTypes) {
-        for (var _i = 0, _a = this.getStores(storeTypes); _i < _a.length; _i++) {
-            var store = _a[_i];
-            store.set(key, value);
-        }
-    };
-    /**
-     * remove the value for the key from all the stores
-     * @param key key for the value to be removed
-     * @param storeTypes optional array of store types to be used for removing the value
-     */
-    UniversalStorage.prototype.clear = function (key, storeTypes) {
-        for (var _i = 0, _a = this.getStores(storeTypes); _i < _a.length; _i++) {
-            var store = _a[_i];
-            store.remove(key);
-        }
-    };
-    return UniversalStorage;
-}());
-
-function getAvailableStorageOptions(cookieOptions) {
-    return {
-        cookie: Cookie.available() ? new Cookie(cookieOptions) : undefined,
-        localStorage: LocalStorage.available() ? new LocalStorage() : undefined,
-        memory: new Store(),
-    };
-}
-var User = /** @class */ (function () {
-    function User(options, cookieOptions) {
-        if (options === void 0) { options = defaults; }
-        var _this = this;
-        var _a, _b, _c, _d;
-        this.options = {};
-        this.id = function (id) {
-            if (_this.options.disable) {
-                return null;
-            }
-            var prevId = _this.identityStore.getAndSync(_this.idKey);
-            if (id !== undefined) {
-                _this.identityStore.set(_this.idKey, id);
-                var changingIdentity = id !== prevId && prevId !== null && id !== null;
-                if (changingIdentity) {
-                    _this.anonymousId(null);
-                }
-            }
-            var retId = _this.identityStore.getAndSync(_this.idKey);
-            if (retId)
-                return retId;
-            var retLeg = _this.legacyUserStore.get(defaults.cookie.oldKey);
-            return retLeg ? (typeof retLeg === 'object' ? retLeg.id : retLeg) : null;
-        };
-        // private legacySIO(): [string, string] | null {
-        //   const val = this.legacyUserStore.get('_sio') as string
-        //   if (!val) {
-        //     return null
-        //   }
-        //   const [anon, user] = val.split('----')
-        //   return [anon, user]
-        // }
-        this.anonymousId = function (id) {
-            if (_this.options.disable) {
-                return null;
-            }
-            if (id === undefined) {
-                // const val =
-                //   this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
-                var val = _this.identityStore.getAndSync(_this.anonKey);
-                if (val) {
-                    return val;
-                }
-            }
-            if (id === null) {
-                _this.identityStore.set(_this.anonKey, null);
-                return _this.identityStore.getAndSync(_this.anonKey);
-            }
-            _this.identityStore.set(_this.anonKey, id !== null && id !== void 0 ? id : (0,_lukeed_uuid__WEBPACK_IMPORTED_MODULE_0__.v4)());
-            return _this.identityStore.getAndSync(_this.anonKey);
-        };
-        this.traits = function (traits) {
-            var _a;
-            if (_this.options.disable) {
-                return;
-            }
-            if (traits === null) {
-                traits = {};
-            }
-            if (traits) {
-                _this.traitsStore.set(_this.traitsKey, traits !== null && traits !== void 0 ? traits : {});
-            }
-            return (_a = _this.traitsStore.get(_this.traitsKey)) !== null && _a !== void 0 ? _a : {};
-        };
-        this.options = options;
-        this.cookieOptions = cookieOptions;
-        this.idKey = (_b = (_a = options.cookie) === null || _a === void 0 ? void 0 : _a.key) !== null && _b !== void 0 ? _b : defaults.cookie.key;
-        this.traitsKey = (_d = (_c = options.localStorage) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : defaults.localStorage.key;
-        this.anonKey = 'ajs_anonymous_id';
-        var isDisabled = options.disable === true;
-        var shouldPersist = options.persist !== false;
-        var defaultStorageTargets = isDisabled
-            ? []
-            : shouldPersist
-                ? ['localStorage', 'cookie', 'memory']
-                : ['memory'];
-        var storageOptions = getAvailableStorageOptions(cookieOptions);
-        if (options.localStorageFallbackDisabled) {
-            defaultStorageTargets = defaultStorageTargets.filter(function (t) { return t !== 'localStorage'; });
-        }
-        this.identityStore = new UniversalStorage(defaultStorageTargets, storageOptions);
-        // using only cookies for legacy user store
-        this.legacyUserStore = new UniversalStorage(defaultStorageTargets.filter(function (t) { return t !== 'localStorage' && t !== 'memory'; }), storageOptions);
-        // using only localStorage / memory for traits store
-        this.traitsStore = new UniversalStorage(defaultStorageTargets.filter(function (t) { return t !== 'cookie'; }), storageOptions);
-        var legacyUser = this.legacyUserStore.get(defaults.cookie.oldKey);
-        if (legacyUser && typeof legacyUser === 'object') {
-            legacyUser.id && this.id(legacyUser.id);
-            legacyUser.traits && this.traits(legacyUser.traits);
-        }
-        (0,_lib_bind_all__WEBPACK_IMPORTED_MODULE_4__["default"])(this);
-    }
-    User.prototype.identify = function (id, traits) {
-        if (this.options.disable) {
-            return;
-        }
-        traits = traits !== null && traits !== void 0 ? traits : {};
-        var currentId = this.id();
-        if (currentId === null || currentId === id) {
-            traits = (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_2__.__assign)({}, this.traits()), traits);
-        }
-        if (id) {
-            this.id(id);
-        }
-        this.traits(traits);
-    };
-    User.prototype.logout = function () {
-        this.anonymousId(null);
-        this.id(null);
-        this.traits({});
-    };
-    User.prototype.reset = function () {
-        this.logout();
-        this.identityStore.clear(this.idKey);
-        this.identityStore.clear(this.anonKey);
-        this.traitsStore.clear(this.traitsKey);
-    };
-    User.prototype.load = function () {
-        return new User(this.options, this.cookieOptions);
-    };
-    User.prototype.save = function () {
-        return true;
-    };
-    User.defaults = defaults;
-    return User;
-}());
-
-var groupDefaults = {
-    persist: true,
-    cookie: {
-        key: 'ajs_group_id',
-    },
-    localStorage: {
-        key: 'ajs_group_properties',
-    },
-};
-var Group = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__extends)(Group, _super);
-    function Group(options, cookie) {
-        if (options === void 0) { options = groupDefaults; }
-        var _this = _super.call(this, options, cookie) || this;
-        _this.anonymousId = function (_id) {
-            return undefined;
-        };
-        (0,_lib_bind_all__WEBPACK_IMPORTED_MODULE_4__["default"])(_this);
-        return _this;
-    }
-    return Group;
-}(User));
-
-
-
-/***/ }),
-
-/***/ 1268:
-/*!******************************!*\
-  !*** ./src/core/user/tld.ts ***!
-  \******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "tld": function() { return /* binding */ tld; }
-/* harmony export */ });
-/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! js-cookie */ 1805);
-
-/**
- * Levels returns all levels of the given url.
- *
- * @param {string} url
- * @return {Array}
- * @api public
- */
-function levels(url) {
-    var host = url.hostname;
-    var parts = host.split('.');
-    var last = parts[parts.length - 1];
-    var levels = [];
-    // Ip address.
-    if (parts.length === 4 && parseInt(last, 10) > 0) {
-        return levels;
-    }
-    // Localhost.
-    if (parts.length <= 1) {
-        return levels;
-    }
-    // Create levels.
-    for (var i = parts.length - 2; i >= 0; --i) {
-        levels.push(parts.slice(i).join('.'));
-    }
-    return levels;
-}
-function parseUrl(url) {
-    try {
-        return new URL(url);
-    }
-    catch (_a) {
-        return;
-    }
-}
-function tld(url) {
-    var parsedUrl = parseUrl(url);
-    if (!parsedUrl)
-        return;
-    var lvls = levels(parsedUrl);
-    // Lookup the real top level one.
-    for (var i = 0; i < lvls.length; ++i) {
-        var cname = '__tld__';
-        var domain = lvls[i];
-        var opts = { domain: '.' + domain };
-        try {
-            // cookie access throw an error if the library is ran inside a sandboxed environment (e.g. sandboxed iframe)
-            js_cookie__WEBPACK_IMPORTED_MODULE_0__["default"].set(cname, '1', opts);
-            if (js_cookie__WEBPACK_IMPORTED_MODULE_0__["default"].get(cname)) {
-                js_cookie__WEBPACK_IMPORTED_MODULE_0__["default"].remove(cname, opts);
-                return domain;
-            }
-        }
-        catch (_) {
-            return;
-        }
-    }
-}
-
-
-/***/ }),
-
-/***/ 4278:
-/*!**********************************!*\
-  !*** ./src/generated/version.ts ***!
-  \**********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "version": function() { return /* binding */ version; }
-/* harmony export */ });
-// This file is generated.
-var version = '1.51.7';
-
-
-/***/ }),
-
-/***/ 8232:
-/*!*****************************!*\
-  !*** ./src/lib/bind-all.ts ***!
-  \*****************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ bindAll; }
-/* harmony export */ });
-function bindAll(obj) {
-    var proto = obj.constructor.prototype;
-    for (var _i = 0, _a = Object.getOwnPropertyNames(proto); _i < _a.length; _i++) {
-        var key = _a[_i];
-        if (key !== 'constructor') {
-            var desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, key);
-            if (!!desc && typeof desc.value === 'function') {
-                obj[key] = obj[key].bind(obj);
-            }
-        }
-    }
-    return obj;
-}
-
-
-/***/ }),
-
-/***/ 6022:
-/*!************************************!*\
-  !*** ./src/lib/create-deferred.ts ***!
-  \************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "createDeferred": function() { return /* binding */ createDeferred; }
-/* harmony export */ });
-/**
- * Return a promise that can be externally resolved
- */
-var createDeferred = function () {
-    var resolve;
-    var reject;
-    var promise = new Promise(function (_resolve, _reject) {
-        resolve = _resolve;
-        reject = _reject;
-    });
-    return {
-        resolve: resolve,
-        reject: reject,
-        promise: promise,
-    };
-};
-
-
-/***/ }),
-
-/***/ 7959:
-/*!**************************!*\
-  !*** ./src/lib/fetch.ts ***!
-  \**************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "fetch": function() { return /* binding */ fetch; }
-/* harmony export */ });
-/* harmony import */ var unfetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! unfetch */ 3721);
-/* harmony import */ var _get_global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./get-global */ 3744);
-
-
-/**
- * Wrapper around native `fetch` containing `unfetch` fallback.
- */
-var fetch = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    var global = (0,_get_global__WEBPACK_IMPORTED_MODULE_1__.getGlobal)();
-    return ((global && global.fetch) || unfetch__WEBPACK_IMPORTED_MODULE_0__["default"]).apply(void 0, args);
-};
-
-
-/***/ }),
-
-/***/ 3744:
-/*!*******************************!*\
-  !*** ./src/lib/get-global.ts ***!
-  \*******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getGlobal": function() { return /* binding */ getGlobal; }
-/* harmony export */ });
-// This an imperfect polyfill for globalThis
-var getGlobal = function () {
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
-    }
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    return null;
-};
-
-
-/***/ }),
-
-/***/ 8580:
-/*!********************************!*\
-  !*** ./src/lib/is-thenable.ts ***!
-  \********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "isThenable": function() { return /* binding */ isThenable; }
-/* harmony export */ });
-/**
- *  Check if  thenable
- *  (instanceof Promise doesn't respect realms)
- */
-var isThenable = function (value) {
-    return typeof value === 'object' &&
-        value !== null &&
-        'then' in value &&
-        typeof value.then === 'function';
-};
-
-
-/***/ }),
-
-/***/ 7070:
-/*!********************************!*\
-  !*** ./src/lib/load-script.ts ***!
-  \********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "loadScript": function() { return /* binding */ loadScript; },
-/* harmony export */   "unloadScript": function() { return /* binding */ unloadScript; }
-/* harmony export */ });
-function findScript(src) {
-    var scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
-    return scripts.find(function (s) { return s.src === src; });
-}
-function loadScript(src, attributes) {
-    var found = findScript(src);
-    if (found !== undefined) {
-        var status = found === null || found === void 0 ? void 0 : found.getAttribute('status');
-        if (status === 'loaded') {
-            return Promise.resolve(found);
-        }
-        if (status === 'loading') {
-            return new Promise(function (resolve, reject) {
-                found.addEventListener('load', function () { return resolve(found); });
-                found.addEventListener('error', function (err) { return reject(err); });
-            });
-        }
-    }
-    return new Promise(function (resolve, reject) {
-        var _a;
-        var script = window.document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = src;
-        script.async = true;
-        script.setAttribute('status', 'loading');
-        for (var _i = 0, _b = Object.entries(attributes !== null && attributes !== void 0 ? attributes : {}); _i < _b.length; _i++) {
-            var _c = _b[_i], k = _c[0], v = _c[1];
-            script.setAttribute(k, v);
-        }
-        script.onload = function () {
-            script.onerror = script.onload = null;
-            script.setAttribute('status', 'loaded');
-            resolve(script);
-        };
-        script.onerror = function () {
-            script.onerror = script.onload = null;
-            script.setAttribute('status', 'error');
-            reject(new Error("Failed to load ".concat(src)));
-        };
-        var tag = window.document.getElementsByTagName('script')[0];
-        (_a = tag.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, tag);
-    });
-}
-function unloadScript(src) {
-    var found = findScript(src);
-    if (found !== undefined) {
-        found.remove();
-    }
-    return Promise.resolve();
-}
-
-
-/***/ }),
-
-/***/ 5944:
-/*!***********************************!*\
-  !*** ./src/lib/merged-options.ts ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "mergedOptions": function() { return /* binding */ mergedOptions; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-
-/**
- * Merge legacy settings and initialized Integration option overrides.
- *
- * This will merge any options that were passed from initialization into
- * overrides for settings that are returned by the Segment CDN.
- *
- * i.e. this allows for passing options directly into destinations from
- * the Analytics constructor.
- */
-function mergedOptions(settings, options) {
-    var _a;
-    var optionOverrides = Object.entries((_a = options.integrations) !== null && _a !== void 0 ? _a : {}).reduce(function (overrides, _a) {
-        var _b, _c;
-        var integration = _a[0], options = _a[1];
-        if (typeof options === 'object') {
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, overrides), (_b = {}, _b[integration] = options, _b));
-        }
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, overrides), (_c = {}, _c[integration] = {}, _c));
-    }, {});
-    return Object.entries(settings.integrations).reduce(function (integrationSettings, _a) {
-        var _b;
-        var integration = _a[0], settings = _a[1];
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, integrationSettings), (_b = {}, _b[integration] = (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, settings), optionOverrides[integration]), _b));
-    }, {});
-}
-
-
-/***/ }),
-
-/***/ 7566:
-/*!******************************!*\
-  !*** ./src/lib/parse-cdn.ts ***!
-  \******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getCDN": function() { return /* binding */ getCDN; },
-/* harmony export */   "setGlobalCDNUrl": function() { return /* binding */ setGlobalCDNUrl; }
-/* harmony export */ });
-// import { embeddedWriteKey } from './embedded-write-key'
-// const analyticsScriptRegex =
-//   /(https:\/\/.*)\/analytics\.js\/v1\/(?:.*?)\/(?:platform|analytics.*)?/
-// const getCDNUrlFromScriptTag = (): string | undefined => {
-//   let cdn: string | undefined
-//   const scripts = Array.prototype.slice.call(
-//     document.querySelectorAll('script')
-//   )
-//   scripts.forEach((s) => {
-//     const src = s.getAttribute('src') ?? ''
-//     const result = analyticsScriptRegex.exec(src)
-//     if (result && result[1]) {
-//       cdn = result[1]
-//     }
-//   })
-//   return cdn
-// }
-var _globalCDN; // set globalCDN as in-memory singleton
-var getGlobalCDNUrl = function () {
-    var _a;
-    var result = _globalCDN !== null && _globalCDN !== void 0 ? _globalCDN : (_a = window.analytics) === null || _a === void 0 ? void 0 : _a._cdn;
-    return result;
-};
-var setGlobalCDNUrl = function (cdn) {
-    if (window.analytics) {
-        window.analytics._cdn = cdn;
-    }
-    _globalCDN = cdn;
-};
-var getCDN = function () {
-    var globalCdnUrl = getGlobalCDNUrl();
-    if (globalCdnUrl)
-        return globalCdnUrl;
-    // const cdnFromScriptTag = getCDNUrlFromScriptTag()
-    // if (cdnFromScriptTag) {
-    //   return cdnFromScriptTag
-    // } else {
-    // it's possible that the CDN is not found in the page because:
-    // - the script is loaded through a proxy
-    // - the script is removed after execution
-    // in this case, we fall back to the default Segment CDN
-    return "https://cdn.segment.com";
-    // }
-};
-// export const getNextIntegrationsURL = () => {
-//   const cdn = getCDN()
-//   return `${cdn}/next-integrations`
-// }
-// /**
-//  * Replaces the CDN URL in the script tag with the one from Analytics.js 1.0
-//  *
-//  * @returns the path to Analytics JS 1.0
-//  **/
-// export function getLegacyAJSPath(): string {
-//   const writeKey = embeddedWriteKey() ?? window.analytics._writeKey
-//   const scripts = Array.prototype.slice.call(
-//     document.querySelectorAll('script')
-//   )
-//   let path: string | undefined = undefined
-//   for (const s of scripts) {
-//     const src = s.getAttribute('src') ?? ''
-//     const result = analyticsScriptRegex.exec(src)
-//     if (result && result[1]) {
-//       path = src
-//       break
-//     }
-//   }
-//   if (path) {
-//     return path.replace('analytics.min.js', 'analytics.classic.js')
-//   }
-//   return `https://cdn.segment.com/analytics.js/v1/${writeKey}/analytics.classic.js`
-// }
-
-
-/***/ }),
-
-/***/ 2748:
-/*!*************************!*\
-  !*** ./src/lib/pick.ts ***!
-  \*************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "pick": function() { return /* binding */ pick; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-
-/**
- * @example
- * pick({ 'a': 1, 'b': '2', 'c': 3 }, ['a', 'c'])
- * => { 'a': 1, 'c': 3 }
- */
-var pick = function (object, keys) {
-    return Object.assign.apply(Object, (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__spreadArray)([{}], keys.map(function (key) {
-        var _a;
-        if (object && Object.prototype.hasOwnProperty.call(object, key)) {
-            return _a = {}, _a[key] = object[key], _a;
-        }
-    }), false));
-};
-
-
-/***/ }),
-
-/***/ 3061:
-/*!*********************************************!*\
-  !*** ./src/lib/priority-queue/persisted.ts ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PersistedPriorityQueue": function() { return /* binding */ PersistedPriorityQueue; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! . */ 3874);
-/* harmony import */ var _core_context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/context */ 8404);
-
-
-
-// import { isBrowser } from '../../core/environment'
-var loc = {
-    getItem: function () { },
-    setItem: function () { },
-    removeItem: function () { },
-};
-try {
-    loc = /* isBrowser() && */ window.localStorage ? window.localStorage : loc;
-}
-catch (err) {
-    console.warn('Unable to access localStorage', err);
-}
-function persisted(key) {
-    var items = loc.getItem(key);
-    return (items ? JSON.parse(items) : []).map(function (p) { return new _core_context__WEBPACK_IMPORTED_MODULE_0__.Context(p.event, p.id); });
-}
-function persistItems(key, items) {
-    var existing = persisted(key);
-    var all = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__spreadArray)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__spreadArray)([], items, true), existing, true);
-    var merged = all.reduce(function (acc, item) {
-        var _a;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)({}, acc), (_a = {}, _a[item.id] = item, _a));
-    }, {});
-    loc.setItem(key, JSON.stringify(Object.values(merged)));
-}
-function seen(key) {
-    var stored = loc.getItem(key);
-    return stored ? JSON.parse(stored) : {};
-}
-function persistSeen(key, memory) {
-    var stored = seen(key);
-    loc.setItem(key, JSON.stringify((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)({}, stored), memory)));
-}
-function remove(key) {
-    loc.removeItem(key);
-}
-var now = function () { return new Date().getTime(); };
-function mutex(key, onUnlock, attempt) {
-    if (attempt === void 0) { attempt = 0; }
-    var lockTimeout = 50;
-    var lockKey = "persisted-queue:v1:".concat(key, ":lock");
-    var expired = function (lock) { return new Date().getTime() > lock; };
-    var rawLock = loc.getItem(lockKey);
-    var lock = rawLock ? JSON.parse(rawLock) : null;
-    var allowed = lock === null || expired(lock);
-    if (allowed) {
-        loc.setItem(lockKey, JSON.stringify(now() + lockTimeout));
-        onUnlock();
-        loc.removeItem(lockKey);
-        return;
-    }
-    if (!allowed && attempt < 3) {
-        setTimeout(function () {
-            mutex(key, onUnlock, attempt + 1);
-        }, lockTimeout);
-    }
-    else {
-        console.error('Unable to retrieve lock');
-    }
-}
-var PersistedPriorityQueue = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__extends)(PersistedPriorityQueue, _super);
-    function PersistedPriorityQueue(maxAttempts, key) {
-        var _this = _super.call(this, maxAttempts, []) || this;
-        var itemsKey = "persisted-queue:v1:".concat(key, ":items");
-        var seenKey = "persisted-queue:v1:".concat(key, ":seen");
-        var saved = [];
-        var lastSeen = {};
-        mutex(key, function () {
-            try {
-                saved = persisted(itemsKey);
-                lastSeen = seen(seenKey);
-                remove(itemsKey);
-                remove(seenKey);
-                _this.queue = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__spreadArray)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__spreadArray)([], saved, true), _this.queue, true);
-                _this.seen = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)({}, lastSeen), _this.seen);
-            }
-            catch (err) {
-                console.error(err);
-            }
-        });
-        window.addEventListener('pagehide', function () {
-            // we deliberately want to use the less powerful 'pagehide' API to only persist on events where the analytics instance gets destroyed, and not on tab away.
-            if (_this.todo > 0) {
-                var items_1 = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__spreadArray)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__spreadArray)([], _this.queue, true), _this.future, true);
-                try {
-                    mutex(key, function () {
-                        persistItems(itemsKey, items_1);
-                        persistSeen(seenKey, _this.seen);
-                    });
-                }
-                catch (err) {
-                    console.error(err);
-                }
-            }
-        });
-        return _this;
-    }
-    return PersistedPriorityQueue;
-}(___WEBPACK_IMPORTED_MODULE_2__.PriorityQueue));
-
-
-
-/***/ }),
-
-/***/ 9950:
-/*!******************************!*\
-  !*** ./src/lib/to-facade.ts ***!
-  \******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "toFacade": function() { return /* binding */ toFacade; }
-/* harmony export */ });
-/* harmony import */ var _head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @head.js/analytics.js-facade */ 6445);
-/* harmony import */ var _head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0__);
-
-function toFacade(evt, options) {
-    var fcd = new _head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0__.Facade(evt, options);
-    if (evt.type === 'track') {
-        fcd = new _head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0__.Track(evt, options);
-    }
-    if (evt.type === 'identify') {
-        fcd = new _head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0__.Identify(evt, options);
-    }
-    if (evt.type === 'page') {
-        fcd = new _head_js_analytics_js_facade__WEBPACK_IMPORTED_MODULE_0__.Page(evt, options);
-    }
-    // if (evt.type === 'alias') {
-    //   fcd = new Alias(evt, options)
-    // }
-    // if (evt.type === 'group') {
-    //   fcd = new Group(evt, options)
-    // }
-    // if (evt.type === 'screen') {
-    //   fcd = new Screen(evt, options)
-    // }
-    Object.defineProperty(fcd, 'obj', {
-        value: evt,
-        writable: true,
-    });
-    return fcd;
-}
-
-
-/***/ }),
-
-/***/ 6338:
-/*!*****************************************!*\
-  !*** ./src/plugins/middleware/index.ts ***!
-  \*****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "applyDestinationMiddleware": function() { return /* binding */ applyDestinationMiddleware; },
-/* harmony export */   "sourceMiddlewarePlugin": function() { return /* binding */ sourceMiddlewarePlugin; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _core_context__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/context */ 7920);
-/* harmony import */ var _lib_to_facade__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/to-facade */ 9950);
-
-
-
-function applyDestinationMiddleware(destination, evt, middleware) {
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-        function applyMiddleware(event, fn) {
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-                var nextCalled, returnedEvent;
-                var _a;
-                return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            nextCalled = false;
-                            returnedEvent = null;
-                            return [4 /*yield*/, fn({
-                                    payload: (0,_lib_to_facade__WEBPACK_IMPORTED_MODULE_1__.toFacade)(event, {
-                                        clone: true,
-                                        traverse: false,
-                                    }),
-                                    integration: destination,
-                                    next: function (evt) {
-                                        nextCalled = true;
-                                        if (evt === null) {
-                                            returnedEvent = null;
-                                        }
-                                        if (evt) {
-                                            returnedEvent = evt.obj;
-                                        }
-                                    },
-                                })];
-                        case 1:
-                            _b.sent();
-                            if (!nextCalled && returnedEvent !== null) {
-                                returnedEvent = returnedEvent;
-                                returnedEvent.integrations = (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, event.integrations), (_a = {}, _a[destination] = false, _a));
-                            }
-                            return [2 /*return*/, returnedEvent];
-                    }
-                });
-            });
-        }
-        var modifiedEvent, _i, middleware_1, md, result;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    modifiedEvent = (0,_lib_to_facade__WEBPACK_IMPORTED_MODULE_1__.toFacade)(evt, {
-                        clone: true,
-                        traverse: false,
-                    }).rawEvent();
-                    _i = 0, middleware_1 = middleware;
-                    _a.label = 1;
-                case 1:
-                    if (!(_i < middleware_1.length)) return [3 /*break*/, 4];
-                    md = middleware_1[_i];
-                    return [4 /*yield*/, applyMiddleware(modifiedEvent, md)];
-                case 2:
-                    result = _a.sent();
-                    if (result === null) {
-                        return [2 /*return*/, null];
-                    }
-                    modifiedEvent = result;
-                    _a.label = 3;
-                case 3:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 4: return [2 /*return*/, modifiedEvent];
-            }
-        });
-    });
-}
-function sourceMiddlewarePlugin(fn, integrations) {
-    function apply(ctx) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-            var nextCalled;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        nextCalled = false;
-                        return [4 /*yield*/, fn({
-                                payload: (0,_lib_to_facade__WEBPACK_IMPORTED_MODULE_1__.toFacade)(ctx.event, {
-                                    clone: true,
-                                    traverse: false,
-                                }),
-                                integrations: integrations !== null && integrations !== void 0 ? integrations : {},
-                                next: function (evt) {
-                                    nextCalled = true;
-                                    if (evt) {
-                                        ctx.event = evt.obj;
-                                    }
-                                },
-                            })];
-                    case 1:
-                        _a.sent();
-                        if (!nextCalled) {
-                            throw new _core_context__WEBPACK_IMPORTED_MODULE_2__.ContextCancelation({
-                                retry: false,
-                                type: 'middleware_cancellation',
-                                reason: 'Middleware `next` function skipped',
-                            });
-                        }
-                        return [2 /*return*/, ctx];
-                }
-            });
-        });
-    }
-    return {
-        name: "Source Middleware ".concat(fn.name),
-        type: 'before',
-        version: '0.1.0',
-        isLoaded: function () { return true; },
-        load: function (ctx) { return Promise.resolve(ctx); },
-        track: apply,
-        page: apply,
-        identify: apply,
-        // alias: apply,
-        // group: apply,
-    };
-}
-
-
-/***/ }),
-
-/***/ 9603:
-/*!**********************************************!*\
-  !*** ./src/plugins/page-enrichment/index.ts ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "canonicalUrl": function() { return /* binding */ canonicalUrl; },
-/* harmony export */   "pageDefaults": function() { return /* binding */ pageDefaults; },
-/* harmony export */   "pageEnrichment": function() { return /* binding */ pageEnrichment; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lib_pick__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/pick */ 2748);
-
-
-/**
- * Get the current page's canonical URL.
- */
-function canonical() {
-    var canon = document.querySelector("link[rel='canonical']");
-    if (canon) {
-        return canon.getAttribute('href') || undefined;
-    }
-}
-/**
- * Return the canonical path for the page.
- */
-function canonicalPath() {
-    var canon = canonical();
-    if (!canon) {
-        return window.location.pathname;
-    }
-    var a = document.createElement('a');
-    a.href = canon;
-    var pathname = !a.pathname.startsWith('/') ? '/' + a.pathname : a.pathname;
-    return pathname;
-}
-/**
- * Return the canonical URL for the page concat the given `search`
- * and strip the hash.
- */
-function canonicalUrl(search) {
-    if (search === void 0) { search = ''; }
-    var canon = canonical();
-    if (canon) {
-        return canon.includes('?') ? canon : "".concat(canon).concat(search);
-    }
-    var url = window.location.href;
-    var i = url.indexOf('#');
-    return i === -1 ? url : url.slice(0, i);
-}
-/**
- * Return a default `options.context.page` object.
- *
- * https://segment.com/docs/spec/page/#properties
- */
-function pageDefaults() {
-    return {
-        path: canonicalPath(),
-        referrer: document.referrer,
-        search: location.search,
-        title: document.title,
-        url: canonicalUrl(location.search),
-    };
-}
-function enrichPageContext(ctx) {
-    var event = ctx.event;
-    event.context = event.context || {};
-    var defaultPageContext = pageDefaults();
-    var pageContextFromEventProps = event.properties && (0,_lib_pick__WEBPACK_IMPORTED_MODULE_0__.pick)(event.properties, Object.keys(defaultPageContext));
-    event.context.page = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)({}, defaultPageContext), pageContextFromEventProps), event.context.page);
-    if (event.type === 'page') {
-        event.properties = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_1__.__assign)({}, defaultPageContext), event.properties), (event.name ? { name: event.name } : {}));
-    }
-    return ctx;
-}
-var pageEnrichment = {
-    name: 'Page Enrichment',
-    version: '0.1.0',
-    isLoaded: function () { return true; },
-    load: function () { return Promise.resolve(); },
-    type: 'before',
-    page: enrichPageContext,
-    // alias: enrichPageContext,
-    track: enrichPageContext,
-    identify: enrichPageContext,
-    // group: enrichPageContext,
-};
-
-
-/***/ }),
-
-/***/ 3208:
-/*!********************************************!*\
-  !*** ./src/plugins/remote-loader/index.ts ***!
-  \********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ActionDestination": function() { return /* binding */ ActionDestination; },
-/* harmony export */   "remoteLoader": function() { return /* binding */ remoteLoader; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _lib_load_script__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../lib/load-script */ 7070);
-/* harmony import */ var _lib_parse_cdn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../lib/parse-cdn */ 7566);
-/* harmony import */ var _middleware__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../middleware */ 6338);
-/* harmony import */ var _core_context__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/context */ 7920);
-/* harmony import */ var _core_context__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../core/context */ 8404);
-
-
-
-
-
-var ActionDestination = /** @class */ (function () {
-    function ActionDestination(name, action) {
-        this.version = '1.0.0';
-        this.alternativeNames = [];
-        this.middleware = [];
-        // alias = this._createMethod('alias')
-        // group = this._createMethod('group')
-        this.identify = this._createMethod('identify');
-        this.page = this._createMethod('page');
-        // screen = this._createMethod('screen')
-        this.track = this._createMethod('track');
-        this.action = action;
-        this.name = name;
-        this.type = action.type;
-        this.alternativeNames.push(action.name);
-    }
-    ActionDestination.prototype.addMiddleware = function () {
-        var _a;
-        var fn = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            fn[_i] = arguments[_i];
-        }
-        if (this.type === 'destination') {
-            (_a = this.middleware).push.apply(_a, fn);
-        }
-    };
-    ActionDestination.prototype.transform = function (ctx) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-            var modifiedEvent;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, (0,_middleware__WEBPACK_IMPORTED_MODULE_1__.applyDestinationMiddleware)(this.name, ctx.event, this.middleware)];
-                    case 1:
-                        modifiedEvent = _a.sent();
-                        if (modifiedEvent === null) {
-                            ctx.cancel(new _core_context__WEBPACK_IMPORTED_MODULE_2__.ContextCancelation({
-                                retry: false,
-                                reason: 'dropped by destination middleware',
-                            }));
-                        }
-                        return [2 /*return*/, new _core_context__WEBPACK_IMPORTED_MODULE_3__.Context(modifiedEvent)];
-                }
-            });
-        });
-    };
-    ActionDestination.prototype._createMethod = function (methodName) {
-        var _this = this;
-        return function (ctx) { return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(_this, void 0, Promise, function () {
-            var transformedContext;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.action[methodName])
-                            return [2 /*return*/, ctx];
-                        transformedContext = ctx;
-                        if (!(this.type === 'destination')) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.transform(ctx)];
-                    case 1:
-                        transformedContext = _a.sent();
-                        _a.label = 2;
-                    case 2: return [4 /*yield*/, this.action[methodName](transformedContext)];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/, ctx];
-                }
-            });
-        }); };
-    };
-    /* --- PASSTHROUGH METHODS --- */
-    ActionDestination.prototype.isLoaded = function () {
-        return this.action.isLoaded();
-    };
-    ActionDestination.prototype.ready = function () {
-        return this.action.ready ? this.action.ready() : Promise.resolve();
-    };
-    ActionDestination.prototype.load = function (ctx, analytics) {
-        return this.action.load(ctx, analytics);
-    };
-    ActionDestination.prototype.unload = function (ctx, analytics) {
-        var _a, _b;
-        return (_b = (_a = this.action).unload) === null || _b === void 0 ? void 0 : _b.call(_a, ctx, analytics);
-    };
-    return ActionDestination;
-}());
-
-function validate(pluginLike) {
-    if (!Array.isArray(pluginLike)) {
-        throw new Error('Not a valid list of plugins');
-    }
-    var required = ['load', 'isLoaded', 'name', 'version', 'type'];
-    pluginLike.forEach(function (plugin) {
-        required.forEach(function (method) {
-            var _a;
-            if (plugin[method] === undefined) {
-                throw new Error("Plugin: ".concat((_a = plugin.name) !== null && _a !== void 0 ? _a : 'unknown', " missing required function ").concat(method));
-            }
-        });
-    });
-    return true;
-}
-// function isPluginDisabled(
-//   userIntegrations: Integrations,
-//   remotePlugin: RemotePlugin
-// ) {
-//   const creationNameEnabled = userIntegrations[remotePlugin.creationName]
-//   const currentNameEnabled = userIntegrations[remotePlugin.name]
-//   // Check that the plugin isn't explicitly enabled when All: false
-//   if (
-//     userIntegrations.All === false &&
-//     !creationNameEnabled &&
-//     !currentNameEnabled
-//   ) {
-//     return true
-//   }
-//   // Check that the plugin isn't explicitly disabled
-//   if (creationNameEnabled === false || currentNameEnabled === false) {
-//     return true
-//   }
-//   return false
-// }
-function remoteLoader(analytics, settings, 
-// userIntegrations: Integrations,
-mergedIntegrations, 
-// obfuscate?: boolean,
-routingMiddleware) {
-    var _a, _b, _c;
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, Promise, function () {
-        var allPlugins, cdn, routingRules, pluginPromises;
-        var _this = this;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    allPlugins = [];
-                    cdn = (0,_lib_parse_cdn__WEBPACK_IMPORTED_MODULE_4__.getCDN)();
-                    routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
-                    pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(function (remotePlugin) { return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(_this, void 0, void 0, function () {
-                        var defaultCdn, libraryName, pluginFactory, plugin, plugins, routing_1, error_1;
-                        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    // if (isPluginDisabled(userIntegrations, remotePlugin)) return
-                                    if (!remotePlugin.creationName) {
-                                        remotePlugin.creationName = "AnalyticsPlugin".concat(remotePlugin.name);
-                                    }
-                                    if (!remotePlugin.libraryName) {
-                                        remotePlugin.libraryName = "AnalyticsPlugin".concat(remotePlugin.name);
-                                    }
-                                    if (!remotePlugin.url) {
-                                        remotePlugin.url = "".concat(cdn, "analytics-plugin-").concat(remotePlugin.name.toLocaleLowerCase(), ".js");
-                                    }
-                                    _a.label = 1;
-                                case 1:
-                                    _a.trys.push([1, 5, , 6]);
-                                    defaultCdn = new RegExp('https://cdn.segment.(com|build)');
-                                    // if (obfuscate) {
-                                    //   const urlSplit = remotePlugin.url.split('/')
-                                    //   const name = urlSplit[urlSplit.length - 2]
-                                    //   const obfuscatedURL = remotePlugin.url.replace(
-                                    //     name,
-                                    //     btoa(name).replace(/=/g, '')
-                                    //   )
-                                    //   try {
-                                    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
-                                    //   } catch (error) {
-                                    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
-                                    //     // We should use the unobfuscated version as a fallback.
-                                    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-                                    //   }
-                                    // } else {
-                                    return [4 /*yield*/, (0,_lib_load_script__WEBPACK_IMPORTED_MODULE_5__.loadScript)(remotePlugin.url.replace(defaultCdn, cdn))
-                                        // }
-                                    ];
-                                case 2:
-                                    // if (obfuscate) {
-                                    //   const urlSplit = remotePlugin.url.split('/')
-                                    //   const name = urlSplit[urlSplit.length - 2]
-                                    //   const obfuscatedURL = remotePlugin.url.replace(
-                                    //     name,
-                                    //     btoa(name).replace(/=/g, '')
-                                    //   )
-                                    //   try {
-                                    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
-                                    //   } catch (error) {
-                                    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
-                                    //     // We should use the unobfuscated version as a fallback.
-                                    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-                                    //   }
-                                    // } else {
-                                    _a.sent();
-                                    libraryName = remotePlugin.libraryName;
-                                    if (!(typeof window[libraryName] === 'function')) return [3 /*break*/, 4];
-                                    pluginFactory = window[libraryName];
-                                    return [4 /*yield*/, pluginFactory(analytics, remotePlugin.settings, mergedIntegrations[remotePlugin.name])];
-                                case 3:
-                                    plugin = _a.sent();
-                                    plugins = Array.isArray(plugin) ? plugin : [plugin];
-                                    validate(plugins);
-                                    routing_1 = routingRules.filter(function (rule) { return rule.destinationName === remotePlugin.creationName; });
-                                    plugins.forEach(function (plugin) {
-                                        var wrapper = new ActionDestination(remotePlugin.creationName, plugin);
-                                        /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
-                                        if (routing_1.length &&
-                                            routingMiddleware &&
-                                            plugin.type === 'destination') {
-                                            wrapper.addMiddleware(routingMiddleware);
-                                        }
-                                        allPlugins.push(wrapper);
-                                    });
-                                    _a.label = 4;
-                                case 4: return [3 /*break*/, 6];
-                                case 5:
-                                    error_1 = _a.sent();
-                                    console.warn('Failed to load Remote Plugin', error_1);
-                                    return [3 /*break*/, 6];
-                                case 6: return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                    return [4 /*yield*/, Promise.all(pluginPromises)];
-                case 1:
-                    _d.sent();
-                    return [2 /*return*/, allPlugins.filter(Boolean)];
-            }
-        });
-    });
-}
-
-
-/***/ }),
-
-/***/ 719:
-/*!********************************************!*\
-  !*** ./src/plugins/segmentio/normalize.ts ***!
-  \********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getVersionType": function() { return /* binding */ getVersionType; },
-/* harmony export */   "normalize": function() { return /* binding */ normalize; },
-/* harmony export */   "setVersionType": function() { return /* binding */ setVersionType; },
-/* harmony export */   "utm": function() { return /* binding */ utm; }
-/* harmony export */ });
-/* harmony import */ var _core_query_string_gracefulDecodeURIComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/query-string/gracefulDecodeURIComponent */ 6863);
-/* harmony import */ var _generated_version__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../generated/version */ 4278);
-// import { SegmentEvent } from '../../core/events'
-
-
-// import { getAvailableStorageOptions, UniversalStorage } from '../../core/user'
-// let cookieOptions: jar.CookieAttributes | undefined
-// function getCookieOptions(): jar.CookieAttributes {
-//   if (cookieOptions) {
-//     return cookieOptions
-//   }
-//   const domain = tld(window.location.href)
-//   cookieOptions = {
-//     expires: 31536000000, // 1 year
-//     secure: false,
-//     path: '/',
-//   }
-//   if (domain) {
-//     cookieOptions.domain = domain
-//   }
-//   return cookieOptions
-// }
+;// CONCATENATED MODULE: ./src/lib/version-type.ts
 // Default value will be updated to 'web' in `bundle-umd.ts` for web build.
 var _version = 'npm';
 function setVersionType(version) {
@@ -5135,239 +1918,8 @@ function setVersionType(version) {
 function getVersionType() {
     return _version;
 }
-// type Ad = { id: string; type: string }
-// export function ampId(): string | undefined {
-//   const ampId = jar.get('_ga')
-//   if (ampId && ampId.startsWith('amp')) {
-//     return ampId
-//   }
-// }
-function utm(query) {
-    if (query.startsWith('?')) {
-        query = query.substring(1);
-    }
-    query = query.replace(/\?/g, '&');
-    return query.split('&').reduce(function (acc, str) {
-        var _a = str.split('='), k = _a[0], _b = _a[1], v = _b === void 0 ? '' : _b;
-        if (k.includes('utm_') && k.length > 4) {
-            var utmParam = k.substr(4);
-            if (utmParam === 'campaign') {
-                utmParam = 'name';
-            }
-            acc[utmParam] = (0,_core_query_string_gracefulDecodeURIComponent__WEBPACK_IMPORTED_MODULE_0__.gracefulDecodeURIComponent)(v);
-        }
-        return acc;
-    }, {});
-}
-// function ads(query: string): Ad | undefined {
-//   const queryIds: Record<string, string> = {
-//     btid: 'dataxu',
-//     urid: 'millennial-media',
-//   }
-//   if (query.startsWith('?')) {
-//     query = query.substring(1)
-//   }
-//   query = query.replace(/\?/g, '&')
-//   const parts = query.split('&')
-//   for (const part of parts) {
-//     const [k, v] = part.split('=')
-//     if (queryIds[k]) {
-//       return {
-//         id: v,
-//         type: queryIds[k],
-//       }
-//     }
-//   }
-// }
-// function referrerId(
-//   query: string,
-//   ctx: SegmentEvent['context'],
-//   disablePersistance: boolean
-// ): void {
-//   const storage = new UniversalStorage<{
-//     's:context.referrer': Ad
-//   }>(
-//     disablePersistance ? [] : ['cookie'],
-//     getAvailableStorageOptions(getCookieOptions())
-//   )
-//   const stored = storage.get('s:context.referrer')
-//   let ad: Ad | undefined | null = ads(query)
-//   ad = ad ?? stored
-//   if (!ad) {
-//     return
-//   }
-//   if (ctx) {
-//     ctx.referrer = { ...ctx.referrer, ...ad }
-//   }
-//   storage.set('s:context.referrer', ad)
-// }
-function normalize(analytics, json, settings, integrations) {
-    var _a, _b, _c;
-    var user = analytics.user();
-    // context should always exist here (see page enrichment)? ... and why would we default to json.options? todo: delete this
-    json.context = (_b = (_a = json.context) !== null && _a !== void 0 ? _a : json.options) !== null && _b !== void 0 ? _b : {};
-    var ctx = json.context;
-    // This guard against missing ctx.page should not be neccessary, since context.page is always defined
-    var query = ((_c = ctx.page) === null || _c === void 0 ? void 0 : _c.search) || '';
-    delete json.options;
-    json.writeKey = settings === null || settings === void 0 ? void 0 : settings.apiKey;
-    ctx.userAgent = window.navigator.userAgent;
-    // @ts-ignore
-    var locale = navigator.userLanguage || navigator.language;
-    if (typeof ctx.locale === 'undefined' && typeof locale !== 'undefined') {
-        ctx.locale = locale;
-    }
-    if (!ctx.library) {
-        var type = getVersionType();
-        if (type === 'web') {
-            ctx.library = {
-                name: 'analytics.js',
-                version: "next-".concat(_generated_version__WEBPACK_IMPORTED_MODULE_1__.version),
-            };
-        }
-        else {
-            ctx.library = {
-                name: 'analytics.js',
-                version: "npm:next-".concat(_generated_version__WEBPACK_IMPORTED_MODULE_1__.version),
-            };
-        }
-    }
-    if (query && !ctx.campaign) {
-        ctx.campaign = utm(query);
-    }
-    // referrerId(query, ctx, analytics.options.disableClientPersistence ?? false)
-    json.userId = json.userId || user.id();
-    json.anonymousId = json.anonymousId || user.anonymousId();
-    json.sentAt = new Date();
-    // const failed = analytics.queue.failedInitializations || []
-    // if (failed.length > 0) {
-    //   json._metadata = { failedInitializations: failed }
-    // }
-    var bundled = [];
-    // const unbundled: string[] = []
-    for (var key in integrations) {
-        var integration = integrations[key];
-        //   if (key === 'Segment.io') {
-        //     bundled.push(key)
-        //   }
-        if (integration.bundlingStatus === 'bundled') {
-            bundled.push(key);
-        }
-        //   if (integration.bundlingStatus === 'unbundled') {
-        //     unbundled.push(key)
-        //   }
-    }
-    // // This will make sure that the disabled cloud mode destinations will be
-    // // included in the unbundled list.
-    // for (const settingsUnbundled of settings?.unbundledIntegrations || []) {
-    //   if (!unbundled.includes(settingsUnbundled)) {
-    //     unbundled.push(settingsUnbundled)
-    //   }
-    // }
-    // const configIds = settings?.maybeBundledConfigIds ?? {}
-    // const bundledConfigIds: string[] = []
-    // bundled.sort().forEach((name) => {
-    //   ;(configIds[name] ?? []).forEach((id) => {
-    //     bundledConfigIds.push(id)
-    //   })
-    // })
-    // if (settings?.addBundledMetadata !== false) {
-    //   json._metadata = {
-    //     ...json._metadata,
-    //     bundled: bundled.sort(),
-    //     unbundled: unbundled.sort(),
-    //     bundledIds: bundledConfigIds,
-    //   }
-    // }
-    // const amp = ampId()
-    // if (amp) {
-    //   ctx.amp = { id: amp }
-    // }
-    return json;
-}
 
-
-/***/ }),
-
-/***/ 1067:
-/*!*****************************************!*\
-  !*** ./src/plugins/validation/index.ts ***!
-  \*****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "validation": function() { return /* binding */ validation; }
-/* harmony export */ });
-/* harmony import */ var _segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @segment/analytics-core */ 4262);
-
-function validate(ctx) {
-    var event = ctx.event;
-    (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.assertEventExists)(event);
-    (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.assertEventType)(event);
-    if (event.type === 'track') {
-        (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.assertTrackEventName)(event);
-    }
-    // const props = event.properties ?? event.traits
-    // if (event.type !== 'alias' && !isPlainObject(props)) {
-    //   throw new ValidationError('.properties', 'is not an object')
-    // }
-    (0,_segment_analytics_core__WEBPACK_IMPORTED_MODULE_0__.assertUserIdentity)(event);
-    return ctx;
-}
-var validation = {
-    name: 'Event Validation',
-    type: 'before',
-    version: '1.0.0',
-    isLoaded: function () { return true; },
-    load: function () { return Promise.resolve(); },
-    track: validate,
-    identify: validate,
-    page: validate,
-    // alias: validate,
-    // group: validate,
-    // screen: validate,
-};
-
-
-/***/ }),
-
-/***/ 5163:
-/*!*********************************************!*\
-  !*** ../../node_modules/tslib/tslib.es6.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "__assign": function() { return /* binding */ __assign; },
-/* harmony export */   "__asyncDelegator": function() { return /* binding */ __asyncDelegator; },
-/* harmony export */   "__asyncGenerator": function() { return /* binding */ __asyncGenerator; },
-/* harmony export */   "__asyncValues": function() { return /* binding */ __asyncValues; },
-/* harmony export */   "__await": function() { return /* binding */ __await; },
-/* harmony export */   "__awaiter": function() { return /* binding */ __awaiter; },
-/* harmony export */   "__classPrivateFieldGet": function() { return /* binding */ __classPrivateFieldGet; },
-/* harmony export */   "__classPrivateFieldIn": function() { return /* binding */ __classPrivateFieldIn; },
-/* harmony export */   "__classPrivateFieldSet": function() { return /* binding */ __classPrivateFieldSet; },
-/* harmony export */   "__createBinding": function() { return /* binding */ __createBinding; },
-/* harmony export */   "__decorate": function() { return /* binding */ __decorate; },
-/* harmony export */   "__exportStar": function() { return /* binding */ __exportStar; },
-/* harmony export */   "__extends": function() { return /* binding */ __extends; },
-/* harmony export */   "__generator": function() { return /* binding */ __generator; },
-/* harmony export */   "__importDefault": function() { return /* binding */ __importDefault; },
-/* harmony export */   "__importStar": function() { return /* binding */ __importStar; },
-/* harmony export */   "__makeTemplateObject": function() { return /* binding */ __makeTemplateObject; },
-/* harmony export */   "__metadata": function() { return /* binding */ __metadata; },
-/* harmony export */   "__param": function() { return /* binding */ __param; },
-/* harmony export */   "__read": function() { return /* binding */ __read; },
-/* harmony export */   "__rest": function() { return /* binding */ __rest; },
-/* harmony export */   "__spread": function() { return /* binding */ __spread; },
-/* harmony export */   "__spreadArray": function() { return /* binding */ __spreadArray; },
-/* harmony export */   "__spreadArrays": function() { return /* binding */ __spreadArrays; },
-/* harmony export */   "__values": function() { return /* binding */ __values; }
-/* harmony export */ });
+;// CONCATENATED MODULE: ../../node_modules/tslib/tslib.es6.js
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -5437,7 +1989,7 @@ function __metadata(metadataKey, metadataValue) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
 }
 
-function __awaiter(thisArg, _arguments, P, generator) {
+function tslib_es6_awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -5447,7 +1999,7 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-function __generator(thisArg, body) {
+function tslib_es6_generator(thisArg, body) {
     var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
     return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
@@ -5617,88 +2169,705 @@ function __classPrivateFieldIn(state, receiver) {
     return typeof state === "function" ? receiver === state : state.has(receiver);
 }
 
+;// CONCATENATED MODULE: ./src/lib/global-analytics-helper.ts
+/**
+ * Stores the global window analytics key
+ */
+var _globalAnalyticsKey = 'analytics';
+/**
+ * Gets the global analytics/buffer
+ * @param key name of the window property where the buffer is stored (default: analytics)
+ * @returns AnalyticsSnippet
+ */
+function getGlobalAnalytics() {
+    return window[_globalAnalyticsKey];
+}
+/**
+ * Replaces the global window key for the analytics/buffer object
+ * @param key key name
+ */
+function setGlobalAnalyticsKey(key) {
+    _globalAnalyticsKey = key;
+}
+/**
+ * Sets the global analytics object
+ * @param analytics analytics snippet
+ */
+function setGlobalAnalytics(analytics) {
+    ;
+    window[_globalAnalyticsKey] = analytics;
+}
 
-/***/ }),
+;// CONCATENATED MODULE: ./src/lib/parse-cdn.ts
 
-/***/ 9433:
-/*!**********************************************!*\
-  !*** ../core/dist/esm/analytics/dispatch.js ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+// import { embeddedWriteKey } from './embedded-write-key'
+// const analyticsScriptRegex =
+//   /(https:\/\/.*)\/analytics\.js\/v1\/(?:.*?)\/(?:platform|analytics.*)?/
+// const getCDNUrlFromScriptTag = (): string | undefined => {
+//   let cdn: string | undefined
+//   const scripts = Array.prototype.slice.call(
+//     document.querySelectorAll('script')
+//   )
+//   scripts.forEach((s) => {
+//     const src = s.getAttribute('src') ?? ''
+//     const result = analyticsScriptRegex.exec(src)
+//     if (result && result[1]) {
+//       cdn = result[1]
+//     }
+//   })
+//   return cdn
+// }
+var _globalCDN; // set globalCDN as in-memory singleton
+var getGlobalCDNUrl = function () {
+    var _a;
+    var result = _globalCDN !== null && _globalCDN !== void 0 ? _globalCDN : (_a = getGlobalAnalytics()) === null || _a === void 0 ? void 0 : _a._cdn;
+    return result;
+};
+var setGlobalCDNUrl = function (cdn) {
+    var globalAnalytics = getGlobalAnalytics();
+    if (globalAnalytics) {
+        globalAnalytics._cdn = cdn;
+    }
+    _globalCDN = cdn;
+};
+var getCDN = function () {
+    var globalCdnUrl = getGlobalCDNUrl();
+    if (globalCdnUrl)
+        return globalCdnUrl;
+    // const cdnFromScriptTag = getCDNUrlFromScriptTag()
+    // if (cdnFromScriptTag) {
+    //   return cdnFromScriptTag
+    // } else {
+    //   // it's possible that the CDN is not found in the page because:
+    //   // - the script is loaded through a proxy
+    //   // - the script is removed after execution
+    //   // in this case, we fall back to the default Segment CDN
+    return "https://cdn.segment.com";
+    // }
+};
+// export const getNextIntegrationsURL = () => {
+//   const cdn = getCDN()
+//   return `${cdn}/next-integrations`
+// }
+/**
+ * Replaces the CDN URL in the script tag with the one from Analytics.js 1.0
+ *
+ * @returns the path to Analytics JS 1.0
+ **/
+// export function getLegacyAJSPath(): string {
+//   const writeKey = embeddedWriteKey() ?? getGlobalAnalytics()?._writeKey
+//   const scripts = Array.prototype.slice.call(
+//     document.querySelectorAll('script')
+//   )
+//   let path: string | undefined = undefined
+//   for (const s of scripts) {
+//     const src = s.getAttribute('src') ?? ''
+//     const result = analyticsScriptRegex.exec(src)
+//     if (result && result[1]) {
+//       path = src
+//       break
+//     }
+//   }
+//   if (path) {
+//     return path.replace('analytics.min.js', 'analytics.classic.js')
+//   }
+//   return `https://cdn.segment.com/analytics.js/v1/${writeKey}/analytics.classic.js`
+// }
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "dispatch": function() { return /* binding */ dispatch; },
-/* harmony export */   "getDelay": function() { return /* binding */ getDelay; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _callback__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../callback */ 888);
+;// CONCATENATED MODULE: ../core/dist/esm/validation/helpers.js
+function helpers_isString(obj) {
+    return typeof obj === 'string';
+}
+function helpers_isNumber(obj) {
+    return typeof obj === 'number';
+}
+function helpers_isFunction(obj) {
+    return typeof obj === 'function';
+}
+function exists(val) {
+    return val !== undefined && val !== null;
+}
+function helpers_isPlainObject(obj) {
+    return (Object.prototype.toString.call(obj).slice(8, -1).toLowerCase() === 'object');
+}
+//# sourceMappingURL=helpers.js.map
+;// CONCATENATED MODULE: ./src/core/arguments-resolver/index.ts
 
-
-/* The amount of time in ms to wait before invoking the callback. */
-var getDelay = function (startTimeInEpochMS, timeoutInMS) {
-    var elapsedTime = Date.now() - startTimeInEpochMS;
-    // increasing the timeout increases the delay by almost the same amount -- this is weird legacy behavior.
-    return Math.max((timeoutInMS !== null && timeoutInMS !== void 0 ? timeoutInMS : 300) - elapsedTime, 0);
+/**
+ * Helper for the track method
+ */
+function resolveArguments(eventName, properties, options, callback) {
+    var _a;
+    var args = [eventName, properties, options, callback];
+    var name = helpers_isPlainObject(eventName) ? eventName.event : eventName;
+    if (!name || !helpers_isString(name)) {
+        throw new Error('Event missing');
+    }
+    var data = helpers_isPlainObject(eventName)
+        ? (_a = eventName.properties) !== null && _a !== void 0 ? _a : {}
+        : helpers_isPlainObject(properties)
+            ? properties
+            : {};
+    var opts = {};
+    if (!helpers_isFunction(options)) {
+        opts = options !== null && options !== void 0 ? options : {};
+    }
+    if (helpers_isPlainObject(eventName) && !helpers_isFunction(properties)) {
+        opts = properties !== null && properties !== void 0 ? properties : {};
+    }
+    var cb = args.find(helpers_isFunction);
+    return [name, data, opts, cb];
+}
+/**
+ * Helper for page, screen methods
+ */
+function resolvePageArguments(category, name, properties, options, callback) {
+    var _a, _b;
+    var resolvedCategory = null;
+    var resolvedName = null;
+    var args = [category, name, properties, options, callback];
+    var strings = args.filter(helpers_isString);
+    if (strings[0] !== undefined && strings[1] !== undefined) {
+        resolvedCategory = strings[0];
+        resolvedName = strings[1];
+    }
+    if (strings.length === 1) {
+        resolvedCategory = null;
+        resolvedName = strings[0];
+    }
+    var resolvedCallback = args.find(helpers_isFunction);
+    var objects = args.filter(function (obj) {
+        if (resolvedName === null) {
+            return helpers_isPlainObject(obj);
+        }
+        return helpers_isPlainObject(obj) || obj === null;
+    });
+    var resolvedProperties = ((_a = objects[0]) !== null && _a !== void 0 ? _a : {});
+    var resolvedOptions = ((_b = objects[1]) !== null && _b !== void 0 ? _b : {});
+    return [
+        resolvedCategory,
+        resolvedName,
+        resolvedProperties,
+        resolvedOptions,
+        resolvedCallback,
+    ];
+}
+/**
+ * Helper for group, identify methods
+ */
+var resolveUserArguments = function (user) {
+    return function () {
+        var _a, _b, _c, _d, _e;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var id = null;
+        id = (_c = (_a = args.find(isString)) !== null && _a !== void 0 ? _a : (_b = args.find(isNumber)) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : user.id();
+        var objects = args.filter(function (obj) {
+            if (id === null) {
+                return isPlainObject(obj);
+            }
+            return isPlainObject(obj) || obj === null;
+        });
+        var traits = ((_d = objects[0]) !== null && _d !== void 0 ? _d : {});
+        var opts = ((_e = objects[1]) !== null && _e !== void 0 ? _e : {});
+        var resolvedCallback = args.find(isFunction);
+        return [id, traits, opts, resolvedCallback];
+    };
 };
 /**
- * Push an event into the dispatch queue and invoke any callbacks.
- *
- * @param event - Segment event to enqueue.
- * @param queue - Queue to dispatch against.
- * @param emitter - This is typically an instance of "Analytics" -- used for metrics / progress information.
- * @param options
+ * Helper for alias method
  */
-function dispatch(ctx, queue, emitter, options) {
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
-        var startTime, dispatched;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    emitter.emit('dispatch_start', ctx);
-                    startTime = Date.now();
-                    if (!queue.isEmpty()) return [3 /*break*/, 2];
-                    return [4 /*yield*/, queue.dispatchSingle(ctx)];
-                case 1:
-                    dispatched = _a.sent();
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, queue.dispatch(ctx)];
-                case 3:
-                    dispatched = _a.sent();
-                    _a.label = 4;
-                case 4:
-                    if (!(options === null || options === void 0 ? void 0 : options.callback)) return [3 /*break*/, 6];
-                    return [4 /*yield*/, (0,_callback__WEBPACK_IMPORTED_MODULE_1__.invokeCallback)(dispatched, options.callback, getDelay(startTime, options.timeout))];
-                case 5:
-                    dispatched = _a.sent();
-                    _a.label = 6;
-                case 6:
-                    if (options === null || options === void 0 ? void 0 : options.debug) {
-                        dispatched.flush();
-                    }
-                    return [2 /*return*/, dispatched];
-            }
-        });
-    });
+function resolveAliasArguments(to, from, options, callback) {
+    if (isNumber(to))
+        to = to.toString(); // Legacy behaviour - allow integers for alias calls
+    if (isNumber(from))
+        from = from.toString();
+    var args = [to, from, options, callback];
+    var _a = args.filter(isString), _b = _a[0], aliasTo = _b === void 0 ? to : _b, _c = _a[1], aliasFrom = _c === void 0 ? null : _c;
+    var _d = args.filter(isPlainObject)[0], opts = _d === void 0 ? {} : _d;
+    var resolvedCallback = args.find(isFunction);
+    return [aliasTo, aliasFrom, opts, resolvedCallback];
 }
-//# sourceMappingURL=dispatch.js.map
 
-/***/ }),
+;// CONCATENATED MODULE: ./src/core/connection/index.ts
+// import { isBrowser } from '../environment'
+function isOnline() {
+    // if (isBrowser()) {
+    return window.navigator.onLine;
+    // }
+    // return true
+}
+function isOffline() {
+    return !isOnline();
+}
 
-/***/ 888:
-/*!******************************************!*\
-  !*** ../core/dist/esm/callback/index.js ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+;// CONCATENATED MODULE: ../../node_modules/@lukeed/uuid/dist/index.mjs
+var IDX=256, HEX=[], BUFFER;
+while (IDX--) HEX[IDX] = (IDX + 256).toString(16).substring(1);
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "invokeCallback": function() { return /* binding */ invokeCallback; },
-/* harmony export */   "pTimeout": function() { return /* binding */ pTimeout; },
-/* harmony export */   "sleep": function() { return /* binding */ sleep; }
-/* harmony export */ });
+function v4() {
+	var i=0, num, out='';
+
+	if (!BUFFER || ((IDX + 16) > 256)) {
+		BUFFER = Array(i=256);
+		while (i--) BUFFER[i] = 256 * Math.random() | 0;
+		i = IDX = 0;
+	}
+
+	for (; i < 16; i++) {
+		num = BUFFER[IDX + i];
+		if (i==6) out += HEX[num & 15 | 64];
+		else if (i==8) out += HEX[num & 63 | 128];
+		else out += HEX[num];
+
+		if (i & 1 && i > 1 && i < 11) out += '-';
+	}
+
+	IDX++;
+	return out;
+}
+
+;// CONCATENATED MODULE: ../../node_modules/dset/dist/index.mjs
+function dset(obj, keys, val) {
+	keys.split && (keys=keys.split('.'));
+	var i=0, l=keys.length, t=obj, x, k;
+	while (i < l) {
+		k = keys[i++];
+		if (k === '__proto__' || k === 'constructor' || k === 'prototype') break;
+		t = t[k] = (i === l) ? val : (typeof(x=t[k])===typeof(keys)) ? x : (keys[i]*0 !== 0 || !!~(''+keys[i]).indexOf('.')) ? {} : [];
+	}
+}
+
+;// CONCATENATED MODULE: ../core/dist/esm/logger/index.js
+
+var CoreLogger = /** @class */ (function () {
+    function CoreLogger() {
+        this._logs = [];
+    }
+    CoreLogger.prototype.log = function (level, message, extras) {
+        var time = new Date();
+        this._logs.push({
+            level: level,
+            message: message,
+            time: time,
+            extras: extras,
+        });
+    };
+    Object.defineProperty(CoreLogger.prototype, "logs", {
+        get: function () {
+            return this._logs;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    CoreLogger.prototype.flush = function () {
+        if (this.logs.length > 1) {
+            var formatted = this._logs.reduce(function (logs, log) {
+                var _a;
+                var _b, _c;
+                var line = __assign(__assign({}, log), { json: JSON.stringify(log.extras, null, ' '), extras: log.extras });
+                delete line['time'];
+                var key = (_c = (_b = log.time) === null || _b === void 0 ? void 0 : _b.toISOString()) !== null && _c !== void 0 ? _c : '';
+                if (logs[key]) {
+                    key = "".concat(key, "-").concat(Math.random());
+                }
+                return __assign(__assign({}, logs), (_a = {}, _a[key] = line, _a));
+            }, {});
+            // ie doesn't like console.table
+            if (console.table) {
+                console.table(formatted);
+            }
+            else {
+                console.log(formatted);
+            }
+        }
+        else {
+            this.logs.forEach(function (logEntry) {
+                var level = logEntry.level, message = logEntry.message, extras = logEntry.extras;
+                if (level === 'info' || level === 'debug') {
+                    console.log(message, extras !== null && extras !== void 0 ? extras : '');
+                }
+                else {
+                    console[level](message, extras !== null && extras !== void 0 ? extras : '');
+                }
+            });
+        }
+        this._logs = [];
+    };
+    return CoreLogger;
+}());
+
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/stats/index.js
+
+var compactMetricType = function (type) {
+    var enums = {
+        gauge: 'g',
+        counter: 'c',
+    };
+    return enums[type];
+};
+var CoreStats = /** @class */ (function () {
+    function CoreStats() {
+        this.metrics = [];
+    }
+    CoreStats.prototype.increment = function (metric, by, tags) {
+        if (by === void 0) { by = 1; }
+        this.metrics.push({
+            metric: metric,
+            value: by,
+            tags: tags !== null && tags !== void 0 ? tags : [],
+            type: 'counter',
+            timestamp: Date.now(),
+        });
+    };
+    CoreStats.prototype.gauge = function (metric, value, tags) {
+        this.metrics.push({
+            metric: metric,
+            value: value,
+            tags: tags !== null && tags !== void 0 ? tags : [],
+            type: 'gauge',
+            timestamp: Date.now(),
+        });
+    };
+    CoreStats.prototype.flush = function () {
+        var formatted = this.metrics.map(function (m) { return (__assign(__assign({}, m), { tags: m.tags.join(',') })); });
+        // ie doesn't like console.table
+        if (console.table) {
+            console.table(formatted);
+        }
+        else {
+            console.log(formatted);
+        }
+        this.metrics = [];
+    };
+    /**
+     * compact keys for smaller payload
+     */
+    CoreStats.prototype.serialize = function () {
+        return this.metrics.map(function (m) {
+            return {
+                m: m.metric,
+                v: m.value,
+                t: m.tags,
+                k: compactMetricType(m.type),
+                e: m.timestamp,
+            };
+        });
+    };
+    return CoreStats;
+}());
+
+var NullStats = /** @class */ (function (_super) {
+    __extends(NullStats, _super);
+    function NullStats() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NullStats.prototype.gauge = function () {
+        var _args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            _args[_i] = arguments[_i];
+        }
+    };
+    NullStats.prototype.increment = function () {
+        var _args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            _args[_i] = arguments[_i];
+        }
+    };
+    NullStats.prototype.flush = function () {
+        var _args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            _args[_i] = arguments[_i];
+        }
+    };
+    NullStats.prototype.serialize = function () {
+        var _args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            _args[_i] = arguments[_i];
+        }
+        return [];
+    };
+    return NullStats;
+}(CoreStats));
+
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/context/index.js
+
+
+
+
+var context_ContextCancelation = /** @class */ (function () {
+    function ContextCancelation(options) {
+        var _a, _b, _c;
+        this.retry = (_a = options.retry) !== null && _a !== void 0 ? _a : true;
+        this.type = (_b = options.type) !== null && _b !== void 0 ? _b : 'plugin Error';
+        this.reason = (_c = options.reason) !== null && _c !== void 0 ? _c : '';
+    }
+    return ContextCancelation;
+}());
+
+var CoreContext = /** @class */ (function () {
+    function CoreContext(event, id, stats, logger) {
+        if (id === void 0) { id = v4(); }
+        if (stats === void 0) { stats = new NullStats(); }
+        if (logger === void 0) { logger = new CoreLogger(); }
+        this.attempts = 0;
+        this.event = event;
+        this._id = id;
+        this.logger = logger;
+        this.stats = stats;
+    }
+    CoreContext.system = function () {
+        // This should be overridden by the subclass to return an instance of the subclass.
+    };
+    CoreContext.prototype.isSame = function (other) {
+        return other.id === this.id;
+    };
+    CoreContext.prototype.cancel = function (error) {
+        if (error) {
+            throw error;
+        }
+        throw new context_ContextCancelation({ reason: 'Context Cancel' });
+    };
+    CoreContext.prototype.log = function (level, message, extras) {
+        this.logger.log(level, message, extras);
+    };
+    Object.defineProperty(CoreContext.prototype, "id", {
+        get: function () {
+            return this._id;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    CoreContext.prototype.updateEvent = function (path, val) {
+        var _a;
+        // Don't allow integrations that are set to false to be overwritten with integration settings.
+        if (path.split('.')[0] === 'integrations') {
+            var integrationName = path.split('.')[1];
+            if (((_a = this.event.integrations) === null || _a === void 0 ? void 0 : _a[integrationName]) === false) {
+                return this.event;
+            }
+        }
+        dset(this.event, path, val);
+        return this.event;
+    };
+    CoreContext.prototype.failedDelivery = function () {
+        return this._failedDelivery;
+    };
+    CoreContext.prototype.setFailedDelivery = function (options) {
+        this._failedDelivery = options;
+    };
+    CoreContext.prototype.logs = function () {
+        return this.logger.logs;
+    };
+    CoreContext.prototype.flush = function () {
+        this.logger.flush();
+        this.stats.flush();
+    };
+    CoreContext.prototype.toJSON = function () {
+        return {
+            id: this._id,
+            event: this.event,
+            logs: this.logger.logs,
+            metrics: this.stats.metrics,
+        };
+    };
+    return CoreContext;
+}());
+
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ../../node_modules/unfetch/dist/unfetch.mjs
+/* harmony default export */ function unfetch(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(JSON.parse(s.responseText))},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})}
+//# sourceMappingURL=unfetch.mjs.map
+
+;// CONCATENATED MODULE: ./src/lib/get-global.ts
+// This an imperfect polyfill for globalThis
+var getGlobal = function () {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    return null;
+};
+
+;// CONCATENATED MODULE: ./src/lib/fetch.ts
+
+
+/**
+ * Wrapper around native `fetch` containing `unfetch` fallback.
+ */
+var fetch = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var global = getGlobal();
+    return ((global && global.fetch) || unfetch).apply(void 0, args);
+};
+
+;// CONCATENATED MODULE: ./src/generated/version.ts
+// This file is generated.
+var version = '1.58.0';
+
+;// CONCATENATED MODULE: ./src/core/constants/index.ts
+var SEGMENT_API_HOST = 'api.segment.io/v1';
+
+;// CONCATENATED MODULE: ./src/core/stats/remote-metrics.ts
+
+
+
+
+
+var createRemoteMetric = function (metric, tags, versionType) {
+    var formattedTags = tags.reduce(function (acc, t) {
+        var _a = t.split(':'), k = _a[0], v = _a[1];
+        acc[k] = v;
+        return acc;
+    }, {});
+    return {
+        type: 'Counter',
+        metric: metric,
+        value: 1,
+        tags: __assign(__assign({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? "next-".concat(version) : "npm:next-".concat(version) }),
+    };
+};
+function logError(err) {
+    console.error('Error sending segment performance metrics', err);
+}
+var RemoteMetrics = /** @class */ (function () {
+    function RemoteMetrics(options) {
+        var _this = this;
+        var _a, _b, _c, _d;
+        this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : SEGMENT_API_HOST;
+        this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
+        this.flushTimer = (_c = options === null || options === void 0 ? void 0 : options.flushTimer) !== null && _c !== void 0 ? _c : 30 * 1000; /* 30s */
+        this.maxQueueSize = (_d = options === null || options === void 0 ? void 0 : options.maxQueueSize) !== null && _d !== void 0 ? _d : 20;
+        this.queue = [];
+        if (this.sampleRate > 0) {
+            var flushing_1 = false;
+            var run_1 = function () {
+                if (flushing_1) {
+                    return;
+                }
+                flushing_1 = true;
+                _this.flush().catch(logError);
+                flushing_1 = false;
+                setTimeout(run_1, _this.flushTimer);
+            };
+            run_1();
+        }
+    }
+    RemoteMetrics.prototype.increment = function (metric, tags) {
+        // All metrics are part of an allow list in Tracking API
+        if (!metric.includes('analytics_js.')) {
+            return;
+        }
+        // /m doesn't like empty tags
+        if (tags.length === 0) {
+            return;
+        }
+        if (Math.random() > this.sampleRate) {
+            return;
+        }
+        if (this.queue.length >= this.maxQueueSize) {
+            return;
+        }
+        var remoteMetric = createRemoteMetric(metric, tags, getVersionType());
+        this.queue.push(remoteMetric);
+        if (metric.includes('error')) {
+            this.flush().catch(logError);
+        }
+    };
+    RemoteMetrics.prototype.flush = function () {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var _this = this;
+            return tslib_es6_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.queue.length <= 0) {
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, this.send().catch(function (error) {
+                                logError(error);
+                                _this.sampleRate = 0;
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    RemoteMetrics.prototype.send = function () {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var payload, headers, url;
+            return tslib_es6_generator(this, function (_a) {
+                payload = { series: this.queue };
+                this.queue = [];
+                headers = { 'Content-Type': 'text/plain' };
+                url = "https://".concat(this.host, "/m");
+                return [2 /*return*/, fetch(url, {
+                        headers: headers,
+                        body: JSON.stringify(payload),
+                        method: 'POST',
+                    })];
+            });
+        });
+    };
+    return RemoteMetrics;
+}());
+
+
+;// CONCATENATED MODULE: ./src/core/stats/index.ts
+
+
+
+var remoteMetrics;
+var Stats = /** @class */ (function (_super) {
+    __extends(Stats, _super);
+    function Stats() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Stats.initRemoteMetrics = function (options) {
+        remoteMetrics = new RemoteMetrics(options);
+    };
+    Stats.prototype.increment = function (metric, by, tags) {
+        _super.prototype.increment.call(this, metric, by, tags);
+        remoteMetrics === null || remoteMetrics === void 0 ? void 0 : remoteMetrics.increment(metric, tags !== null && tags !== void 0 ? tags : []);
+    };
+    return Stats;
+}(CoreStats));
+
+
+;// CONCATENATED MODULE: ./src/core/context/index.ts
+
+
+
+var Context = /** @class */ (function (_super) {
+    __extends(Context, _super);
+    function Context(event, id) {
+        return _super.call(this, event, id, new Stats()) || this;
+    }
+    Context.system = function () {
+        return new this({ type: 'track', event: 'system' });
+    };
+    return Context;
+}(CoreContext));
+
+
+
+;// CONCATENATED MODULE: ../core/dist/esm/callback/index.js
 function pTimeout(promise, timeout) {
     return new Promise(function (resolve, reject) {
         var timeoutId = setTimeout(function () {
@@ -5739,123 +2908,57 @@ function invokeCallback(ctx, callback, delay) {
         .then(function () { return ctx; }));
 }
 //# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 7920:
-/*!*****************************************!*\
-  !*** ../core/dist/esm/context/index.js ***!
-  \*****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ContextCancelation": function() { return /* binding */ ContextCancelation; },
-/* harmony export */   "CoreContext": function() { return /* binding */ CoreContext; }
-/* harmony export */ });
-/* harmony import */ var _lukeed_uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @lukeed/uuid */ 7831);
-/* harmony import */ var dset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dset */ 380);
-/* harmony import */ var _logger__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../logger */ 8804);
-/* harmony import */ var _stats__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../stats */ 417);
+;// CONCATENATED MODULE: ../core/dist/esm/analytics/dispatch.js
 
 
-
-
-var ContextCancelation = /** @class */ (function () {
-    function ContextCancelation(options) {
-        var _a, _b, _c;
-        this.retry = (_a = options.retry) !== null && _a !== void 0 ? _a : true;
-        this.type = (_b = options.type) !== null && _b !== void 0 ? _b : 'plugin Error';
-        this.reason = (_c = options.reason) !== null && _c !== void 0 ? _c : '';
-    }
-    return ContextCancelation;
-}());
-
-var CoreContext = /** @class */ (function () {
-    function CoreContext(event, id, stats, logger) {
-        if (id === void 0) { id = (0,_lukeed_uuid__WEBPACK_IMPORTED_MODULE_0__.v4)(); }
-        if (stats === void 0) { stats = new _stats__WEBPACK_IMPORTED_MODULE_2__.NullStats(); }
-        if (logger === void 0) { logger = new _logger__WEBPACK_IMPORTED_MODULE_3__.CoreLogger(); }
-        this.attempts = 0;
-        this.event = event;
-        this._id = id;
-        this.logger = logger;
-        this.stats = stats;
-    }
-    CoreContext.system = function () {
-        // This should be overridden by the subclass to return an instance of the subclass.
-    };
-    CoreContext.prototype.isSame = function (other) {
-        return other.id === this.id;
-    };
-    CoreContext.prototype.cancel = function (error) {
-        if (error) {
-            throw error;
-        }
-        throw new ContextCancelation({ reason: 'Context Cancel' });
-    };
-    CoreContext.prototype.log = function (level, message, extras) {
-        this.logger.log(level, message, extras);
-    };
-    Object.defineProperty(CoreContext.prototype, "id", {
-        get: function () {
-            return this._id;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    CoreContext.prototype.updateEvent = function (path, val) {
-        var _a;
-        // Don't allow integrations that are set to false to be overwritten with integration settings.
-        if (path.split('.')[0] === 'integrations') {
-            var integrationName = path.split('.')[1];
-            if (((_a = this.event.integrations) === null || _a === void 0 ? void 0 : _a[integrationName]) === false) {
-                return this.event;
+/* The amount of time in ms to wait before invoking the callback. */
+var getDelay = function (startTimeInEpochMS, timeoutInMS) {
+    var elapsedTime = Date.now() - startTimeInEpochMS;
+    // increasing the timeout increases the delay by almost the same amount -- this is weird legacy behavior.
+    return Math.max((timeoutInMS !== null && timeoutInMS !== void 0 ? timeoutInMS : 300) - elapsedTime, 0);
+};
+/**
+ * Push an event into the dispatch queue and invoke any callbacks.
+ *
+ * @param event - Segment event to enqueue.
+ * @param queue - Queue to dispatch against.
+ * @param emitter - This is typically an instance of "Analytics" -- used for metrics / progress information.
+ * @param options
+ */
+function dispatch(ctx, queue, emitter, options) {
+    return tslib_es6_awaiter(this, void 0, void 0, function () {
+        var startTime, dispatched;
+        return tslib_es6_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    emitter.emit('dispatch_start', ctx);
+                    startTime = Date.now();
+                    if (!queue.isEmpty()) return [3 /*break*/, 2];
+                    return [4 /*yield*/, queue.dispatchSingle(ctx)];
+                case 1:
+                    dispatched = _a.sent();
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, queue.dispatch(ctx)];
+                case 3:
+                    dispatched = _a.sent();
+                    _a.label = 4;
+                case 4:
+                    if (!(options === null || options === void 0 ? void 0 : options.callback)) return [3 /*break*/, 6];
+                    return [4 /*yield*/, invokeCallback(dispatched, options.callback, getDelay(startTime, options.timeout))];
+                case 5:
+                    dispatched = _a.sent();
+                    _a.label = 6;
+                case 6:
+                    if (options === null || options === void 0 ? void 0 : options.debug) {
+                        dispatched.flush();
+                    }
+                    return [2 /*return*/, dispatched];
             }
-        }
-        (0,dset__WEBPACK_IMPORTED_MODULE_1__.dset)(this.event, path, val);
-        return this.event;
-    };
-    CoreContext.prototype.failedDelivery = function () {
-        return this._failedDelivery;
-    };
-    CoreContext.prototype.setFailedDelivery = function (options) {
-        this._failedDelivery = options;
-    };
-    CoreContext.prototype.logs = function () {
-        return this.logger.logs;
-    };
-    CoreContext.prototype.flush = function () {
-        this.logger.flush();
-        this.stats.flush();
-    };
-    CoreContext.prototype.toJSON = function () {
-        return {
-            id: this._id,
-            event: this.event,
-            logs: this.logger.logs,
-            metrics: this.stats.metrics,
-        };
-    };
-    return CoreContext;
-}());
-
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 7127:
-/*!*****************************************!*\
-  !*** ../core/dist/esm/emitter/index.js ***!
-  \*****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Emitter": function() { return /* binding */ Emitter; }
-/* harmony export */ });
+        });
+    });
+}
+//# sourceMappingURL=dispatch.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/emitter/index.js
 /**
  * Event Emitter that takes the expected contract as a generic
  * @example
@@ -5919,118 +3022,334 @@ var Emitter = /** @class */ (function () {
 }());
 
 //# sourceMappingURL=index.js.map
+// EXTERNAL MODULE: ../../node_modules/spark-md5/spark-md5.js
+var spark_md5 = __webpack_require__(791);
+var spark_md5_default = /*#__PURE__*/__webpack_require__.n(spark_md5);
+;// CONCATENATED MODULE: ./src/lib/pick.ts
 
-/***/ }),
+/**
+ * @example
+ * pick({ 'a': 1, 'b': '2', 'c': 3 }, ['a', 'c'])
+ * => { 'a': 1, 'c': 3 }
+ */
+function pick(object, keys) {
+    return Object.assign.apply(Object, __spreadArray([{}], keys.map(function (key) {
+        var _a;
+        if (object && Object.prototype.hasOwnProperty.call(object, key)) {
+            return _a = {}, _a[key] = object[key], _a;
+        }
+    }), false));
+}
 
-/***/ 8804:
-/*!****************************************!*\
-  !*** ../core/dist/esm/logger/index.js ***!
-  \****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+;// CONCATENATED MODULE: ./src/core/page/get-page-context.ts
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CoreLogger": function() { return /* binding */ CoreLogger; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-
-var CoreLogger = /** @class */ (function () {
-    function CoreLogger() {
-        this._logs = [];
+var BufferedPageContextDiscriminant = 'bpc';
+/**
+ * `BufferedPageContext` object builder
+ */
+var createBufferedPageContext = function (url, canonicalUrl, search, path, title, referrer) { return ({
+    __t: BufferedPageContextDiscriminant,
+    c: canonicalUrl,
+    p: path,
+    u: url,
+    s: search,
+    t: title,
+    r: referrer,
+}); };
+// my clever/dubious way of making sure this type guard does not get out sync with the type definition
+var BUFFERED_PAGE_CONTEXT_KEYS = Object.keys(createBufferedPageContext('', '', '', '', '', ''));
+function isBufferedPageContext(bufferedPageCtx) {
+    if (!helpers_isPlainObject(bufferedPageCtx))
+        return false;
+    if (bufferedPageCtx.__t !== BufferedPageContextDiscriminant)
+        return false;
+    // ensure obj has all the keys we expect, and none we don't.
+    for (var k in bufferedPageCtx) {
+        if (!BUFFERED_PAGE_CONTEXT_KEYS.includes(k)) {
+            return false;
+        }
     }
-    CoreLogger.prototype.log = function (level, message, extras) {
-        var time = new Date();
-        this._logs.push({
-            level: level,
-            message: message,
-            time: time,
-            extras: extras,
-        });
+    return true;
+}
+//  Legacy logic: we are we appending search parameters to the canonical URL -- I guess the canonical URL is  "not canonical enough" (lol)
+var createCanonicalURL = function (canonicalUrl, searchParams) {
+    return canonicalUrl.indexOf('?') > -1
+        ? canonicalUrl
+        : canonicalUrl + searchParams;
+};
+/**
+ * Strips hash from URL.
+ * http://www.segment.local#test -> http://www.segment.local
+ */
+var removeHash = function (href) {
+    var hashIdx = href.indexOf('#');
+    return hashIdx === -1 ? href : href.slice(0, hashIdx);
+};
+var parseCanonicalPath = function (canonicalUrl) {
+    try {
+        return new URL(canonicalUrl).pathname;
+    }
+    catch (_e) {
+        // this is classic behavior -- we assume that if the canonical URL is invalid, it's a raw path.
+        return canonicalUrl[0] === '/' ? canonicalUrl : '/' + canonicalUrl;
+    }
+};
+/**
+ * Create a `PageContext` from a `BufferedPageContext`.
+ * `BufferedPageContext` keys are minified to save bytes in the snippet.
+ */
+var createPageContext = function (_a) {
+    var canonicalUrl = _a.c, pathname = _a.p, search = _a.s, url = _a.u, referrer = _a.r, title = _a.t;
+    var newPath = canonicalUrl ? parseCanonicalPath(canonicalUrl) : pathname;
+    var newUrl = canonicalUrl
+        ? createCanonicalURL(canonicalUrl, search)
+        : removeHash(url);
+    return {
+        path: newPath,
+        referrer: referrer,
+        search: search,
+        title: title,
+        url: newUrl,
     };
-    Object.defineProperty(CoreLogger.prototype, "logs", {
-        get: function () {
-            return this._logs;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    CoreLogger.prototype.flush = function () {
-        if (this.logs.length > 1) {
-            var formatted = this._logs.reduce(function (logs, log) {
-                var _a;
-                var _b, _c;
-                var line = (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, log), { json: JSON.stringify(log.extras, null, ' '), extras: log.extras });
-                delete line['time'];
-                var key = (_c = (_b = log.time) === null || _b === void 0 ? void 0 : _b.toISOString()) !== null && _c !== void 0 ? _c : '';
-                if (logs[key]) {
-                    key = "".concat(key, "-").concat(Math.random());
-                }
-                return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, logs), (_a = {}, _a[key] = line, _a));
-            }, {});
-            // ie doesn't like console.table
-            if (console.table) {
-                console.table(formatted);
+};
+/**
+ * Get page properties from the browser window/document.
+ */
+var getDefaultBufferedPageContext = function () {
+    var c = document.querySelector("link[rel='canonical']");
+    return createBufferedPageContext(location.href, (c && c.getAttribute('href')) || undefined, location.search, location.pathname, document.title, document.referrer);
+};
+/**
+ * Get page properties from the browser window/document.
+ */
+var getDefaultPageContext = function () {
+    return createPageContext(getDefaultBufferedPageContext());
+};
+
+;// CONCATENATED MODULE: ./src/core/page/add-page-context.ts
+
+
+
+/**
+ * Augments a segment event with information about the current page.
+ * Page information like URL changes frequently, so this is meant to be captured as close to the event call as possible.
+ * Things like `userAgent` do not change, so they can be added later in the flow.
+ * We prefer not to add this information to this function, as it increases the main bundle size.
+ */
+var addPageContext = function (event, pageCtx) {
+    if (pageCtx === void 0) { pageCtx = getDefaultPageContext(); }
+    var evtCtx = event.context; // Context should be set earlier in the flow
+    var pageContextFromEventProps;
+    if (event.type === 'page') {
+        pageContextFromEventProps =
+            event.properties && pick(event.properties, Object.keys(pageCtx));
+        event.properties = __assign(__assign(__assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
+    }
+    evtCtx.page = __assign(__assign(__assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
+};
+
+;// CONCATENATED MODULE: ./src/core/events/index.ts
+
+
+
+
+
+
+var EventFactory = /** @class */ (function () {
+    function EventFactory(user) {
+        this.user = user;
+    }
+    EventFactory.prototype.track = function (event, properties, options, globalIntegrations, pageCtx) {
+        return this.normalize(__assign(__assign({}, this.baseEvent()), { event: event, type: 'track', properties: properties, options: __assign({}, options), integrations: __assign({}, globalIntegrations) }), pageCtx);
+    };
+    EventFactory.prototype.page = function (category, page, properties, options, globalIntegrations, pageCtx) {
+        var event = {
+            type: 'page',
+            properties: __assign({}, properties),
+            options: __assign({}, options),
+            integrations: __assign({}, globalIntegrations),
+        };
+        if (category !== null) {
+            event.category = category;
+            event.properties.category = category;
+        }
+        if (page !== null) {
+            event.name = page;
+        }
+        return this.normalize(__assign(__assign({}, this.baseEvent()), event), pageCtx);
+    };
+    // screen(
+    //   category: string | null,
+    //   screen: string | null,
+    //   properties?: EventProperties,
+    //   options?: Options,
+    //   globalIntegrations?: Integrations,
+    //   pageCtx?: PageContext
+    // ): SegmentEvent {
+    //   const event: Partial<SegmentEvent> = {
+    //     type: 'screen' as const,
+    //     properties: { ...properties },
+    //     options: { ...options },
+    //     integrations: { ...globalIntegrations },
+    // //   if (category !== null) {
+    // //     event.category = category
+    // //   }
+    //   }
+    //   if (category !== null) {
+    //     event.category = category
+    //   }
+    //   if (screen !== null) {
+    //     event.name = screen
+    //   }
+    //   return this.normalize(
+    //     {
+    //       ...this.baseEvent(),
+    //       ...event,
+    //     } as SegmentEvent,
+    //     pageCtx
+    //   )
+    // }
+    // identify(
+    //   userId: ID,
+    //   traits?: Traits,
+    //   options?: Options,
+    //   globalIntegrations?: Integrations,
+    //   pageCtx?: PageContext
+    // ): SegmentEvent {
+    //   return this.normalize(
+    //     {
+    //       ...this.baseEvent(),
+    //       type: 'identify' as const,
+    //       userId,
+    //       traits,
+    //       options: { ...options },
+    //       integrations: { ...globalIntegrations },
+    //     },
+    //     pageCtx
+    //   )
+    // }
+    // group(
+    //   groupId: ID,
+    //   traits?: Traits,
+    //   options?: Options,
+    //   globalIntegrations?: Integrations,
+    //   pageCtx?: PageContext
+    // ): SegmentEvent {
+    //   return this.normalize(
+    //     {
+    //       ...this.baseEvent(),
+    //       type: 'group' as const,
+    //       traits,
+    //       options: { ...options },
+    //       integrations: { ...globalIntegrations },
+    //       groupId,
+    //     },
+    //     pageCtx
+    //   )
+    // }
+    // alias(
+    //   to: string,
+    //   from: string | null,
+    //   options?: Options,
+    //   globalIntegrations?: Integrations,
+    //   pageCtx?: PageContext
+    // ): SegmentEvent {
+    //   const base: Partial<SegmentEvent> = {
+    //     userId: to,
+    //     type: 'alias' as const,
+    //     options: { ...options },
+    //     integrations: { ...globalIntegrations },
+    //   }
+    //   if (from !== null) {
+    //     base.previousId = from
+    //   }
+    //   if (to === undefined) {
+    //     return this.normalize({
+    //       ...base,
+    //       ...this.baseEvent(),
+    //     } as SegmentEvent)
+    //   }
+    //   return this.normalize(
+    //     {
+    //       ...this.baseEvent(),
+    //       ...base,
+    //     } as SegmentEvent,
+    //     pageCtx
+    //   )
+    // }
+    EventFactory.prototype.baseEvent = function () {
+        var base = {
+            integrations: {},
+            options: {},
+        };
+        var user = this.user;
+        if (user.id()) {
+            base.userId = user.id();
+        }
+        if (user.anonymousId()) {
+            base.anonymousId = user.anonymousId();
+        }
+        return base;
+    };
+    /**
+     * Builds the context part of an event based on "foreign" keys that
+     * are provided in the `Options` parameter for an Event
+     */
+    EventFactory.prototype.context = function (event) {
+        var _a, _b, _c;
+        var optionsKeys = ['integrations', 'anonymousId', 'timestamp', 'userId'];
+        var options = (_a = event.options) !== null && _a !== void 0 ? _a : {};
+        delete options['integrations'];
+        var providedOptionsKeys = Object.keys(options);
+        var context = (_c = (_b = event.options) === null || _b === void 0 ? void 0 : _b.context) !== null && _c !== void 0 ? _c : {};
+        var overrides = {};
+        providedOptionsKeys.forEach(function (key) {
+            if (key === 'context') {
+                return;
+            }
+            if (optionsKeys.includes(key)) {
+                dset(overrides, key, options[key]);
             }
             else {
-                console.log(formatted);
+                dset(context, key, options[key]);
             }
-        }
-        else {
-            this.logs.forEach(function (logEntry) {
-                var level = logEntry.level, message = logEntry.message, extras = logEntry.extras;
-                if (level === 'info' || level === 'debug') {
-                    console.log(message, extras !== null && extras !== void 0 ? extras : '');
-                }
-                else {
-                    console[level](message, extras !== null && extras !== void 0 ? extras : '');
-                }
-            });
-        }
-        this._logs = [];
+        });
+        return [context, overrides];
     };
-    return CoreLogger;
+    EventFactory.prototype.normalize = function (event, pageCtx) {
+        var _a, _b, _c;
+        // set anonymousId globally if we encounter an override
+        //segment.com/docs/connections/sources/catalog/libraries/website/javascript/identity/#override-the-anonymous-id-using-the-options-object
+        ((_a = event.options) === null || _a === void 0 ? void 0 : _a.anonymousId) &&
+            this.user.anonymousId(event.options.anonymousId);
+        var integrationBooleans = Object.keys((_b = event.integrations) !== null && _b !== void 0 ? _b : {}).reduce(function (integrationNames, name) {
+            var _a;
+            var _b;
+            return __assign(__assign({}, integrationNames), (_a = {}, _a[name] = Boolean((_b = event.integrations) === null || _b === void 0 ? void 0 : _b[name]), _a));
+        }, {});
+        // This is pretty trippy, but here's what's going on:
+        // - a) We don't pass initial integration options as part of the event, only if they're true or false
+        // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
+        // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
+        var allIntegrations = __assign(__assign({}, integrationBooleans), (_c = event.options) === null || _c === void 0 ? void 0 : _c.integrations);
+        var _d = this.context(event), context = _d[0], overrides = _d[1];
+        var options = event.options, rest = __rest(event, ["options"]);
+        var newEvent = __assign(__assign(__assign(__assign({ timestamp: new Date() }, rest), { context: context, integrations: allIntegrations }), overrides), { messageId: 'ajs-next-' + spark_md5_default().hash(JSON.stringify(event) + v4()) });
+        addPageContext(newEvent, pageCtx);
+        return newEvent;
+    };
+    return EventFactory;
 }());
 
-//# sourceMappingURL=index.js.map
 
-/***/ }),
-
-/***/ 3797:
-/*!**************************************************!*\
-  !*** ../core/dist/esm/priority-queue/backoff.js ***!
-  \**************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "backoff": function() { return /* binding */ backoff; }
-/* harmony export */ });
+;// CONCATENATED MODULE: ../core/dist/esm/priority-queue/backoff.js
 function backoff(params) {
     var random = Math.random() + 1;
     var _a = params.minTimeout, minTimeout = _a === void 0 ? 500 : _a, _b = params.factor, factor = _b === void 0 ? 2 : _b, attempt = params.attempt, _c = params.maxTimeout, maxTimeout = _c === void 0 ? Infinity : _c;
     return Math.min(random * minTimeout * Math.pow(factor, attempt), maxTimeout);
 }
 //# sourceMappingURL=backoff.js.map
-
-/***/ }),
-
-/***/ 3874:
-/*!************************************************!*\
-  !*** ../core/dist/esm/priority-queue/index.js ***!
-  \************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ON_REMOVE_FROM_FUTURE": function() { return /* binding */ ON_REMOVE_FROM_FUTURE; },
-/* harmony export */   "PriorityQueue": function() { return /* binding */ PriorityQueue; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../emitter */ 7127);
-/* harmony import */ var _backoff__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./backoff */ 3797);
+;// CONCATENATED MODULE: ../core/dist/esm/priority-queue/index.js
 
 
 
@@ -6039,7 +3358,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 var ON_REMOVE_FROM_FUTURE = 'onRemoveFromFuture';
 var PriorityQueue = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(PriorityQueue, _super);
+    __extends(PriorityQueue, _super);
     function PriorityQueue(maxAttempts, queue, seen) {
         var _this = _super.call(this) || this;
         _this.future = [];
@@ -6074,7 +3393,7 @@ var PriorityQueue = /** @class */ (function (_super) {
         if (attempt > this.maxAttempts || this.includes(item)) {
             return false;
         }
-        var timeout = (0,_backoff__WEBPACK_IMPORTED_MODULE_1__.backoff)({ attempt: attempt - 1 });
+        var timeout = backoff({ attempt: attempt - 1 });
         setTimeout(function () {
             _this.queue.push(item);
             // remove from future list
@@ -6117,32 +3436,180 @@ var PriorityQueue = /** @class */ (function (_super) {
         configurable: true
     });
     return PriorityQueue;
-}(_emitter__WEBPACK_IMPORTED_MODULE_2__.Emitter));
+}(Emitter));
 
 //# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ./src/lib/priority-queue/persisted.ts
 
-/***/ }),
 
-/***/ 6096:
-/*!******************************************!*\
-  !*** ../core/dist/esm/queue/delivery.js ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "attempt": function() { return /* binding */ attempt; },
-/* harmony export */   "ensure": function() { return /* binding */ ensure; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../context */ 7920);
+// import { isBrowser } from '../../core/environment'
+var loc = {
+    getItem: function () { },
+    setItem: function () { },
+    removeItem: function () { },
+};
+try {
+    loc = /* isBrowser() && */ window.localStorage ? window.localStorage : loc;
+}
+catch (err) {
+    console.warn('Unable to access localStorage', err);
+}
+function persisted(key) {
+    var items = loc.getItem(key);
+    return (items ? JSON.parse(items) : []).map(function (p) { return new Context(p.event, p.id); });
+}
+function persistItems(key, items) {
+    var existing = persisted(key);
+    var all = __spreadArray(__spreadArray([], items, true), existing, true);
+    var merged = all.reduce(function (acc, item) {
+        var _a;
+        return __assign(__assign({}, acc), (_a = {}, _a[item.id] = item, _a));
+    }, {});
+    loc.setItem(key, JSON.stringify(Object.values(merged)));
+}
+function seen(key) {
+    var stored = loc.getItem(key);
+    return stored ? JSON.parse(stored) : {};
+}
+function persistSeen(key, memory) {
+    var stored = seen(key);
+    loc.setItem(key, JSON.stringify(__assign(__assign({}, stored), memory)));
+}
+function remove(key) {
+    loc.removeItem(key);
+}
+var now = function () { return new Date().getTime(); };
+function mutex(key, onUnlock, attempt) {
+    if (attempt === void 0) { attempt = 0; }
+    var lockTimeout = 50;
+    var lockKey = "persisted-queue:v1:".concat(key, ":lock");
+    var expired = function (lock) { return new Date().getTime() > lock; };
+    var rawLock = loc.getItem(lockKey);
+    var lock = rawLock ? JSON.parse(rawLock) : null;
+    var allowed = lock === null || expired(lock);
+    if (allowed) {
+        loc.setItem(lockKey, JSON.stringify(now() + lockTimeout));
+        onUnlock();
+        loc.removeItem(lockKey);
+        return;
+    }
+    if (!allowed && attempt < 3) {
+        setTimeout(function () {
+            mutex(key, onUnlock, attempt + 1);
+        }, lockTimeout);
+    }
+    else {
+        console.error('Unable to retrieve lock');
+    }
+}
+var PersistedPriorityQueue = /** @class */ (function (_super) {
+    __extends(PersistedPriorityQueue, _super);
+    function PersistedPriorityQueue(maxAttempts, key) {
+        var _this = _super.call(this, maxAttempts, []) || this;
+        var itemsKey = "persisted-queue:v1:".concat(key, ":items");
+        var seenKey = "persisted-queue:v1:".concat(key, ":seen");
+        var saved = [];
+        var lastSeen = {};
+        mutex(key, function () {
+            try {
+                saved = persisted(itemsKey);
+                lastSeen = seen(seenKey);
+                remove(itemsKey);
+                remove(seenKey);
+                _this.queue = __spreadArray(__spreadArray([], saved, true), _this.queue, true);
+                _this.seen = __assign(__assign({}, lastSeen), _this.seen);
+            }
+            catch (err) {
+                console.error(err);
+            }
+        });
+        window.addEventListener('pagehide', function () {
+            // we deliberately want to use the less powerful 'pagehide' API to only persist on events where the analytics instance gets destroyed, and not on tab away.
+            if (_this.todo > 0) {
+                var items_1 = __spreadArray(__spreadArray([], _this.queue, true), _this.future, true);
+                try {
+                    mutex(key, function () {
+                        persistItems(itemsKey, items_1);
+                        persistSeen(seenKey, _this.seen);
+                    });
+                }
+                catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+        return _this;
+    }
+    return PersistedPriorityQueue;
+}(PriorityQueue));
+
+
+;// CONCATENATED MODULE: ../core/dist/esm/utils/group-by.js
+
+function groupBy(collection, grouper) {
+    var results = {};
+    collection.forEach(function (item) {
+        var _a;
+        var key = undefined;
+        if (typeof grouper === 'string') {
+            var suggestedKey = item[grouper];
+            key =
+                typeof suggestedKey !== 'string'
+                    ? JSON.stringify(suggestedKey)
+                    : suggestedKey;
+        }
+        else if (grouper instanceof Function) {
+            key = grouper(item);
+        }
+        if (key === undefined) {
+            return;
+        }
+        results[key] = __spreadArray(__spreadArray([], ((_a = results[key]) !== null && _a !== void 0 ? _a : []), true), [item], false);
+    });
+    return results;
+}
+//# sourceMappingURL=group-by.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/utils/is-thenable.js
+/**
+ *  Check if  thenable
+ *  (instanceof Promise doesn't respect realms)
+ */
+var isThenable = function (value) {
+    return typeof value === 'object' &&
+        value !== null &&
+        'then' in value &&
+        typeof value.then === 'function';
+};
+//# sourceMappingURL=is-thenable.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/task/task-group.js
+
+var createTaskGroup = function () {
+    var taskCompletionPromise;
+    var resolvePromise;
+    var count = 0;
+    return {
+        done: function () { return taskCompletionPromise; },
+        run: function (op) {
+            var returnValue = op();
+            if (isThenable(returnValue)) {
+                if (++count === 1) {
+                    taskCompletionPromise = new Promise(function (res) { return (resolvePromise = res); });
+                }
+                returnValue.finally(function () { return --count === 0 && resolvePromise(); });
+            }
+            return returnValue;
+        },
+    };
+};
+//# sourceMappingURL=task-group.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/queue/delivery.js
 
 
 function tryAsync(fn) {
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+    return tslib_es6_awaiter(this, void 0, void 0, function () {
         var err_1;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+        return tslib_es6_generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
@@ -6170,11 +3637,11 @@ function attempt(ctx, plugin) {
         return ctx;
     })
         .catch(function (err) {
-        if (err instanceof _context__WEBPACK_IMPORTED_MODULE_1__.ContextCancelation &&
+        if (err instanceof context_ContextCancelation &&
             err.type === 'middleware_cancellation') {
             throw err;
         }
-        if (err instanceof _context__WEBPACK_IMPORTED_MODULE_1__.ContextCancelation) {
+        if (err instanceof context_ContextCancelation) {
             ctx.log('warn', err.type, {
                 plugin: plugin.name,
                 error: err,
@@ -6192,7 +3659,7 @@ function attempt(ctx, plugin) {
 }
 function ensure(ctx, plugin) {
     return attempt(ctx, plugin).then(function (newContext) {
-        if (newContext instanceof _context__WEBPACK_IMPORTED_MODULE_1__.CoreContext) {
+        if (newContext instanceof CoreContext) {
             return newContext;
         }
         ctx.log('debug', 'Context canceled');
@@ -6201,27 +3668,7 @@ function ensure(ctx, plugin) {
     });
 }
 //# sourceMappingURL=delivery.js.map
-
-/***/ }),
-
-/***/ 51:
-/*!*********************************************!*\
-  !*** ../core/dist/esm/queue/event-queue.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CoreEventQueue": function() { return /* binding */ CoreEventQueue; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-/* harmony import */ var _utils_group_by__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/group-by */ 7489);
-/* harmony import */ var _priority_queue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../priority-queue */ 3874);
-/* harmony import */ var _context__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../context */ 7920);
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../emitter */ 7127);
-/* harmony import */ var _task_task_group__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../task/task-group */ 7271);
-/* harmony import */ var _delivery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./delivery */ 6096);
+;// CONCATENATED MODULE: ../core/dist/esm/queue/event-queue.js
 
 
 
@@ -6230,7 +3677,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var CoreEventQueue = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(CoreEventQueue, _super);
+    __extends(CoreEventQueue, _super);
     function CoreEventQueue(priorityQueue) {
         var _this = _super.call(this) || this;
         /**
@@ -6240,20 +3687,20 @@ var CoreEventQueue = /** @class */ (function (_super) {
          *
          * This applies to all the events already in the queue, and the upcoming ones
          */
-        _this.criticalTasks = (0,_task_task_group__WEBPACK_IMPORTED_MODULE_1__.createTaskGroup)();
+        _this.criticalTasks = createTaskGroup();
         _this.plugins = [];
         _this.failedInitializations = [];
         _this.flushing = false;
         _this.queue = priorityQueue;
-        _this.queue.on(_priority_queue__WEBPACK_IMPORTED_MODULE_2__.ON_REMOVE_FROM_FUTURE, function () {
+        _this.queue.on(ON_REMOVE_FROM_FUTURE, function () {
             _this.scheduleFlush(0);
         });
         return _this;
     }
     CoreEventQueue.prototype.register = function (ctx, plugin, instance) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, Promise.resolve(plugin.load(ctx, instance))
                             .then(function () {
@@ -6279,9 +3726,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.deregister = function (ctx, plugin, instance) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var e_1;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
@@ -6306,9 +3753,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.dispatch = function (ctx) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var willDeliver;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 ctx.log('debug', 'Dispatching');
                 ctx.stats.increment('message_dispatched');
                 this.queue.push(ctx);
@@ -6319,9 +3766,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.subscribeToDelivery = function (ctx) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         var onDeliver = function (flushed, delivered) {
                             if (flushed.isSame(ctx)) {
@@ -6340,9 +3787,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.dispatchSingle = function (ctx) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var _this = this;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 ctx.log('debug', 'Dispatching');
                 ctx.stats.increment('message_dispatched');
                 this.queue.updateAttempts(ctx);
@@ -6381,9 +3828,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         }, timeout);
     };
     CoreEventQueue.prototype.deliver = function (ctx) {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var start, done, err_1, error;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.criticalTasks.done()];
                     case 1:
@@ -6413,16 +3860,16 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.enqueuRetry = function (err, ctx) {
-        var retriable = !(err instanceof _context__WEBPACK_IMPORTED_MODULE_3__.ContextCancelation) || err.retry;
+        var retriable = !(err instanceof context_ContextCancelation) || err.retry;
         if (!retriable) {
             return false;
         }
         return this.queue.pushWithBackoff(ctx);
     };
     CoreEventQueue.prototype.flush = function () {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var ctx, err_2, accepted;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_a) {
+            return tslib_es6_generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (this.queue.length === 0) {
@@ -6475,7 +3922,7 @@ var CoreEventQueue = /** @class */ (function (_super) {
             // Explicit integration option takes precedence, `All: false` does not apply to Segment.io
             return ((_c = (_b = denyList[p.name]) !== null && _b !== void 0 ? _b : alternativeNameMatch) !== null && _c !== void 0 ? _c : (p.name === 'Segment.io' ? true : denyList.All) !== false);
         });
-        var _a = (0,_utils_group_by__WEBPACK_IMPORTED_MODULE_4__.groupBy)(available, 'type'), _b = _a.before, before = _b === void 0 ? [] : _b, _c = _a.enrichment, enrichment = _c === void 0 ? [] : _c, _d = _a.destination, destination = _d === void 0 ? [] : _d, _e = _a.after, after = _e === void 0 ? [] : _e;
+        var _a = groupBy(available, 'type'), _b = _a.before, before = _b === void 0 ? [] : _b, _c = _a.enrichment, enrichment = _c === void 0 ? [] : _c, _d = _a.destination, destination = _d === void 0 ? [] : _d, _e = _a.after, after = _e === void 0 ? [] : _e;
         return {
             before: before,
             enrichment: enrichment,
@@ -6485,9 +3932,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
     };
     CoreEventQueue.prototype.flushOne = function (ctx) {
         var _a, _b;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function () {
+        return tslib_es6_awaiter(this, void 0, void 0, function () {
             var _c, before, enrichment, _i, before_1, beforeWare, temp, _d, enrichment_1, enrichmentWare, temp, _e, destinations, after, afterCalls;
-            return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__generator)(this, function (_f) {
+            return tslib_es6_generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
                         if (!this.isReady()) {
@@ -6502,10 +3949,10 @@ var CoreEventQueue = /** @class */ (function (_super) {
                     case 1:
                         if (!(_i < before_1.length)) return [3 /*break*/, 4];
                         beforeWare = before_1[_i];
-                        return [4 /*yield*/, (0,_delivery__WEBPACK_IMPORTED_MODULE_5__.ensure)(ctx, beforeWare)];
+                        return [4 /*yield*/, ensure(ctx, beforeWare)];
                     case 2:
                         temp = _f.sent();
-                        if (temp instanceof _context__WEBPACK_IMPORTED_MODULE_3__.CoreContext) {
+                        if (temp instanceof CoreContext) {
                             ctx = temp;
                         }
                         this.emit('message_enriched', ctx, beforeWare);
@@ -6519,10 +3966,10 @@ var CoreEventQueue = /** @class */ (function (_super) {
                     case 5:
                         if (!(_d < enrichment_1.length)) return [3 /*break*/, 8];
                         enrichmentWare = enrichment_1[_d];
-                        return [4 /*yield*/, (0,_delivery__WEBPACK_IMPORTED_MODULE_5__.attempt)(ctx, enrichmentWare)];
+                        return [4 /*yield*/, attempt(ctx, enrichmentWare)];
                     case 6:
                         temp = _f.sent();
-                        if (temp instanceof _context__WEBPACK_IMPORTED_MODULE_3__.CoreContext) {
+                        if (temp instanceof CoreContext) {
                             ctx = temp;
                         }
                         this.emit('message_enriched', ctx, enrichmentWare);
@@ -6535,7 +3982,7 @@ var CoreEventQueue = /** @class */ (function (_super) {
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 setTimeout(function () {
                                     var attempts = destinations.map(function (destination) {
-                                        return (0,_delivery__WEBPACK_IMPORTED_MODULE_5__.attempt)(ctx, destination);
+                                        return attempt(ctx, destination);
                                     });
                                     Promise.all(attempts).then(resolve).catch(reject);
                                 }, 0);
@@ -6544,7 +3991,7 @@ var CoreEventQueue = /** @class */ (function (_super) {
                         _f.sent();
                         ctx.stats.increment('message_delivered');
                         this.emit('message_delivered', ctx);
-                        afterCalls = after.map(function (after) { return (0,_delivery__WEBPACK_IMPORTED_MODULE_5__.attempt)(ctx, after); });
+                        afterCalls = after.map(function (after) { return attempt(ctx, after); });
                         return [4 /*yield*/, Promise.all(afterCalls)];
                     case 10:
                         _f.sent();
@@ -6554,434 +4001,158 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     return CoreEventQueue;
-}(_emitter__WEBPACK_IMPORTED_MODULE_6__.Emitter));
+}(Emitter));
 
 //# sourceMappingURL=event-queue.js.map
+;// CONCATENATED MODULE: ./src/core/queue/event-queue.ts
 
-/***/ }),
 
-/***/ 417:
-/*!***************************************!*\
-  !*** ../core/dist/esm/stats/index.js ***!
-  \***************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CoreStats": function() { return /* binding */ CoreStats; },
-/* harmony export */   "NullStats": function() { return /* binding */ NullStats; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
 
-var compactMetricType = function (type) {
-    var enums = {
-        gauge: 'g',
-        counter: 'c',
-    };
-    return enums[type];
-};
-var CoreStats = /** @class */ (function () {
-    function CoreStats() {
-        this.metrics = [];
+var EventQueue = /** @class */ (function (_super) {
+    __extends(EventQueue, _super);
+    function EventQueue(nameOrQueue) {
+        return _super.call(this, typeof nameOrQueue === 'string'
+            ? new PersistedPriorityQueue(4, nameOrQueue)
+            : nameOrQueue) || this;
     }
-    CoreStats.prototype.increment = function (metric, by, tags) {
-        if (by === void 0) { by = 1; }
-        this.metrics.push({
-            metric: metric,
-            value: by,
-            tags: tags !== null && tags !== void 0 ? tags : [],
-            type: 'counter',
-            timestamp: Date.now(),
+    EventQueue.prototype.flush = function () {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            return tslib_es6_generator(this, function (_a) {
+                if (isOffline())
+                    return [2 /*return*/, []];
+                return [2 /*return*/, _super.prototype.flush.call(this)];
+            });
         });
     };
-    CoreStats.prototype.gauge = function (metric, value, tags) {
-        this.metrics.push({
-            metric: metric,
-            value: value,
-            tags: tags !== null && tags !== void 0 ? tags : [],
-            type: 'gauge',
-            timestamp: Date.now(),
-        });
-    };
-    CoreStats.prototype.flush = function () {
-        var formatted = this.metrics.map(function (m) { return ((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__assign)({}, m), { tags: m.tags.join(',') })); });
-        // ie doesn't like console.table
-        if (console.table) {
-            console.table(formatted);
+    return EventQueue;
+}(CoreEventQueue));
+
+
+;// CONCATENATED MODULE: ./src/lib/bind-all.ts
+function bindAll(obj) {
+    var proto = obj.constructor.prototype;
+    for (var _i = 0, _a = Object.getOwnPropertyNames(proto); _i < _a.length; _i++) {
+        var key = _a[_i];
+        if (key !== 'constructor') {
+            var desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, key);
+            if (!!desc && typeof desc.value === 'function') {
+                obj[key] = obj[key].bind(obj);
+            }
         }
-        else {
-            console.log(formatted);
+    }
+    return obj;
+}
+
+;// CONCATENATED MODULE: ./src/core/storage/types.ts
+var StoreType = {
+    Cookie: 'cookie',
+    LocalStorage: 'localStorage',
+    Memory: 'memory',
+};
+
+;// CONCATENATED MODULE: ./src/core/storage/universalStorage.ts
+// not adding to private method because those method names do not get minified atm, and does not use 'this'
+var _logStoreKeyError = function (store, action, key, err) {
+    console.warn("".concat(store.constructor.name, ": Can't ").concat(action, " key \"").concat(key, "\" | Err: ").concat(err));
+};
+/**
+ * Uses multiple storages in a priority list to get/set values in the order they are specified.
+ */
+var UniversalStorage = /** @class */ (function () {
+    function UniversalStorage(stores) {
+        this.stores = stores;
+    }
+    UniversalStorage.prototype.get = function (key) {
+        var val = null;
+        for (var _i = 0, _a = this.stores; _i < _a.length; _i++) {
+            var store = _a[_i];
+            try {
+                val = store.get(key);
+                if (val !== undefined && val !== null) {
+                    return val;
+                }
+            }
+            catch (e) {
+                _logStoreKeyError(store, 'get', key, e);
+            }
         }
-        this.metrics = [];
+        return null;
     };
-    /**
-     * compact keys for smaller payload
-     */
-    CoreStats.prototype.serialize = function () {
-        return this.metrics.map(function (m) {
-            return {
-                m: m.metric,
-                v: m.value,
-                t: m.tags,
-                k: compactMetricType(m.type),
-                e: m.timestamp,
-            };
+    UniversalStorage.prototype.set = function (key, value) {
+        this.stores.forEach(function (store) {
+            try {
+                store.set(key, value);
+            }
+            catch (e) {
+                _logStoreKeyError(store, 'set', key, e);
+            }
         });
     };
-    return CoreStats;
+    UniversalStorage.prototype.clear = function (key) {
+        this.stores.forEach(function (store) {
+            try {
+                store.remove(key);
+            }
+            catch (e) {
+                _logStoreKeyError(store, 'remove', key, e);
+            }
+        });
+    };
+    /*
+      This is to support few scenarios where:
+      - value exist in one of the stores ( as a result of other stores being cleared from browser ) and we want to resync them
+      - read values in AJS 1.0 format ( for customers after 1.0 --> 2.0 migration ) and then re-write them in AJS 2.0 format
+    */
+    UniversalStorage.prototype.getAndSync = function (key) {
+        var val = this.get(key);
+        // legacy behavior, getAndSync can change the type of a value from number to string (AJS 1.0 stores numerical values as a number)
+        var coercedValue = (typeof val === 'number' ? val.toString() : val);
+        this.set(key, coercedValue);
+        return coercedValue;
+    };
+    return UniversalStorage;
 }());
 
-var NullStats = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(NullStats, _super);
-    function NullStats() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NullStats.prototype.gauge = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-    };
-    NullStats.prototype.increment = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-    };
-    NullStats.prototype.flush = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-    };
-    NullStats.prototype.serialize = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-        return [];
-    };
-    return NullStats;
-}(CoreStats));
 
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 7271:
-/*!*******************************************!*\
-  !*** ../core/dist/esm/task/task-group.js ***!
-  \*******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "createTaskGroup": function() { return /* binding */ createTaskGroup; }
-/* harmony export */ });
-/* harmony import */ var _utils_is_thenable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/is-thenable */ 3846);
-
-var createTaskGroup = function () {
-    var taskCompletionPromise;
-    var resolvePromise;
-    var count = 0;
-    return {
-        done: function () { return taskCompletionPromise; },
-        run: function (op) {
-            var returnValue = op();
-            if ((0,_utils_is_thenable__WEBPACK_IMPORTED_MODULE_0__.isThenable)(returnValue)) {
-                if (++count === 1) {
-                    taskCompletionPromise = new Promise(function (res) { return (resolvePromise = res); });
-                }
-                returnValue.finally(function () { return --count === 0 && resolvePromise(); });
-            }
-            return returnValue;
-        },
-    };
-};
-//# sourceMappingURL=task-group.js.map
-
-/***/ }),
-
-/***/ 7489:
-/*!******************************************!*\
-  !*** ../core/dist/esm/utils/group-by.js ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "groupBy": function() { return /* binding */ groupBy; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-
-function groupBy(collection, grouper) {
-    var results = {};
-    collection.forEach(function (item) {
-        var _a;
-        var key = undefined;
-        if (typeof grouper === 'string') {
-            var suggestedKey = item[grouper];
-            key =
-                typeof suggestedKey !== 'string'
-                    ? JSON.stringify(suggestedKey)
-                    : suggestedKey;
-        }
-        else if (grouper instanceof Function) {
-            key = grouper(item);
-        }
-        if (key === undefined) {
-            return;
-        }
-        results[key] = (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__spreadArray)((0,tslib__WEBPACK_IMPORTED_MODULE_0__.__spreadArray)([], ((_a = results[key]) !== null && _a !== void 0 ? _a : []), true), [item], false);
-    });
-    return results;
-}
-//# sourceMappingURL=group-by.js.map
-
-/***/ }),
-
-/***/ 3846:
-/*!*********************************************!*\
-  !*** ../core/dist/esm/utils/is-thenable.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "isThenable": function() { return /* binding */ isThenable; }
-/* harmony export */ });
+;// CONCATENATED MODULE: ./src/core/storage/memoryStorage.ts
 /**
- *  Check if  thenable
- *  (instanceof Promise doesn't respect realms)
+ * Data Storage using in memory object
  */
-var isThenable = function (value) {
-    return typeof value === 'object' &&
-        value !== null &&
-        'then' in value &&
-        typeof value.then === 'function';
-};
-//# sourceMappingURL=is-thenable.js.map
-
-/***/ }),
-
-/***/ 4262:
-/*!*************************************************!*\
-  !*** ../core/dist/esm/validation/assertions.js ***!
-  \*************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "assertEventExists": function() { return /* binding */ assertEventExists; },
-/* harmony export */   "assertEventType": function() { return /* binding */ assertEventType; },
-/* harmony export */   "assertTrackEventName": function() { return /* binding */ assertTrackEventName; },
-/* harmony export */   "assertTrackEventProperties": function() { return /* binding */ assertTrackEventProperties; },
-/* harmony export */   "assertTraits": function() { return /* binding */ assertTraits; },
-/* harmony export */   "assertUserIdentity": function() { return /* binding */ assertUserIdentity; },
-/* harmony export */   "validateEvent": function() { return /* binding */ validateEvent; }
-/* harmony export */ });
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ 2370);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ 7595);
-
-
-var stringError = 'is not a string';
-var objError = 'is not an object';
-var nilError = 'is nil';
-function assertUserIdentity(event) {
-    var USER_FIELD_NAME = '.userId/anonymousId/previousId/groupId';
-    var getAnyUserId = function (event) { var _a, _b, _c; return (_c = (_b = (_a = event.userId) !== null && _a !== void 0 ? _a : event.anonymousId) !== null && _b !== void 0 ? _b : event.groupId) !== null && _c !== void 0 ? _c : event.previousId; };
-    var id = getAnyUserId(event);
-    if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.exists)(id)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError(USER_FIELD_NAME, nilError);
+var MemoryStorage = /** @class */ (function () {
+    function MemoryStorage() {
+        this.cache = {};
     }
-    else if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.isString)(id)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError(USER_FIELD_NAME, stringError);
-    }
+    MemoryStorage.prototype.get = function (key) {
+        var _a;
+        return ((_a = this.cache[key]) !== null && _a !== void 0 ? _a : null);
+    };
+    MemoryStorage.prototype.set = function (key, value) {
+        this.cache[key] = value;
+    };
+    MemoryStorage.prototype.remove = function (key) {
+        delete this.cache[key];
+    };
+    return MemoryStorage;
+}());
+
+
+;// CONCATENATED MODULE: ./src/core/storage/settings.ts
+
+function isArrayOfStoreType(s) {
+    return (s &&
+        s.stores &&
+        Array.isArray(s.stores) &&
+        s.stores.every(function (e) { return Object.values(StoreType).includes(e); }));
 }
-function assertEventExists(event) {
-    if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.exists)(event)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError('Event', nilError);
-    }
-    if (typeof event !== 'object') {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError('Event', objError);
-    }
-}
-function assertEventType(event) {
-    if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.isString)(event.type)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError('.type', stringError);
-    }
-}
-function assertTrackEventName(event) {
-    if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.isString)(event.event)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError('.event', stringError);
-    }
-}
-function assertTrackEventProperties(event) {
-    if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(event.properties)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError('.properties', objError);
-    }
-}
-function assertTraits(event) {
-    if (!(0,_helpers__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(event.traits)) {
-        throw new _errors__WEBPACK_IMPORTED_MODULE_1__.ValidationError('.traits', objError);
-    }
-}
-function validateEvent(event) {
-    assertEventExists(event);
-    assertEventType(event);
-    if (event.type === 'track') {
-        assertTrackEventName(event);
-        assertTrackEventProperties(event);
-    }
-    if (['group', 'identify'].includes(event.type)) {
-        assertTraits(event);
-    }
-    assertUserIdentity(event);
-}
-//# sourceMappingURL=assertions.js.map
-
-/***/ }),
-
-/***/ 2370:
-/*!*********************************************!*\
-  !*** ../core/dist/esm/validation/errors.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ValidationError": function() { return /* binding */ ValidationError; }
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 5163);
-
-var ValidationError = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__extends)(ValidationError, _super);
-    function ValidationError(field, message) {
-        var _this = _super.call(this, "".concat(field, " ").concat(message)) || this;
-        _this.field = field;
-        return _this;
-    }
-    return ValidationError;
-}(Error));
-
-//# sourceMappingURL=errors.js.map
-
-/***/ }),
-
-/***/ 7595:
-/*!**********************************************!*\
-  !*** ../core/dist/esm/validation/helpers.js ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "exists": function() { return /* binding */ exists; },
-/* harmony export */   "isFunction": function() { return /* binding */ isFunction; },
-/* harmony export */   "isNumber": function() { return /* binding */ isNumber; },
-/* harmony export */   "isPlainObject": function() { return /* binding */ isPlainObject; },
-/* harmony export */   "isString": function() { return /* binding */ isString; }
-/* harmony export */ });
-function isString(obj) {
-    return typeof obj === 'string';
-}
-function isNumber(obj) {
-    return typeof obj === 'number';
-}
-function isFunction(obj) {
-    return typeof obj === 'function';
-}
-function exists(val) {
-    return val !== undefined && val !== null;
-}
-function isPlainObject(obj) {
-    return (Object.prototype.toString.call(obj).slice(8, -1).toLowerCase() === 'object');
-}
-//# sourceMappingURL=helpers.js.map
-
-/***/ }),
-
-/***/ 7831:
-/*!******************************************************!*\
-  !*** ../../node_modules/@lukeed/uuid/dist/index.mjs ***!
-  \******************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "v4": function() { return /* binding */ v4; }
-/* harmony export */ });
-var IDX=256, HEX=[], BUFFER;
-while (IDX--) HEX[IDX] = (IDX + 256).toString(16).substring(1);
-
-function v4() {
-	var i=0, num, out='';
-
-	if (!BUFFER || ((IDX + 16) > 256)) {
-		BUFFER = Array(i=256);
-		while (i--) BUFFER[i] = 256 * Math.random() | 0;
-		i = IDX = 0;
-	}
-
-	for (; i < 16; i++) {
-		num = BUFFER[IDX + i];
-		if (i==6) out += HEX[num & 15 | 64];
-		else if (i==8) out += HEX[num & 63 | 128];
-		else out += HEX[num];
-
-		if (i & 1 && i > 1 && i < 11) out += '-';
-	}
-
-	IDX++;
-	return out;
+function isStoreTypeWithSettings(s) {
+    return typeof s === 'object' && s.name !== undefined;
 }
 
-
-/***/ }),
-
-/***/ 380:
-/*!**********************************************!*\
-  !*** ../../node_modules/dset/dist/index.mjs ***!
-  \**********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "dset": function() { return /* binding */ dset; }
-/* harmony export */ });
-function dset(obj, keys, val) {
-	keys.split && (keys=keys.split('.'));
-	var i=0, l=keys.length, t=obj, x, k;
-	while (i < l) {
-		k = keys[i++];
-		if (k === '__proto__' || k === 'constructor' || k === 'prototype') break;
-		t = t[k] = (i === l) ? val : (typeof(x=t[k])===typeof(keys)) ? x : (keys[i]*0 !== 0 || !!~(''+keys[i]).indexOf('.')) ? {} : [];
-	}
-}
-
-
-/***/ }),
-
-/***/ 1805:
-/*!*******************************************************!*\
-  !*** ../../node_modules/js-cookie/dist/js.cookie.mjs ***!
-  \*******************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
+;// CONCATENATED MODULE: ../../node_modules/js-cookie/dist/js.cookie.mjs
 /*! js-cookie v3.0.1 | MIT */
 /* eslint-disable no-var */
-function assign (target) {
+function js_cookie_assign (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
     for (var key in source) {
@@ -7017,7 +4188,7 @@ function init (converter, defaultAttributes) {
       return
     }
 
-    attributes = assign({}, defaultAttributes, attributes);
+    attributes = js_cookie_assign({}, defaultAttributes, attributes);
 
     if (typeof attributes.expires === 'number') {
       attributes.expires = new Date(Date.now() + attributes.expires * 864e5);
@@ -7090,16 +4261,16 @@ function init (converter, defaultAttributes) {
         set(
           key,
           '',
-          assign({}, attributes, {
+          js_cookie_assign({}, attributes, {
             expires: -1
           })
         );
       },
       withAttributes: function (attributes) {
-        return init(this.converter, assign({}, this.attributes, attributes))
+        return init(this.converter, js_cookie_assign({}, this.attributes, attributes))
       },
       withConverter: function (converter) {
-        return init(assign({}, this.converter, converter), this.attributes)
+        return init(js_cookie_assign({}, this.converter, converter), this.attributes)
       }
     },
     {
@@ -7112,106 +4283,2300 @@ function init (converter, defaultAttributes) {
 var api = init(defaultConverter, { path: '/' });
 /* eslint-enable no-var */
 
-/* harmony default export */ __webpack_exports__["default"] = (api);
+/* harmony default export */ var js_cookie = (api);
+
+;// CONCATENATED MODULE: ./src/core/user/tld.ts
+
+/**
+ * Levels returns all levels of the given url.
+ *
+ * @param {string} url
+ * @return {Array}
+ * @api public
+ */
+function levels(url) {
+    var host = url.hostname;
+    var parts = host.split('.');
+    var last = parts[parts.length - 1];
+    var levels = [];
+    // Ip address.
+    if (parts.length === 4 && parseInt(last, 10) > 0) {
+        return levels;
+    }
+    // Localhost.
+    if (parts.length <= 1) {
+        return levels;
+    }
+    // Create levels.
+    for (var i = parts.length - 2; i >= 0; --i) {
+        levels.push(parts.slice(i).join('.'));
+    }
+    return levels;
+}
+function parseUrl(url) {
+    try {
+        return new URL(url);
+    }
+    catch (_a) {
+        return;
+    }
+}
+function tld(url) {
+    var parsedUrl = parseUrl(url);
+    if (!parsedUrl)
+        return;
+    var lvls = levels(parsedUrl);
+    // Lookup the real top level one.
+    for (var i = 0; i < lvls.length; ++i) {
+        var cname = '__tld__';
+        var domain = lvls[i];
+        var opts = { domain: '.' + domain };
+        try {
+            // cookie access throw an error if the library is ran inside a sandboxed environment (e.g. sandboxed iframe)
+            js_cookie.set(cname, '1', opts);
+            if (js_cookie.get(cname)) {
+                js_cookie.remove(cname, opts);
+                return domain;
+            }
+        }
+        catch (_) {
+            return;
+        }
+    }
+}
+
+;// CONCATENATED MODULE: ./src/core/storage/cookieStorage.ts
 
 
-/***/ }),
 
-/***/ 3721:
-/*!***************************************************!*\
-  !*** ../../node_modules/unfetch/dist/unfetch.mjs ***!
-  \***************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+var ONE_YEAR = 365;
+/**
+ * Data storage using browser cookies
+ */
+var CookieStorage = /** @class */ (function () {
+    function CookieStorage(options) {
+        if (options === void 0) { options = CookieStorage.defaults; }
+        this.options = __assign(__assign({}, CookieStorage.defaults), options);
+    }
+    Object.defineProperty(CookieStorage, "defaults", {
+        get: function () {
+            return {
+                maxage: ONE_YEAR,
+                domain: tld(window.location.href),
+                path: '/',
+                sameSite: 'Lax',
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
+    CookieStorage.prototype.opts = function () {
+        return {
+            sameSite: this.options.sameSite,
+            expires: this.options.maxage,
+            domain: this.options.domain,
+            path: this.options.path,
+            secure: this.options.secure,
+        };
+    };
+    CookieStorage.prototype.get = function (key) {
+        var _a;
+        try {
+            var value = js_cookie.get(key);
+            if (value === undefined || value === null) {
+                return null;
+            }
+            try {
+                return (_a = JSON.parse(value)) !== null && _a !== void 0 ? _a : null;
+            }
+            catch (e) {
+                return (value !== null && value !== void 0 ? value : null);
+            }
+        }
+        catch (e) {
+            return null;
+        }
+    };
+    CookieStorage.prototype.set = function (key, value) {
+        if (typeof value === 'string') {
+            js_cookie.set(key, value, this.opts());
+        }
+        else if (value === null) {
+            js_cookie.remove(key, this.opts());
+        }
+        else {
+            js_cookie.set(key, JSON.stringify(value), this.opts());
+        }
+    };
+    CookieStorage.prototype.remove = function (key) {
+        return js_cookie.remove(key, this.opts());
+    };
+    return CookieStorage;
+}());
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* export default binding */ __WEBPACK_DEFAULT_EXPORT__; }
-/* harmony export */ });
-/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(JSON.parse(s.responseText))},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})}
-//# sourceMappingURL=unfetch.mjs.map
+
+;// CONCATENATED MODULE: ./src/core/storage/localStorage.ts
+/**
+ * Data storage using browser's localStorage
+ */
+var LocalStorage = /** @class */ (function () {
+    function LocalStorage() {
+    }
+    LocalStorage.prototype.localStorageWarning = function (key, state) {
+        console.warn("Unable to access ".concat(key, ", localStorage may be ").concat(state));
+    };
+    LocalStorage.prototype.get = function (key) {
+        var _a;
+        try {
+            var val = localStorage.getItem(key);
+            if (val === null) {
+                return null;
+            }
+            try {
+                return (_a = JSON.parse(val)) !== null && _a !== void 0 ? _a : null;
+            }
+            catch (e) {
+                return (val !== null && val !== void 0 ? val : null);
+            }
+        }
+        catch (err) {
+            this.localStorageWarning(key, 'unavailable');
+            return null;
+        }
+    };
+    LocalStorage.prototype.set = function (key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+        catch (_a) {
+            this.localStorageWarning(key, 'full');
+        }
+    };
+    LocalStorage.prototype.remove = function (key) {
+        try {
+            return localStorage.removeItem(key);
+        }
+        catch (err) {
+            this.localStorageWarning(key, 'unavailable');
+        }
+    };
+    return LocalStorage;
+}());
 
 
-/***/ })
+;// CONCATENATED MODULE: ./src/core/storage/index.ts
 
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-!function() {
-"use strict";
-/*!***********************************!*\
-  !*** ./src/browser/standalone.ts ***!
-  \***********************************/
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _plugins_segmentio_normalize__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../plugins/segmentio/normalize */ 719);
-/* harmony import */ var _standalone_analytics__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./standalone-analytics */ 2703);
+
+
+
+
+
+
+
+
+
+
+/**
+ * Creates multiple storage systems from an array of StoreType and options
+ * @param args StoreType and options
+ * @returns Storage array
+ */
+function initializeStorages(args) {
+    var storages = args.map(function (s) {
+        var type;
+        var settings;
+        if (isStoreTypeWithSettings(s)) {
+            type = s.name;
+            settings = s.settings;
+        }
+        else {
+            type = s;
+        }
+        switch (type) {
+            case StoreType.Cookie:
+                return new CookieStorage(settings);
+            case StoreType.LocalStorage:
+                return new LocalStorage();
+            case StoreType.Memory:
+                return new MemoryStorage();
+            default:
+                throw new Error("Unknown Store Type: ".concat(s));
+        }
+    });
+    return storages;
+}
+/**
+ * Injects the CookieOptions into a the arguments for initializeStorage
+ * @param storeTypes list of storeType
+ * @param cookieOptions cookie Options
+ * @returns arguments for initializeStorage
+ */
+function applyCookieOptions(storeTypes, cookieOptions) {
+    return storeTypes.map(function (s) {
+        if (cookieOptions && s === StoreType.Cookie) {
+            return {
+                name: s,
+                settings: cookieOptions,
+            };
+        }
+        return s;
+    });
+}
+
+;// CONCATENATED MODULE: ./src/core/user/index.ts
+
+
+
+
+var defaults = {
+    persist: true,
+    cookie: {
+        key: 'ajs_user_id',
+        oldKey: 'ajs_user',
+    },
+    localStorage: {
+        key: 'ajs_user_traits',
+    },
+};
+var User = /** @class */ (function () {
+    function User(options, cookieOptions) {
+        if (options === void 0) { options = defaults; }
+        var _this = this;
+        var _a, _b, _c, _d;
+        this.options = {};
+        this.id = function (id) {
+            if (_this.options.disable) {
+                return null;
+            }
+            var prevId = _this.identityStore.getAndSync(_this.idKey);
+            if (id !== undefined) {
+                _this.identityStore.set(_this.idKey, id);
+                var changingIdentity = id !== prevId && prevId !== null && id !== null;
+                if (changingIdentity) {
+                    _this.anonymousId(null);
+                }
+            }
+            var retId = _this.identityStore.getAndSync(_this.idKey);
+            if (retId)
+                return retId;
+            var retLeg = _this.legacyUserStore.get(defaults.cookie.oldKey);
+            return retLeg ? (typeof retLeg === 'object' ? retLeg.id : retLeg) : null;
+        };
+        // private legacySIO(): [string, string] | null {
+        //   const val = this.legacyUserStore.get('_sio') as string
+        //   if (!val) {
+        //     return null
+        //   }
+        //   const [anon, user] = val.split('----')
+        //   return [anon, user]
+        // }
+        this.anonymousId = function (id) {
+            if (_this.options.disable) {
+                return null;
+            }
+            if (id === undefined) {
+                // const val =
+                //   this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
+                var val = _this.identityStore.getAndSync(_this.anonKey);
+                if (val) {
+                    return val;
+                }
+            }
+            if (id === null) {
+                _this.identityStore.set(_this.anonKey, null);
+                return _this.identityStore.getAndSync(_this.anonKey);
+            }
+            _this.identityStore.set(_this.anonKey, id !== null && id !== void 0 ? id : v4());
+            return _this.identityStore.getAndSync(_this.anonKey);
+        };
+        this.traits = function (traits) {
+            var _a;
+            if (_this.options.disable) {
+                return;
+            }
+            if (traits === null) {
+                traits = {};
+            }
+            if (traits) {
+                _this.traitsStore.set(_this.traitsKey, traits !== null && traits !== void 0 ? traits : {});
+            }
+            return (_a = _this.traitsStore.get(_this.traitsKey)) !== null && _a !== void 0 ? _a : {};
+        };
+        this.options = __assign(__assign({}, defaults), options);
+        this.cookieOptions = cookieOptions;
+        this.idKey = (_b = (_a = options.cookie) === null || _a === void 0 ? void 0 : _a.key) !== null && _b !== void 0 ? _b : defaults.cookie.key;
+        this.traitsKey = (_d = (_c = options.localStorage) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : defaults.localStorage.key;
+        this.anonKey = 'ajs_anonymous_id';
+        this.identityStore = this.createStorage(this.options, cookieOptions);
+        // using only cookies for legacy user store
+        this.legacyUserStore = this.createStorage(this.options, cookieOptions, function (s) { return s === StoreType.Cookie; });
+        // using only localStorage / memory for traits store
+        this.traitsStore = this.createStorage(this.options, cookieOptions, function (s) { return s !== StoreType.Cookie; });
+        var legacyUser = this.legacyUserStore.get(defaults.cookie.oldKey);
+        if (legacyUser && typeof legacyUser === 'object') {
+            legacyUser.id && this.id(legacyUser.id);
+            legacyUser.traits && this.traits(legacyUser.traits);
+        }
+        bindAll(this);
+    }
+    User.prototype.identify = function (id, traits) {
+        if (this.options.disable) {
+            return;
+        }
+        traits = traits !== null && traits !== void 0 ? traits : {};
+        var currentId = this.id();
+        if (currentId === null || currentId === id) {
+            traits = __assign(__assign({}, this.traits()), traits);
+        }
+        if (id) {
+            this.id(id);
+        }
+        this.traits(traits);
+    };
+    User.prototype.logout = function () {
+        this.anonymousId(null);
+        this.id(null);
+        this.traits({});
+    };
+    User.prototype.reset = function () {
+        this.logout();
+        this.identityStore.clear(this.idKey);
+        this.identityStore.clear(this.anonKey);
+        this.traitsStore.clear(this.traitsKey);
+    };
+    User.prototype.load = function () {
+        return new User(this.options, this.cookieOptions);
+    };
+    User.prototype.save = function () {
+        return true;
+    };
+    /**
+     * Creates the right storage system applying all the user options, cookie options and particular filters
+     * @param options UserOptions
+     * @param cookieOpts CookieOptions
+     * @param filterStores filter function to apply to any StoreTypes (skipped if options specify using a custom storage)
+     * @returns a Storage object
+     */
+    User.prototype.createStorage = function (options, cookieOpts, filterStores) {
+        var stores = [
+            StoreType.LocalStorage,
+            StoreType.Cookie,
+            StoreType.Memory,
+        ];
+        // If disabled we won't have any storage functionality
+        if (options.disable) {
+            return new UniversalStorage([]);
+        }
+        // If persistance is disabled we will always fallback to Memory Storage
+        if (!options.persist) {
+            return new UniversalStorage([new MemoryStorage()]);
+        }
+        if (options.storage !== undefined && options.storage !== null) {
+            if (isArrayOfStoreType(options.storage)) {
+                // If the user only specified order of stores we will still apply filters and transformations e.g. not using localStorage if localStorageFallbackDisabled
+                stores = options.storage.stores;
+            }
+        }
+        // Disable LocalStorage
+        if (options.localStorageFallbackDisabled) {
+            stores = stores.filter(function (s) { return s !== StoreType.LocalStorage; });
+        }
+        // Apply Additional filters
+        if (filterStores) {
+            stores = stores.filter(filterStores);
+        }
+        return new UniversalStorage(initializeStorages(applyCookieOptions(stores, cookieOpts)));
+    };
+    User.defaults = defaults;
+    return User;
+}());
+
+var groupDefaults = {
+    persist: true,
+    cookie: {
+        key: 'ajs_group_id',
+    },
+    localStorage: {
+        key: 'ajs_group_properties',
+    },
+};
+var Group = /** @class */ (function (_super) {
+    __extends(Group, _super);
+    function Group(options, cookie) {
+        if (options === void 0) { options = groupDefaults; }
+        var _this = _super.call(this, __assign(__assign({}, groupDefaults), options), cookie) || this;
+        _this.anonymousId = function (_id) {
+            return undefined;
+        };
+        bindAll(_this);
+        return _this;
+    }
+    return Group;
+}(User));
+
+
+;// CONCATENATED MODULE: ./src/lib/is-thenable.ts
+/**
+ *  Check if  thenable
+ *  (instanceof Promise doesn't respect realms)
+ */
+var is_thenable_isThenable = function (value) {
+    return typeof value === 'object' &&
+        value !== null &&
+        'then' in value &&
+        typeof value.then === 'function';
+};
+
+;// CONCATENATED MODULE: ./src/core/buffer/index.ts
+
+
+
+
+
+var flushSyncAnalyticsCalls = function (name, analytics, buffer) {
+    buffer.getCalls(name).forEach(function (c) {
+        // While the underlying methods are synchronous, the callAnalyticsMethod returns a promise,
+        // which normalizes success and error states between async and non-async methods, with no perf penalty.
+        callAnalyticsMethod(analytics, c).catch(console.error);
+    });
+};
+var flushAddSourceMiddleware = function (analytics, buffer) { return tslib_es6_awaiter(void 0, void 0, void 0, function () {
+    var _i, _a, c;
+    return tslib_es6_generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _i = 0, _a = buffer.getCalls('addSourceMiddleware');
+                _b.label = 1;
+            case 1:
+                if (!(_i < _a.length)) return [3 /*break*/, 4];
+                c = _a[_i];
+                return [4 /*yield*/, callAnalyticsMethod(analytics, c).catch(console.error)];
+            case 2:
+                _b.sent();
+                _b.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var flushOn = flushSyncAnalyticsCalls.bind(undefined, 'on');
+var flushSetAnonymousID = flushSyncAnalyticsCalls.bind(undefined, 'setAnonymousId');
+var flushAnalyticsCallsInNewTask = function (analytics, buffer) {
+    buffer.toArray().forEach(function (m) {
+        setTimeout(function () {
+            callAnalyticsMethod(analytics, m).catch(console.error);
+        }, 0);
+    });
+};
+var popPageContext = function (args) {
+    if (hasBufferedPageContextAsLastArg(args)) {
+        var ctx = args.pop();
+        return createPageContext(ctx);
+    }
+};
+var hasBufferedPageContextAsLastArg = function (args) {
+    var lastArg = args[args.length - 1];
+    return isBufferedPageContext(lastArg);
+};
+/**
+ *  Represents a buffered method call that occurred before initialization.
+ */
+var PreInitMethodCall = /** @class */ (function () {
+    function PreInitMethodCall(method, args, resolve, reject) {
+        if (resolve === void 0) { resolve = function () { }; }
+        if (reject === void 0) { reject = console.error; }
+        this.method = method;
+        this.resolve = resolve;
+        this.reject = reject;
+        this.called = false;
+        this.args = args;
+    }
+    return PreInitMethodCall;
+}());
+
+/**
+ *  Represents any and all the buffered method calls that occurred before initialization.
+ */
+var PreInitMethodCallBuffer = /** @class */ (function () {
+    function PreInitMethodCallBuffer() {
+        var calls = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            calls[_i] = arguments[_i];
+        }
+        this._callMap = {};
+        this.push.apply(this, calls);
+    }
+    Object.defineProperty(PreInitMethodCallBuffer.prototype, "calls", {
+        /**
+         * Pull any buffered method calls from the window object, and use them to hydrate the instance buffer.
+         */
+        get: function () {
+            this._pushSnippetWindowBuffer();
+            return this._callMap;
+        },
+        set: function (calls) {
+            this._callMap = calls;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    PreInitMethodCallBuffer.prototype.getCalls = function (methodName) {
+        var _a;
+        return ((_a = this.calls[methodName]) !== null && _a !== void 0 ? _a : []);
+    };
+    PreInitMethodCallBuffer.prototype.push = function () {
+        var _this = this;
+        var calls = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            calls[_i] = arguments[_i];
+        }
+        calls.forEach(function (call) {
+            var eventsExpectingPageContext = [
+                'track',
+                // 'screen',
+                // 'alias',
+                // 'group',
+                'page',
+                // 'identify',
+            ];
+            if (eventsExpectingPageContext.includes(call.method) &&
+                !hasBufferedPageContextAsLastArg(call.args)) {
+                call.args = __spreadArray(__spreadArray([], call.args, true), [getDefaultBufferedPageContext()], false);
+            }
+            if (_this.calls[call.method]) {
+                _this.calls[call.method].push(call);
+            }
+            else {
+                _this.calls[call.method] = [call];
+            }
+        });
+    };
+    PreInitMethodCallBuffer.prototype.clear = function () {
+        // clear calls in the global snippet buffered array.
+        this._pushSnippetWindowBuffer();
+        // clear calls in this instance
+        this.calls = {};
+    };
+    PreInitMethodCallBuffer.prototype.toArray = function () {
+        var _a;
+        return (_a = []).concat.apply(_a, Object.values(this.calls));
+    };
+    /**
+     * Fetch the buffered method calls from the window object,
+     * normalize them, and use them to hydrate the buffer.
+     * This removes existing buffered calls from the window object.
+     */
+    PreInitMethodCallBuffer.prototype._pushSnippetWindowBuffer = function () {
+        var wa = getGlobalAnalytics();
+        if (!Array.isArray(wa))
+            return undefined;
+        var buffered = wa.splice(0, wa.length);
+        var calls = buffered.map(function (_a) {
+            var methodName = _a[0], args = _a.slice(1);
+            return new PreInitMethodCall(methodName, args);
+        });
+        this.push.apply(this, calls);
+    };
+    return PreInitMethodCallBuffer;
+}());
+
+/**
+ *  Call method and mark as "called"
+ *  This function should never throw an error
+ */
+function callAnalyticsMethod(analytics, call) {
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var result, err_1;
+        return tslib_es6_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    if (call.called) {
+                        return [2 /*return*/, undefined];
+                    }
+                    call.called = true;
+                    result = analytics[call.method].apply(analytics, call.args);
+                    if (!is_thenable_isThenable(result)) return [3 /*break*/, 2];
+                    // do not defer for non-async methods
+                    return [4 /*yield*/, result];
+                case 1:
+                    // do not defer for non-async methods
+                    _a.sent();
+                    _a.label = 2;
+                case 2:
+                    call.resolve(result);
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    call.reject(err_1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+var AnalyticsBuffered = /** @class */ (function () {
+    function AnalyticsBuffered(loader) {
+        var _this = this;
+        // trackSubmit = this._createMethod('trackSubmit')
+        // trackClick = this._createMethod('trackClick')
+        // trackLink = this._createMethod('trackLink')
+        // pageView = this._createMethod('pageview')
+        // identify = this._createMethod('identify')
+        // reset = this._createMethod('reset')
+        // group = this._createMethod('group') as AnalyticsBrowserCore['group']
+        this.track = this._createMethod('track');
+        // ready = this._createMethod('ready')
+        // alias = this._createMethod('alias')
+        // debug = this._createChainableMethod('debug')
+        this.page = this._createMethod('page');
+        // once = this._createChainableMethod('once')
+        // off = this._createChainableMethod('off')
+        // on = this._createChainableMethod('on')
+        // addSourceMiddleware = this._createMethod('addSourceMiddleware')
+        // setAnonymousId = this._createMethod('setAnonymousId')
+        // addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
+        // screen = this._createMethod('screen')
+        this.register = this._createMethod('register');
+        // deregister = this._createMethod('deregister')
+        // user = this._createMethod('user')
+        this.VERSION = version;
+        this._preInitBuffer = new PreInitMethodCallBuffer();
+        this._promise = loader(this._preInitBuffer);
+        this._promise
+            .then(function (_a) {
+            var ajs = _a[0], ctx = _a[1];
+            _this.instance = ajs;
+            _this.ctx = ctx;
+        })
+            .catch(function () {
+            // intentionally do nothing...
+            // this result of this promise will be caught by the 'catch' block on this class.
+        });
+    }
+    AnalyticsBuffered.prototype.then = function () {
+        var _a;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return (_a = this._promise).then.apply(_a, args);
+    };
+    AnalyticsBuffered.prototype.catch = function () {
+        var _a;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return (_a = this._promise).catch.apply(_a, args);
+    };
+    AnalyticsBuffered.prototype.finally = function () {
+        var _a;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return (_a = this._promise).finally.apply(_a, args);
+    };
+    AnalyticsBuffered.prototype._createMethod = function (methodName) {
+        var _this = this;
+        return function () {
+            var _a;
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (_this.instance) {
+                var result = (_a = _this.instance)[methodName].apply(_a, args);
+                return Promise.resolve(result);
+            }
+            return new Promise(function (resolve, reject) {
+                _this._preInitBuffer.push(new PreInitMethodCall(methodName, args, resolve, reject));
+            });
+        };
+    };
+    return AnalyticsBuffered;
+}());
+
+
+;// CONCATENATED MODULE: ./src/core/analytics/index.ts
+
+
+// import type { FormArgs, LinkArgs } from '../auto-track'
+
+
+
+
+
+
+
+
+// import { version } from '../../generated/version'
+
+
+// import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
+
+var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Analytics JS';
+// // reference any pre-existing "analytics" object so a user can restore the reference
+// const global: any = getGlobal()
+// const _analytics = global?.analytics
+function createDefaultQueue(name, retryQueue, disablePersistance) {
+    if (retryQueue === void 0) { retryQueue = false; }
+    if (disablePersistance === void 0) { disablePersistance = false; }
+    var maxAttempts = retryQueue ? 4 : 1;
+    var priorityQueue = disablePersistance
+        ? new PriorityQueue(maxAttempts, [])
+        : new PersistedPriorityQueue(maxAttempts, name);
+    return new EventQueue(priorityQueue);
+}
+// /* analytics-classic stubs */
+// function _stub(this: never) {
+//   console.warn(deprecationWarning)
+// }
+var Analytics = /** @class */ (function (_super) {
+    __extends(Analytics, _super);
+    function Analytics(settings, options) {
+        var _this = this;
+        var _a, _b, _c;
+        _this = _super.call(this) || this;
+        _this._debug = false;
+        _this.initialized = false;
+        _this.user = function () {
+            return _this._user;
+        };
+        var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
+        var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
+        _this.settings = settings;
+        _this.settings.timeout = (_b = _this.settings.timeout) !== null && _b !== void 0 ? _b : 300;
+        _this.queue =
+            // queue ??
+            createDefaultQueue("".concat(settings.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
+        var storageSetting = options === null || options === void 0 ? void 0 : options.storage;
+        _this._universalStorage = _this.createStore(disablePersistance, storageSetting, cookieOptions);
+        _this._user =
+            // user ??
+            new User(__assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.user), cookieOptions).load();
+        // this._group =
+        //   group ??
+        //   new Group(
+        //     {
+        //       persist: !disablePersistance,
+        //       storage: options?.storage,
+        //       // Any group specific options override everything else
+        //       ...options?.group,
+        //     },
+        //     cookieOptions
+        //   ).load()
+        _this.eventFactory = new EventFactory(_this._user);
+        _this.integrations = (_c = options === null || options === void 0 ? void 0 : options.integrations) !== null && _c !== void 0 ? _c : {};
+        _this.options = options !== null && options !== void 0 ? options : {};
+        bindAll(_this);
+        return _this;
+    }
+    /**
+     * Creates the storage system based on the settings received
+     * @returns Storage
+     */
+    Analytics.prototype.createStore = function (disablePersistance, storageSetting, cookieOptions) {
+        // DisablePersistance option overrides all, no storage will be used outside of memory even if specified
+        if (disablePersistance) {
+            return new UniversalStorage([new MemoryStorage()]);
+        }
+        else {
+            if (storageSetting) {
+                if (isArrayOfStoreType(storageSetting)) {
+                    // We will create the store with the priority for customer settings
+                    return new UniversalStorage(initializeStorages(applyCookieOptions(storageSetting.stores, cookieOptions)));
+                }
+            }
+        }
+        // We default to our multi storage with priority
+        return new UniversalStorage(initializeStorages([
+            StoreType.LocalStorage,
+            {
+                name: StoreType.Cookie,
+                settings: cookieOptions,
+            },
+            StoreType.Memory,
+        ]));
+    };
+    Object.defineProperty(Analytics.prototype, "storage", {
+        get: function () {
+            return this._universalStorage;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Analytics.prototype.track = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var pageCtx, _a, name, data, opts, cb, segmentEvent;
+            var _this = this;
+            return tslib_es6_generator(this, function (_b) {
+                pageCtx = popPageContext(args);
+                _a = resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
+                segmentEvent = this.eventFactory.track(name, data, opts, this.integrations, pageCtx);
+                return [2 /*return*/, this._dispatch(segmentEvent, cb).then(function (ctx) {
+                        _this.emit('track', name, ctx.event.properties, ctx.event.options);
+                        return ctx;
+                    })];
+            });
+        });
+    };
+    Analytics.prototype.page = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var pageCtx, _a, category, page, properties, options, callback, segmentEvent;
+            var _this = this;
+            return tslib_es6_generator(this, function (_b) {
+                pageCtx = popPageContext(args);
+                _a = resolvePageArguments.apply(void 0, args), category = _a[0], page = _a[1], properties = _a[2], options = _a[3], callback = _a[4];
+                segmentEvent = this.eventFactory.page(category, page, properties, options, this.integrations, pageCtx);
+                return [2 /*return*/, this._dispatch(segmentEvent, callback).then(function (ctx) {
+                        _this.emit('page', category, page, ctx.event.properties, ctx.event.options);
+                        return ctx;
+                    })];
+            });
+        });
+    };
+    // async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
+    //   const pageCtx = popPageContext(args)
+    //   const [id, _traits, options, callback] = resolveUserArguments(this._user)(
+    //     ...args
+    //   )
+    //   this._user.identify(id, _traits)
+    //   const segmentEvent = this.eventFactory.identify(
+    //     this._user.id(),
+    //     this._user.traits(),
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit(
+    //       'identify',
+    //       ctx.event.userId,
+    //       ctx.event.traits,
+    //       ctx.event.options
+    //     )
+    //     return ctx
+    //   })
+    // }
+    // group(): Group
+    // group(...args: GroupParams): Promise<DispatchedEvent>
+    // group(...args: GroupParams): Promise<DispatchedEvent> | Group {
+    //   const pageCtx = popPageContext(args)
+    //   if (args.length === 0) {
+    //     return this._group
+    //   }
+    //   const [id, _traits, options, callback] = resolveUserArguments(this._group)(
+    //     ...args
+    //   )
+    //   this._group.identify(id, _traits)
+    //   const groupId = this._group.id()
+    //   const groupTraits = this._group.traits()
+    //   const segmentEvent = this.eventFactory.group(
+    //     groupId,
+    //     groupTraits,
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
+    //     return ctx
+    //   })
+    // }
+    // async alias(...args: AliasParams): Promise<DispatchedEvent> {
+    //   const pageCtx = popPageContext(args)
+    //   const [to, from, options, callback] = resolveAliasArguments(...args)
+    //   const segmentEvent = this.eventFactory.alias(
+    //     to,
+    //     from,
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit('alias', to, from, ctx.event.options)
+    //     return ctx
+    //   })
+    // }
+    // async screen(...args: PageParams): Promise<DispatchedEvent> {
+    //   const pageCtx = popPageContext(args)
+    //   const [category, page, properties, options, callback] =
+    //     resolvePageArguments(...args)
+    //   const segmentEvent = this.eventFactory.screen(
+    //     category,
+    //     page,
+    //     properties,
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit(
+    //       'screen',
+    //       category,
+    //       page,
+    //       ctx.event.properties,
+    //       ctx.event.options
+    //     )
+    //     return ctx
+    //   })
+    // }
+    // async trackClick(...args: LinkArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.link.call(this, ...args)
+    // }
+    // async trackLink(...args: LinkArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.link.call(this, ...args)
+    // }
+    // async trackSubmit(...args: FormArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.form.call(this, ...args)
+    // }
+    // async trackForm(...args: FormArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.form.call(this, ...args)
+    // }
+    Analytics.prototype.register = function () {
+        var plugins = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            plugins[_i] = arguments[_i];
+        }
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var ctx, registrations;
+            var _this = this;
+            return tslib_es6_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        ctx = Context.system();
+                        registrations = plugins.map(function (xt) {
+                            return _this.queue.register(ctx, xt, _this);
+                        });
+                        return [4 /*yield*/, Promise.all(registrations)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, ctx];
+                }
+            });
+        });
+    };
+    // async deregister(...plugins: string[]): Promise<Context> {
+    //   const ctx = Context.system()
+    //   const deregistrations = plugins.map((pl) => {
+    //     const plugin = this.queue.plugins.find((p) => p.name === pl)
+    //     if (plugin) {
+    //       return this.queue.deregister(ctx, plugin, this)
+    //     } else {
+    //       ctx.log('warn', `plugin ${pl} not found`)
+    //     }
+    //   })
+    //   await Promise.all(deregistrations)
+    //   return ctx
+    // }
+    Analytics.prototype.debug = function (toggle) {
+        // Make sure legacy ajs debug gets turned off if it was enabled before upgrading.
+        if (toggle === false && localStorage.getItem('debug')) {
+            localStorage.removeItem('debug');
+        }
+        this._debug = toggle;
+        return this;
+    };
+    // reset(): void {
+    //   this._user.reset()
+    //   this._group.reset()
+    //   this.emit('reset')
+    // }
+    Analytics.prototype.timeout = function (timeout) {
+        this.settings.timeout = timeout;
+    };
+    Analytics.prototype._dispatch = function (event, callback) {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var ctx;
+            return tslib_es6_generator(this, function (_a) {
+                ctx = new Context(event);
+                if (isOffline() && !this.options.retryQueue) {
+                    return [2 /*return*/, ctx];
+                }
+                return [2 /*return*/, dispatch(ctx, this.queue, this, {
+                        callback: callback,
+                        debug: this._debug,
+                        timeout: this.settings.timeout,
+                    })];
+            });
+        });
+    };
+    Analytics.prototype.addSourceMiddleware = function (fn) {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            return tslib_es6_generator(this, function (_a) {
+                console.debug(fn);
+                // await this.queue.criticalTasks.run(async () => {
+                //   const { sourceMiddlewarePlugin } = await import(
+                //     /* webpackChunkName: "middleware" */ '../../plugins/middleware'
+                //   )
+                //   const integrations: Record<string, boolean> = {}
+                //   this.queue.plugins.forEach((plugin) => {
+                //     if (plugin.type === 'destination') {
+                //       return (integrations[plugin.name] = true)
+                //     }
+                //   })
+                //   const plugin = sourceMiddlewarePlugin(fn, integrations)
+                //   await this.register(plugin)
+                // })
+                return [2 /*return*/, this];
+            });
+        });
+    };
+    //   /* TODO: This does not have to return a promise? */
+    //   addDestinationMiddleware(
+    //     integrationName: string,
+    //     ...middlewares: DestinationMiddlewareFunction[]
+    //   ): Promise<Analytics> {
+    //     const legacyDestinations = this.queue.plugins.filter(
+    //       (xt) => xt.name.toLowerCase() === integrationName.toLowerCase()
+    //     ) as LegacyDestination[]
+    //
+    //     legacyDestinations.forEach((destination) => {
+    //       destination.addMiddleware(...middlewares)
+    //     })
+    //     return Promise.resolve(this)
+    //   }
+    Analytics.prototype.setAnonymousId = function (id) {
+        return this._user.anonymousId(id);
+    };
+    //   async queryString(query: string): Promise<Context[]> {
+    //     if (this.options.useQueryString === false) {
+    //       return []
+    //     }
+    //
+    //     const { queryString } = await import(
+    //       /* webpackChunkName: "queryString" */ '../query-string'
+    //     )
+    //     return queryString(this, query)
+    //   }
+    //   /**
+    //    * @deprecated This function does not register a destination plugin.
+    //    *
+    //    * Instantiates a legacy Analytics.js destination.
+    //    *
+    //    * This function does not register the destination as an Analytics.JS plugin,
+    //    * all the it does it to invoke the factory function back.
+    //    */
+    //   use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
+    //     legacyPluginFactory(this)
+    //     return this
+    //   }
+    Analytics.prototype.ready = function (callback) {
+        if (callback === void 0) { callback = function (res) { return res; }; }
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            return tslib_es6_generator(this, function (_a) {
+                return [2 /*return*/, Promise.all(this.queue.plugins.map(function (i) { return (i.ready ? i.ready() : Promise.resolve()); })).then(function (res) {
+                        callback(res);
+                        return res;
+                    })];
+            });
+        });
+    };
+    // analytics-classic api
+    // noConflict(): Analytics {
+    //   console.warn(deprecationWarning)
+    //   setGlobalAnalytics(_analytics ?? this)
+    //   return this
+    // }
+    //   normalize(msg: SegmentEvent): SegmentEvent {
+    //     console.warn(deprecationWarning)
+    //     return this.eventFactory.normalize(msg)
+    //   }
+    //   get failedInitializations(): string[] {
+    //     console.warn(deprecationWarning)
+    //     return this.queue.failedInitializations
+    //   }
+    //   get VERSION(): string {
+    //     return version
+    //   }
+    /* @deprecated - noop */
+    Analytics.prototype.initialize = function (_settings, _options) {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            return tslib_es6_generator(this, function (_a) {
+                console.warn(deprecationWarning);
+                return [2 /*return*/, Promise.resolve(this)];
+            });
+        });
+    };
+    return Analytics;
+}(Emitter));
+
+
+;// CONCATENATED MODULE: ./src/lib/merged-options.ts
+
+/**
+ * Merge legacy settings and initialized Integration option overrides.
+ *
+ * This will merge any options that were passed from initialization into
+ * overrides for settings that are returned by the Segment CDN.
+ *
+ * i.e. this allows for passing options directly into destinations from
+ * the Analytics constructor.
+ */
+function mergedOptions(settings, options) {
+    var _a;
+    var optionOverrides = Object.entries((_a = options.integrations) !== null && _a !== void 0 ? _a : {}).reduce(function (overrides, _a) {
+        var _b, _c;
+        var integration = _a[0], options = _a[1];
+        if (typeof options === 'object') {
+            return __assign(__assign({}, overrides), (_b = {}, _b[integration] = options, _b));
+        }
+        return __assign(__assign({}, overrides), (_c = {}, _c[integration] = {}, _c));
+    }, {});
+    return Object.entries(settings.integrations).reduce(function (integrationSettings, _a) {
+        var _b;
+        var integration = _a[0], settings = _a[1];
+        return __assign(__assign({}, integrationSettings), (_b = {}, _b[integration] = __assign(__assign({}, settings), optionOverrides[integration]), _b));
+    }, {});
+}
+
+;// CONCATENATED MODULE: ./src/lib/create-deferred.ts
+/**
+ * Return a promise that can be externally resolved
+ */
+var createDeferred = function () {
+    var resolve;
+    var reject;
+    var promise = new Promise(function (_resolve, _reject) {
+        resolve = _resolve;
+        reject = _reject;
+    });
+    return {
+        resolve: resolve,
+        reject: reject,
+        promise: promise,
+    };
+};
+
+;// CONCATENATED MODULE: ./src/core/query-string/gracefulDecodeURIComponent.ts
+/**
+ * Tries to gets the unencoded version of an encoded component of a
+ * Uniform Resource Identifier (URI). If input string is malformed,
+ * returns it back as-is.
+ *
+ * Note: All occurences of the `+` character become ` ` (spaces).
+ **/
+function gracefulDecodeURIComponent(encodedURIComponent) {
+    try {
+        return decodeURIComponent(encodedURIComponent.replace(/\+/g, ' '));
+    }
+    catch (_a) {
+        return encodedURIComponent;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/client-hints/index.ts
+
+function clientHints(hints) {
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var userAgentData;
+        return tslib_es6_generator(this, function (_a) {
+            userAgentData = navigator.userAgentData;
+            if (!userAgentData)
+                return [2 /*return*/, undefined];
+            if (!hints)
+                return [2 /*return*/, userAgentData.toJSON()];
+            return [2 /*return*/, userAgentData
+                    .getHighEntropyValues(hints)
+                    .catch(function () { return userAgentData.toJSON(); })];
+        });
+    });
+}
+
+;// CONCATENATED MODULE: ./src/plugins/env-enrichment/index.ts
+
+
+
+
+
+
+
+
+var cookieOptions;
+function getCookieOptions() {
+    if (cookieOptions) {
+        return cookieOptions;
+    }
+    var domain = tld(window.location.href);
+    cookieOptions = {
+        expires: 31536000000,
+        secure: false,
+        path: '/',
+    };
+    if (domain) {
+        cookieOptions.domain = domain;
+    }
+    return cookieOptions;
+}
+function ads(query) {
+    var queryIds = {
+        btid: 'dataxu',
+        urid: 'millennial-media',
+    };
+    if (query.startsWith('?')) {
+        query = query.substring(1);
+    }
+    query = query.replace(/\?/g, '&');
+    var parts = query.split('&');
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        var _a = part.split('='), k = _a[0], v = _a[1];
+        if (queryIds[k]) {
+            return {
+                id: v,
+                type: queryIds[k],
+            };
+        }
+    }
+}
+function utm(query) {
+    if (query.startsWith('?')) {
+        query = query.substring(1);
+    }
+    query = query.replace(/\?/g, '&');
+    return query.split('&').reduce(function (acc, str) {
+        var _a = str.split('='), k = _a[0], _b = _a[1], v = _b === void 0 ? '' : _b;
+        if (k.includes('utm_') && k.length > 4) {
+            var utmParam = k.slice(4);
+            if (utmParam === 'campaign') {
+                utmParam = 'name';
+            }
+            acc[utmParam] = gracefulDecodeURIComponent(v);
+        }
+        return acc;
+    }, {});
+}
+function ampId() {
+    var ampId = js_cookie.get('_ga');
+    if (ampId && ampId.startsWith('amp')) {
+        return ampId;
+    }
+}
+function referrerId(query, ctx, disablePersistance) {
+    var _a;
+    var storage = new UniversalStorage(disablePersistance ? [] : [new CookieStorage(getCookieOptions())]);
+    var stored = storage.get('s:context.referrer');
+    var ad = (_a = ads(query)) !== null && _a !== void 0 ? _a : stored;
+    if (!ad) {
+        return;
+    }
+    if (ctx) {
+        ctx.referrer = __assign(__assign({}, ctx.referrer), ad);
+    }
+    storage.set('s:context.referrer', ad);
+}
+/**
+ *
+ * @param obj e.g. { foo: 'b', bar: 'd', baz: ['123', '456']}
+ * @returns e.g. 'foo=b&bar=d&baz=123&baz=456'
+ */
+var objectToQueryString = function (obj) {
+    try {
+        var searchParams_1 = new URLSearchParams();
+        Object.entries(obj).forEach(function (_a) {
+            var k = _a[0], v = _a[1];
+            if (Array.isArray(v)) {
+                v.forEach(function (value) { return searchParams_1.append(k, value); });
+            }
+            else {
+                searchParams_1.append(k, v);
+            }
+        });
+        return searchParams_1.toString();
+    }
+    catch (_a) {
+        return '';
+    }
+};
+var EnvironmentEnrichmentPlugin = /** @class */ (function () {
+    function EnvironmentEnrichmentPlugin() {
+        var _this = this;
+        this.name = 'Page Enrichment';
+        this.type = 'before';
+        this.version = '0.1.0';
+        this.isLoaded = function () { return true; };
+        this.load = function (_ctx, instance) { return tslib_es6_awaiter(_this, void 0, void 0, function () {
+            var _a, _1;
+            return tslib_es6_generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.instance = instance;
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        _a = this;
+                        return [4 /*yield*/, clientHints(this.instance.options.highEntropyValuesClientHints)];
+                    case 2:
+                        _a.userAgentData = _b.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        _1 = _b.sent();
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/, Promise.resolve()];
+                }
+            });
+        }); };
+        this.enrich = function (ctx) {
+            var _a, _b;
+            // Note: Types are off - context should never be undefined here, since it is set as part of event creation.
+            var evtCtx = ctx.event.context;
+            var search = evtCtx.page.search || '';
+            var query = typeof search === 'object' ? objectToQueryString(search) : search;
+            evtCtx.userAgent = navigator.userAgent;
+            evtCtx.userAgentData = _this.userAgentData;
+            // @ts-ignore
+            var locale = navigator.userLanguage || navigator.language;
+            if (typeof evtCtx.locale === 'undefined' && typeof locale !== 'undefined') {
+                evtCtx.locale = locale;
+            }
+            (_a = evtCtx.library) !== null && _a !== void 0 ? _a : (evtCtx.library = {
+                name: 'analytics.js',
+                version: "".concat(getVersionType() === 'web' ? 'next' : 'npm:next', "-").concat(version),
+            });
+            if (query && !evtCtx.campaign) {
+                evtCtx.campaign = utm(query);
+            }
+            var amp = ampId();
+            if (amp) {
+                evtCtx.amp = { id: amp };
+            }
+            referrerId(query, evtCtx, (_b = _this.instance.options.disableClientPersistence) !== null && _b !== void 0 ? _b : false);
+            try {
+                evtCtx.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            }
+            catch (_) {
+                // If browser doesn't have support leave timezone undefined
+            }
+            return ctx;
+        };
+        this.track = this.enrich;
+        this.identify = this.enrich;
+        this.page = this.enrich;
+        this.group = this.enrich;
+        this.alias = this.enrich;
+        this.screen = this.enrich;
+    }
+    return EnvironmentEnrichmentPlugin;
+}());
+var envEnrichment = new EnvironmentEnrichmentPlugin();
+
+;// CONCATENATED MODULE: ./src/lib/load-script.ts
+function findScript(src) {
+    var scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
+    return scripts.find(function (s) { return s.src === src; });
+}
+function loadScript(src, attributes) {
+    var found = findScript(src);
+    if (found !== undefined) {
+        var status = found === null || found === void 0 ? void 0 : found.getAttribute('status');
+        if (status === 'loaded') {
+            return Promise.resolve(found);
+        }
+        if (status === 'loading') {
+            return new Promise(function (resolve, reject) {
+                found.addEventListener('load', function () { return resolve(found); });
+                found.addEventListener('error', function (err) { return reject(err); });
+            });
+        }
+    }
+    return new Promise(function (resolve, reject) {
+        var _a;
+        var script = window.document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = src;
+        script.async = true;
+        script.setAttribute('status', 'loading');
+        for (var _i = 0, _b = Object.entries(attributes !== null && attributes !== void 0 ? attributes : {}); _i < _b.length; _i++) {
+            var _c = _b[_i], k = _c[0], v = _c[1];
+            script.setAttribute(k, v);
+        }
+        script.onload = function () {
+            script.onerror = script.onload = null;
+            script.setAttribute('status', 'loaded');
+            resolve(script);
+        };
+        script.onerror = function () {
+            script.onerror = script.onload = null;
+            script.setAttribute('status', 'error');
+            reject(new Error("Failed to load ".concat(src)));
+        };
+        var tag = window.document.getElementsByTagName('script')[0];
+        (_a = tag.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, tag);
+    });
+}
+function unloadScript(src) {
+    var found = findScript(src);
+    if (found !== undefined) {
+        found.remove();
+    }
+    return Promise.resolve();
+}
+
+// EXTERNAL MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/index.js
+var dist = __webpack_require__(445);
+;// CONCATENATED MODULE: ./src/lib/to-facade.ts
+
+function to_facade_toFacade(evt, options) {
+    var fcd = new dist.Facade(evt, options);
+    if (evt.type === 'track') {
+        fcd = new dist.Track(evt, options);
+    }
+    if (evt.type === 'identify') {
+        fcd = new dist.Identify(evt, options);
+    }
+    if (evt.type === 'page') {
+        fcd = new dist.Page(evt, options);
+    }
+    // if (evt.type === 'alias') {
+    //   fcd = new Alias(evt, options)
+    // }
+    // if (evt.type === 'group') {
+    //   fcd = new Group(evt, options)
+    // }
+    // if (evt.type === 'screen') {
+    //   fcd = new Screen(evt, options)
+    // }
+    Object.defineProperty(fcd, 'obj', {
+        value: evt,
+        writable: true,
+    });
+    return fcd;
+}
+
+;// CONCATENATED MODULE: ./src/plugins/middleware/index.ts
+
+
+
+function applyDestinationMiddleware(destination, evt, middleware) {
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        function applyMiddleware(event, fn) {
+            return tslib_es6_awaiter(this, void 0, Promise, function () {
+                var nextCalled, returnedEvent;
+                var _a;
+                return tslib_es6_generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            nextCalled = false;
+                            returnedEvent = null;
+                            return [4 /*yield*/, fn({
+                                    payload: to_facade_toFacade(event, {
+                                        clone: true,
+                                        traverse: false,
+                                    }),
+                                    integration: destination,
+                                    next: function (evt) {
+                                        nextCalled = true;
+                                        if (evt === null) {
+                                            returnedEvent = null;
+                                        }
+                                        if (evt) {
+                                            returnedEvent = evt.obj;
+                                        }
+                                    },
+                                })];
+                        case 1:
+                            _b.sent();
+                            if (!nextCalled && returnedEvent !== null) {
+                                returnedEvent = returnedEvent;
+                                returnedEvent.integrations = __assign(__assign({}, event.integrations), (_a = {}, _a[destination] = false, _a));
+                            }
+                            return [2 /*return*/, returnedEvent];
+                    }
+                });
+            });
+        }
+        var modifiedEvent, _i, middleware_1, md, result;
+        return tslib_es6_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    modifiedEvent = to_facade_toFacade(evt, {
+                        clone: true,
+                        traverse: false,
+                    }).rawEvent();
+                    _i = 0, middleware_1 = middleware;
+                    _a.label = 1;
+                case 1:
+                    if (!(_i < middleware_1.length)) return [3 /*break*/, 4];
+                    md = middleware_1[_i];
+                    return [4 /*yield*/, applyMiddleware(modifiedEvent, md)];
+                case 2:
+                    result = _a.sent();
+                    if (result === null) {
+                        return [2 /*return*/, null];
+                    }
+                    modifiedEvent = result;
+                    _a.label = 3;
+                case 3:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/, modifiedEvent];
+            }
+        });
+    });
+}
+function sourceMiddlewarePlugin(fn, integrations) {
+    function apply(ctx) {
+        return __awaiter(this, void 0, Promise, function () {
+            var nextCalled;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        nextCalled = false;
+                        return [4 /*yield*/, fn({
+                                payload: toFacade(ctx.event, {
+                                    clone: true,
+                                    traverse: false,
+                                }),
+                                integrations: integrations !== null && integrations !== void 0 ? integrations : {},
+                                next: function (evt) {
+                                    nextCalled = true;
+                                    if (evt) {
+                                        ctx.event = evt.obj;
+                                    }
+                                },
+                            })];
+                    case 1:
+                        _a.sent();
+                        if (!nextCalled) {
+                            throw new ContextCancelation({
+                                retry: false,
+                                type: 'middleware_cancellation',
+                                reason: 'Middleware `next` function skipped',
+                            });
+                        }
+                        return [2 /*return*/, ctx];
+                }
+            });
+        });
+    }
+    return {
+        name: "Source Middleware ".concat(fn.name),
+        type: 'before',
+        version: '0.1.0',
+        isLoaded: function () { return true; },
+        load: function (ctx) { return Promise.resolve(ctx); },
+        track: apply,
+        page: apply,
+        identify: apply,
+        // alias: apply,
+        // group: apply,
+    };
+}
+
+;// CONCATENATED MODULE: ./src/plugins/remote-loader/index.ts
+
+
+
+
+
+var ActionDestination = /** @class */ (function () {
+    function ActionDestination(name, action) {
+        this.version = '1.0.0';
+        this.alternativeNames = [];
+        this.middleware = [];
+        // alias = this._createMethod('alias')
+        // group = this._createMethod('group')
+        this.identify = this._createMethod('identify');
+        this.page = this._createMethod('page');
+        // screen = this._createMethod('screen')
+        this.track = this._createMethod('track');
+        this.action = action;
+        this.name = name;
+        this.type = action.type;
+        this.alternativeNames.push(action.name);
+    }
+    ActionDestination.prototype.addMiddleware = function () {
+        var _a;
+        var fn = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            fn[_i] = arguments[_i];
+        }
+        if (this.type === 'destination') {
+            (_a = this.middleware).push.apply(_a, fn);
+        }
+    };
+    ActionDestination.prototype.transform = function (ctx) {
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var modifiedEvent;
+            return tslib_es6_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, applyDestinationMiddleware(this.name, ctx.event, this.middleware)];
+                    case 1:
+                        modifiedEvent = _a.sent();
+                        if (modifiedEvent === null) {
+                            ctx.cancel(new context_ContextCancelation({
+                                retry: false,
+                                reason: 'dropped by destination middleware',
+                            }));
+                        }
+                        return [2 /*return*/, new Context(modifiedEvent)];
+                }
+            });
+        });
+    };
+    ActionDestination.prototype._createMethod = function (methodName) {
+        var _this = this;
+        return function (ctx) { return tslib_es6_awaiter(_this, void 0, Promise, function () {
+            var transformedContext;
+            return tslib_es6_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.action[methodName])
+                            return [2 /*return*/, ctx];
+                        transformedContext = ctx;
+                        if (!(this.type === 'destination')) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.transform(ctx)];
+                    case 1:
+                        transformedContext = _a.sent();
+                        _a.label = 2;
+                    case 2: return [4 /*yield*/, this.action[methodName](transformedContext)];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/, ctx];
+                }
+            });
+        }); };
+    };
+    /* --- PASSTHROUGH METHODS --- */
+    ActionDestination.prototype.isLoaded = function () {
+        return this.action.isLoaded();
+    };
+    ActionDestination.prototype.ready = function () {
+        return this.action.ready ? this.action.ready() : Promise.resolve();
+    };
+    ActionDestination.prototype.load = function (ctx, analytics) {
+        return this.action.load(ctx, analytics);
+    };
+    ActionDestination.prototype.unload = function (ctx, analytics) {
+        var _a, _b;
+        return (_b = (_a = this.action).unload) === null || _b === void 0 ? void 0 : _b.call(_a, ctx, analytics);
+    };
+    return ActionDestination;
+}());
+
+function validate(pluginLike) {
+    if (!Array.isArray(pluginLike)) {
+        throw new Error('Not a valid list of plugins');
+    }
+    var required = ['load', 'isLoaded', 'name', 'version', 'type'];
+    pluginLike.forEach(function (plugin) {
+        required.forEach(function (method) {
+            var _a;
+            if (plugin[method] === undefined) {
+                throw new Error("Plugin: ".concat((_a = plugin.name) !== null && _a !== void 0 ? _a : 'unknown', " missing required function ").concat(method));
+            }
+        });
+    });
+    return true;
+}
+// function isPluginDisabled(
+//   userIntegrations: Integrations,
+//   remotePlugin: RemotePlugin
+// ) {
+//   const creationNameEnabled = userIntegrations[remotePlugin.creationName]
+//   const currentNameEnabled = userIntegrations[remotePlugin.name]
+//   // Check that the plugin isn't explicitly enabled when All: false
+//   if (
+//     userIntegrations.All === false &&
+//     !creationNameEnabled &&
+//     !currentNameEnabled
+//   ) {
+//     return true
+//   }
+//   // Check that the plugin isn't explicitly disabled
+//   if (creationNameEnabled === false || currentNameEnabled === false) {
+//     return true
+//   }
+//   return false
+// }
+function loadPluginFactory(remotePlugin) {
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var defaultCdn, cdn;
+        return tslib_es6_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    defaultCdn = new RegExp('https://cdn.segment.(com|build)');
+                    cdn = getCDN();
+                    // if (obfuscate) {
+                    //   const urlSplit = remotePlugin.url.split('/')
+                    //   const name = urlSplit[urlSplit.length - 2]
+                    //   const obfuscatedURL = remotePlugin.url.replace(
+                    //     name,
+                    //     btoa(name).replace(/=/g, '')
+                    //   )
+                    //   try {
+                    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
+                    //   } catch (error) {
+                    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
+                    //     // We should use the unobfuscated version as a fallback.
+                    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
+                    //   }
+                    // } else {
+                    return [4 /*yield*/, loadScript(remotePlugin.url.replace(defaultCdn, cdn))
+                        // }
+                        // @ts-expect-error
+                    ];
+                case 1:
+                    // if (obfuscate) {
+                    //   const urlSplit = remotePlugin.url.split('/')
+                    //   const name = urlSplit[urlSplit.length - 2]
+                    //   const obfuscatedURL = remotePlugin.url.replace(
+                    //     name,
+                    //     btoa(name).replace(/=/g, '')
+                    //   )
+                    //   try {
+                    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
+                    //   } catch (error) {
+                    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
+                    //     // We should use the unobfuscated version as a fallback.
+                    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
+                    //   }
+                    // } else {
+                    _a.sent();
+                    // }
+                    // @ts-expect-error
+                    if (typeof window[remotePlugin.libraryName] === 'function') {
+                        // @ts-expect-error
+                        return [2 /*return*/, window[remotePlugin.libraryName]];
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function remoteLoader(loadSettings, settings, 
+// userIntegrations: Integrations,
+// @ts-ignore
+mergedIntegrations, 
+// obfuscate?: boolean,
+routingMiddleware) {
+    var _a, _b, _c;
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var allPlugins, cdn, routingRules, pluginPromises;
+        var _this = this;
+        return tslib_es6_generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    allPlugins = [];
+                    cdn = getCDN();
+                    routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
+                    pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(function (remotePlugin) { return tslib_es6_awaiter(_this, void 0, void 0, function () {
+                        var pluginFactory, plugin, plugins, routing_1, error_1;
+                        return tslib_es6_generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    // if (isPluginDisabled(userIntegrations, remotePlugin)) return
+                                    if (!remotePlugin.creationName) {
+                                        remotePlugin.creationName = "AnalyticsPlugin".concat(remotePlugin.name);
+                                    }
+                                    if (!remotePlugin.libraryName) {
+                                        remotePlugin.libraryName = "AnalyticsPlugin".concat(remotePlugin.name);
+                                    }
+                                    if (!remotePlugin.url) {
+                                        remotePlugin.url = "".concat(cdn, "analytics-plugin-").concat(remotePlugin.name.toLocaleLowerCase(), ".js");
+                                    }
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 5, , 6]);
+                                    // pluginSources?.find(
+                                    //   ({ pluginName }) => pluginName === remotePlugin.name
+                                    // ) || (await loadPluginFactory(remotePlugin, obfuscate))
+                                    return [4 /*yield*/, loadPluginFactory(remotePlugin)];
+                                case 2:
+                                    pluginFactory = 
+                                    // pluginSources?.find(
+                                    //   ({ pluginName }) => pluginName === remotePlugin.name
+                                    // ) || (await loadPluginFactory(remotePlugin, obfuscate))
+                                    _a.sent();
+                                    if (!pluginFactory) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, pluginFactory(__assign(__assign({ app: loadSettings.app || {}, rum: loadSettings.rum || {} }, remotePlugin.settings), mergedIntegrations[remotePlugin.name]))];
+                                case 3:
+                                    plugin = _a.sent();
+                                    plugins = Array.isArray(plugin) ? plugin : [plugin];
+                                    validate(plugins);
+                                    routing_1 = routingRules.filter(function (rule) { return rule.destinationName === remotePlugin.creationName; });
+                                    plugins.forEach(function (plugin) {
+                                        var wrapper = new ActionDestination(remotePlugin.creationName, plugin);
+                                        /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
+                                        if (routing_1.length &&
+                                            routingMiddleware &&
+                                            plugin.type === 'destination') {
+                                            wrapper.addMiddleware(routingMiddleware);
+                                        }
+                                        allPlugins.push(wrapper);
+                                    });
+                                    _a.label = 4;
+                                case 4: return [3 /*break*/, 6];
+                                case 5:
+                                    error_1 = _a.sent();
+                                    console.warn('Failed to load Remote Plugin', error_1);
+                                    return [3 /*break*/, 6];
+                                case 6: return [2 /*return*/];
+                            }
+                        });
+                    }); });
+                    return [4 /*yield*/, Promise.all(pluginPromises)];
+                case 1:
+                    _d.sent();
+                    return [2 /*return*/, allPlugins.filter(Boolean)];
+            }
+        });
+    });
+}
+
+;// CONCATENATED MODULE: ../core/dist/esm/validation/errors.js
+
+var errors_ValidationError = /** @class */ (function (_super) {
+    __extends(ValidationError, _super);
+    function ValidationError(field, message) {
+        var _this = _super.call(this, "".concat(field, " ").concat(message)) || this;
+        _this.field = field;
+        return _this;
+    }
+    return ValidationError;
+}(Error));
+
+//# sourceMappingURL=errors.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/validation/assertions.js
+
+
+var stringError = 'is not a string';
+var objError = 'is not an object';
+var nilError = 'is nil';
+function assertUserIdentity(event) {
+    var USER_FIELD_NAME = '.userId/anonymousId/previousId/groupId';
+    var getAnyUserId = function (event) { var _a, _b, _c; return (_c = (_b = (_a = event.userId) !== null && _a !== void 0 ? _a : event.anonymousId) !== null && _b !== void 0 ? _b : event.groupId) !== null && _c !== void 0 ? _c : event.previousId; };
+    var id = getAnyUserId(event);
+    if (!exists(id)) {
+        throw new errors_ValidationError(USER_FIELD_NAME, nilError);
+    }
+    else if (!helpers_isString(id)) {
+        throw new errors_ValidationError(USER_FIELD_NAME, stringError);
+    }
+}
+function assertEventExists(event) {
+    if (!exists(event)) {
+        throw new errors_ValidationError('Event', nilError);
+    }
+    if (typeof event !== 'object') {
+        throw new errors_ValidationError('Event', objError);
+    }
+}
+function assertEventType(event) {
+    if (!helpers_isString(event.type)) {
+        throw new errors_ValidationError('.type', stringError);
+    }
+}
+function assertTrackEventName(event) {
+    if (!helpers_isString(event.event)) {
+        throw new errors_ValidationError('.event', stringError);
+    }
+}
+function assertTrackEventProperties(event) {
+    if (!isPlainObject(event.properties)) {
+        throw new ValidationError('.properties', objError);
+    }
+}
+function assertTraits(event) {
+    if (!isPlainObject(event.traits)) {
+        throw new ValidationError('.traits', objError);
+    }
+}
+function validateEvent(event) {
+    assertEventExists(event);
+    assertEventType(event);
+    if (event.type === 'track') {
+        assertTrackEventName(event);
+        assertTrackEventProperties(event);
+    }
+    if (['group', 'identify'].includes(event.type)) {
+        assertTraits(event);
+    }
+    assertUserIdentity(event);
+}
+//# sourceMappingURL=assertions.js.map
+;// CONCATENATED MODULE: ./src/plugins/validation/index.ts
+
+function validation_validate(ctx) {
+    var event = ctx.event;
+    assertEventExists(event);
+    assertEventType(event);
+    if (event.type === 'track') {
+        assertTrackEventName(event);
+    }
+    // const props = event.properties ?? event.traits
+    // if (event.type !== 'alias' && !isPlainObject(props)) {
+    //   throw new ValidationError('.properties', 'is not an object')
+    // }
+    assertUserIdentity(event);
+    return ctx;
+}
+var validation = {
+    name: 'Event Validation',
+    type: 'before',
+    version: '1.0.0',
+    isLoaded: function () { return true; },
+    load: function () { return Promise.resolve(); },
+    track: validation_validate,
+    identify: validation_validate,
+    page: validation_validate,
+    // alias: validate,
+    // group: validate,
+    // screen: validate,
+};
+
+;// CONCATENATED MODULE: ./src/core/inspector/index.ts
+var _a;
+var _b;
+
+var env = getGlobal();
+// The code below assumes the inspector extension will use Object.assign
+// to add the inspect interface on to this object reference (unless the
+// extension code ran first and has already set up the variable)
+var inspectorHost = ((_a = (_b = env)['__SEGMENT_INSPECTOR__']) !== null && _a !== void 0 ? _a : (_b['__SEGMENT_INSPECTOR__'] = {}));
+var attachInspector = function (analytics) { var _a; return (_a = inspectorHost.attach) === null || _a === void 0 ? void 0 : _a.call(inspectorHost, analytics); };
+
+;// CONCATENATED MODULE: ./src/browser/index.ts
+
+// import { getProcessEnv } from '../lib/get-process-env'
+
+// import { fetch } from '../lib/fetch'
+
+
+
+
+
+// import { segmentio, SegmentioSettings } from '../plugins/segmentio'
+
+
+// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
+
+
+
+// export function loadLegacySettings(
+//   writeKey: string,
+//   cdnURL?: string
+// ): Promise<LegacySettings> {
+//   const baseUrl = cdnURL ?? getCDN()
+//   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
+//     .then((res) => {
+//       if (!res.ok) {
+//         return res.text().then((errorResponseMessage) => {
+//           throw new Error(errorResponseMessage)
+//         })
+//       }
+//       return res.json()
+//     })
+//     .catch((err) => {
+//       console.error(err.message)
+//       throw err
+//     })
+// }
+// function hasLegacyDestinations(settings: LegacySettings): boolean {
+//   return (
+//     getProcessEnv().NODE_ENV !== 'test' &&
+//     // just one integration means segmentio
+//     Object.keys(settings.integrations).length > 1
+//   )
+// }
+// function hasTsubMiddleware(settings: LegacySettings): boolean {
+//   return (
+//     getProcessEnv().NODE_ENV !== 'test' &&
+//     (settings.middlewareSettings?.routingRules?.length ?? 0) > 0
+//   )
+// }
+/**
+ * With AJS classic, we allow users to call setAnonymousId before the library initialization.
+ * This is important because some of the destinations will use the anonymousId during the initialization,
+ * and if we set anonId afterwards, that wouldn’t impact the destination.
+ *
+ * Also Ensures events can be registered before library initialization.
+ * This is important so users can register to 'initialize' and any events that may fire early during setup.
+ */
+function flushPreBuffer(analytics, buffer) {
+    flushSetAnonymousID(analytics, buffer);
+    flushOn(analytics, buffer);
+}
+/**
+ * Finish flushing buffer and cleanup.
+ */
+function flushFinalBuffer(analytics, buffer) {
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        return tslib_es6_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: 
+                // Call popSnippetWindowBuffer before each flush task since there may be
+                // analytics calls during async function calls.
+                return [4 /*yield*/, flushAddSourceMiddleware(analytics, buffer)];
+                case 1:
+                    // Call popSnippetWindowBuffer before each flush task since there may be
+                    // analytics calls during async function calls.
+                    _a.sent();
+                    flushAnalyticsCallsInNewTask(analytics, buffer);
+                    // Clear buffer, just in case analytics is loaded twice; we don't want to fire events off again.
+                    buffer.clear();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function registerPlugins(loadSettings, legacySettings, analytics, options, pluginLikes) {
+    if (pluginLikes === void 0) { pluginLikes = []; }
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var plugins, mergedSettings, remotePlugins, toRegister, ctx;
+        return tslib_es6_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    plugins = pluginLikes === null || pluginLikes === void 0 ? void 0 : pluginLikes.filter(function (pluginLike) { return typeof pluginLike === 'object'; });
+                    mergedSettings = mergedOptions(legacySettings, options);
+                    return [4 /*yield*/, remoteLoader(loadSettings, legacySettings, 
+                        // analytics.integrations,
+                        mergedSettings).catch(function () { return []; })];
+                case 1:
+                    remotePlugins = _a.sent();
+                    toRegister = __spreadArray(__spreadArray([
+                        validation,
+                        envEnrichment
+                    ], plugins, true), remotePlugins, true);
+                    return [4 /*yield*/, analytics.register.apply(analytics, toRegister)];
+                case 2:
+                    ctx = _a.sent();
+                    // if (
+                    //   Object.entries(legacySettings.enabledMiddleware ?? {}).some(
+                    //     ([, enabled]) => enabled
+                    //   )
+                    // ) {
+                    //   await import(
+                    //     /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
+                    //   ).then(async ({ remoteMiddlewares }) => {
+                    //     const middleware = await remoteMiddlewares(
+                    //       ctx,
+                    //       legacySettings,
+                    //       options.obfuscate
+                    //     )
+                    //     const promises = middleware.map((mdw) =>
+                    //       analytics.addSourceMiddleware(mdw)
+                    //     )
+                    //     return Promise.all(promises)
+                    //   })
+                    // }
+                    return [2 /*return*/, ctx];
+            }
+        });
+    });
+}
+function loadAnalytics(settings, options, preInitBuffer) {
+    var _a, _b, _c;
+    if (options === void 0) { options = {}; }
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var legacySettings, retryQueue, opts, analytics, plugins, ctx;
+        return tslib_es6_generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    if (options.globalAnalyticsKey)
+                        setGlobalAnalyticsKey(options.globalAnalyticsKey);
+                    // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
+                    if (settings.cdnURL)
+                        setGlobalCDNUrl(settings.cdnURL);
+                    legacySettings = settings.cdnSettings;
+                    retryQueue = (_b = (_a = legacySettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
+                    opts = __assign({ retryQueue: retryQueue }, options);
+                    analytics = new Analytics(settings, opts);
+                    attachInspector(analytics);
+                    plugins = (_c = settings.plugins) !== null && _c !== void 0 ? _c : [];
+                    // const classicIntegrations = settings.classicIntegrations ?? []
+                    Stats.initRemoteMetrics(legacySettings.metrics);
+                    // needs to be flushed before plugins are registered
+                    flushPreBuffer(analytics, preInitBuffer);
+                    return [4 /*yield*/, registerPlugins(settings, legacySettings, analytics, options, plugins)
+                        // const search = window.location.search ?? ''
+                        // const hash = window.location.hash ?? ''
+                        // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
+                        // if (term.includes('ajs_')) {
+                        //   await analytics.queryString(term).catch(console.error)
+                        // }
+                    ];
+                case 1:
+                    ctx = _d.sent();
+                    // const search = window.location.search ?? ''
+                    // const hash = window.location.hash ?? ''
+                    // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
+                    // if (term.includes('ajs_')) {
+                    //   await analytics.queryString(term).catch(console.error)
+                    // }
+                    analytics.initialized = true;
+                    analytics.emit('initialize', settings, options);
+                    if (options.initialPageview) {
+                        analytics.page().catch(console.error);
+                    }
+                    return [4 /*yield*/, flushFinalBuffer(analytics, preInitBuffer)];
+                case 2:
+                    _d.sent();
+                    return [2 /*return*/, [analytics, ctx]];
+            }
+        });
+    });
+}
+/**
+ * The public browser interface for Segment Analytics
+ *
+ * @example
+ * ```ts
+ *  export const analytics = new AnalyticsBrowser()
+ *  analytics.load({ writeKey: 'foo' })
+ * ```
+ * @link https://github.com/segmentio/analytics-next/#readme
+ */
+var AnalyticsBrowser = /** @class */ (function (_super) {
+    __extends(AnalyticsBrowser, _super);
+    function AnalyticsBrowser() {
+        var _this = this;
+        var _a = createDeferred(), loadStart = _a.promise, resolveLoadStart = _a.resolve;
+        _this = _super.call(this, function (buffer) {
+            return loadStart.then(function (_a) {
+                var settings = _a[0], options = _a[1];
+                return loadAnalytics(settings, options, buffer);
+            });
+        }) || this;
+        _this._resolveLoadStart = function (settings, options) {
+            return resolveLoadStart([settings, options]);
+        };
+        return _this;
+    }
+    /**
+     * Fully initialize an analytics instance, including:
+     *
+     * * Fetching settings from the segment CDN (by default).
+     * * Fetching all remote destinations configured by the user (if applicable).
+     * * Flushing buffered analytics events.
+     * * Loading all middleware.
+     *
+     * Note:️  This method should only be called *once* in your application.
+     *
+     * @example
+     * ```ts
+     * export const analytics = new AnalyticsBrowser()
+     * analytics.load({ writeKey: 'foo' })
+     * ```
+     */
+    AnalyticsBrowser.prototype.load = function (settings, options) {
+        if (options === void 0) { options = {}; }
+        this._resolveLoadStart(settings, options);
+        return this;
+    };
+    /**
+     * Instantiates an object exposing Analytics methods.
+     *
+     * @example
+     * ```ts
+     * const ajs = AnalyticsBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
+     *
+     * ajs.track("foo")
+     * ...
+     * ```
+     */
+    AnalyticsBrowser.load = function (settings, options) {
+        if (options === void 0) { options = {}; }
+        return new AnalyticsBrowser().load(settings, options);
+    };
+    AnalyticsBrowser.standalone = function (settings, options) {
+        return AnalyticsBrowser.load(settings, options).then(function (res) { return res[0]; });
+    };
+    return AnalyticsBrowser;
+}(AnalyticsBuffered));
+
+
+;// CONCATENATED MODULE: ./src/browser/standalone-analytics.ts
+
+
+
+// function getWriteKey(): string | undefined {
+//   if (embeddedWriteKey()) {
+//     return embeddedWriteKey()
+//   }
+//   const analytics = getGlobalAnalytics()
+//   if (analytics?._writeKey) {
+//     return analytics._writeKey
+//   }
+//   const regex = /http.*\/analytics\.js\/v1\/([^/]*)(\/platform)?\/analytics.*/
+//   const scripts = Array.prototype.slice.call(
+//     document.querySelectorAll('script')
+//   )
+//   let writeKey: string | undefined = undefined
+//   for (const s of scripts) {
+//     const src = s.getAttribute('src') ?? ''
+//     const result = regex.exec(src)
+//     if (result && result[1]) {
+//       writeKey = result[1]
+//       break
+//     }
+//   }
+//   if (!writeKey && document.currentScript) {
+//     const script = document.currentScript as HTMLScriptElement
+//     const src = script.src
+//     const result = regex.exec(src)
+//     if (result && result[1]) {
+//       writeKey = result[1]
+//     }
+//   }
+//   return writeKey
+// }
+function install() {
+    var _a, _b, _c, _d;
+    return tslib_es6_awaiter(this, void 0, Promise, function () {
+        var settings, options, _e;
+        return tslib_es6_generator(this, function (_f) {
+            switch (_f.label) {
+                case 0:
+                    settings = (_b = (_a = getGlobalAnalytics()) === null || _a === void 0 ? void 0 : _a._loadSettings) !== null && _b !== void 0 ? _b : { writeKey: 'REQUIRED' };
+                    options = (_d = (_c = getGlobalAnalytics()) === null || _c === void 0 ? void 0 : _c._loadOptions) !== null && _d !== void 0 ? _d : {};
+                    // if (!writeKey) {
+                    //   console.error(
+                    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
+                    //   )
+                    //   return
+                    // }
+                    _e = setGlobalAnalytics;
+                    return [4 /*yield*/, AnalyticsBrowser.standalone(settings, options)];
+                case 1:
+                    // if (!writeKey) {
+                    //   console.error(
+                    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
+                    //   )
+                    //   return
+                    // }
+                    _e.apply(void 0, [(_f.sent())]);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+
+;// CONCATENATED MODULE: ./src/browser/standalone.ts
 /* eslint-disable @typescript-eslint/no-floating-promises */
 // import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
@@ -7228,7 +6593,7 @@ __webpack_require__.r(__webpack_exports__);
 //       : 'https://cdn.segment.com/analytics-next/bundles/'
 //   }
 // }
-(0,_plugins_segmentio_normalize__WEBPACK_IMPORTED_MODULE_0__.setVersionType)('web');
+setVersionType('web');
 
 // import '../lib/csp-detection'
 // import { RemoteMetrics } from '../core/stats/remote-metrics'
@@ -7275,7 +6640,7 @@ __webpack_require__.r(__webpack_exports__);
 //   }
 // }
 // attempt(install)
-(0,_standalone_analytics__WEBPACK_IMPORTED_MODULE_1__.install)();
+install();
 
 }();
 window.AnalyticsNext = __webpack_exports__;
