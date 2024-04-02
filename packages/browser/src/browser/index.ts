@@ -5,11 +5,11 @@ import { fetch } from '../lib/fetch'
 import {
   Analytics,
   AnalyticsSettings,
-  NullAnalytics,
+  // NullAnalytics,
   InitOptions,
 } from '../core/analytics'
 import { Context } from '../core/context'
-import { Plan } from '../core/events'
+// import { Plan } from '../core/events'
 import { Plugin } from '../core/plugin'
 import { MetricsOptions } from '../core/stats/remote-metrics'
 import { mergedOptions } from '../lib/merged-options'
@@ -38,16 +38,16 @@ import { Stats } from '../core/stats'
 import { setGlobalAnalyticsKey } from '../lib/global-analytics-helper'
 
 export interface LegacyIntegrationConfiguration {
-  /* @deprecated - This does not indicate browser types anymore */
-  type?: string
+//   /* @deprecated - This does not indicate browser types anymore */
+//   type?: string
 
-  versionSettings?: {
-    version?: string
-    override?: string
-    componentTypes?: Array<'browser' | 'android' | 'ios' | 'server'>
-  }
+//   versionSettings?: {
+//     version?: string
+//     override?: string
+//     componentTypes?: Array<'browser' | 'android' | 'ios' | 'server'>
+//   }
 
-  bundlingStatus?: string
+//   bundlingStatus?: string
 
   /**
    * Consent settings for the integration
@@ -80,7 +80,7 @@ export interface LegacySettings {
   enabledMiddleware?: Record<string, boolean>
   metrics?: MetricsOptions
 
-  plan?: Plan
+//   plan?: Plan
 
   legacyVideoPluginsEnabled?: boolean
 
@@ -196,11 +196,11 @@ async function registerPlugins(
     (pluginLike) => typeof pluginLike === 'object'
   ) as Plugin[]
 
-  const pluginSources = pluginLikes?.filter(
-    (pluginLike) =>
-      typeof pluginLike === 'function' &&
-      typeof pluginLike.pluginName === 'string'
-  ) as PluginFactory[]
+  // const pluginSources = pluginLikes?.filter(
+  //   (pluginLike) =>
+  //     typeof pluginLike === 'function' &&
+  //     typeof pluginLike.pluginName === 'string'
+  // ) as PluginFactory[]
 
   // const tsubMiddleware = hasTsubMiddleware(legacySettings)
   //   ? await import(
@@ -247,11 +247,11 @@ async function registerPlugins(
   const mergedSettings = mergedOptions(legacySettings, options)
   const remotePlugins = await remoteLoader(
     legacySettings,
-    analytics.integrations,
+    // analytics.integrations,
     mergedSettings,
-    options,
-    undefined, // tsubMiddleware
-    pluginSources
+    // options,
+    // undefined, // tsubMiddleware
+    // pluginSources
   ).catch(() => [])
 
   const toRegister = [
@@ -312,9 +312,9 @@ async function loadAnalytics(
   preInitBuffer: PreInitMethodCallBuffer
 ): Promise<[Analytics, Context]> {
   // return no-op analytics instance if disabled
-  if (options.disable === true) {
-    return [new NullAnalytics(), Context.system()]
-  }
+  // if (options.disable === true) {
+  //   return [new NullAnalytics(), Context.system()]
+  // }
 
   if (options.globalAnalyticsKey)
     setGlobalAnalyticsKey(options.globalAnalyticsKey)
@@ -335,12 +335,12 @@ async function loadAnalytics(
   }
 
   // if options.disable is a function, we allow user to disable analytics based on CDN Settings
-  if (typeof options.disable === 'function') {
-    const disabled = await options.disable(legacySettings)
-    if (disabled) {
-      return [new NullAnalytics(), Context.system()]
-    }
-  }
+  // if (typeof options.disable === 'function') {
+  //   const disabled = await options.disable(legacySettings)
+  //   if (disabled) {
+  //     return [new NullAnalytics(), Context.system()]
+  //   }
+  // }
 
   const retryQueue: boolean =
     legacySettings.integrations['Segment.io']?.retryQueue ?? true
@@ -380,14 +380,14 @@ async function loadAnalytics(
     // classicIntegrations
   )
 
-  const search = window.location.search ?? ''
-  const hash = window.location.hash ?? ''
+  // const search = window.location.search ?? ''
+  // const hash = window.location.hash ?? ''
 
-  const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
+  // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
 
-  if (term.includes('ajs_')) {
-    await analytics.queryString(term).catch(console.error)
-  }
+  // if (term.includes('ajs_')) {
+  //   await analytics.queryString(term).catch(console.error)
+  // }
 
   analytics.initialized = true
   analytics.emit('initialize', settings, options)

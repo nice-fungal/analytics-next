@@ -2,8 +2,8 @@ import type { Plugin } from '../../core/plugin'
 import type { Context } from '../../core/context'
 import {
   assertUserIdentity,
-  isPlainObject,
-  ValidationError,
+  // isPlainObject,
+  // ValidationError,
   assertEventExists,
   assertEventType,
   assertTrackEventName,
@@ -18,10 +18,10 @@ function validate(ctx: Context): Context {
     assertTrackEventName(event)
   }
 
-  const props = event.properties ?? event.traits
-  if (event.type !== 'alias' && !isPlainObject(props)) {
-    throw new ValidationError('.properties', 'is not an object')
-  }
+  // const props = event.properties ?? event.traits
+  // if (event.type !== 'alias' && !isPlainObject(props)) {
+  //   throw new ValidationError('.properties', 'is not an object')
+  // }
 
   assertUserIdentity(event)
   return ctx
@@ -38,7 +38,7 @@ export const validation: Plugin = {
   track: validate,
   identify: validate,
   page: validate,
-  alias: validate,
-  group: validate,
-  screen: validate,
+  // alias: validate,
+  // group: validate,
+  // screen: validate,
 }

@@ -1,16 +1,16 @@
-import { Facade } from '@segment/facade'
+// import { Facade } from '@segment/facade'
 import { Analytics } from '../../core/analytics'
 import { LegacySettings } from '../../browser'
-import { isOffline } from '../../core/connection'
+// import { isOffline } from '../../core/connection'
 import { Context } from '../../core/context'
 import { Plugin } from '../../core/plugin'
-import { PriorityQueue } from '../../lib/priority-queue'
-import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
+// import { PriorityQueue } from '../../lib/priority-queue'
+// import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
 import { toFacade } from '../../lib/to-facade'
 import batch, { BatchingDispatchConfig } from './batched-dispatcher'
 import standard, { StandardDispatcherConfig } from './fetch-dispatcher'
 import { normalize } from './normalize'
-import { scheduleFlush } from './schedule-flush'
+// import { scheduleFlush } from './schedule-flush'
 import { SEGMENT_API_HOST } from '../../core/constants'
 
 type DeliveryStrategy =
@@ -38,17 +38,17 @@ export type SegmentioSettings = {
   deliveryStrategy?: DeliveryStrategy
 }
 
-type JSON = ReturnType<Facade['json']>
+// type JSON = ReturnType<Facade['json']>
 
-function onAlias(analytics: Analytics, json: JSON): JSON {
-  const user = analytics.user()
-  json.previousId =
-    json.previousId ?? json.from ?? user.id() ?? user.anonymousId()
-  json.userId = json.userId ?? json.to
-  delete json.from
-  delete json.to
-  return json
-}
+// function onAlias(analytics: Analytics, json: JSON): JSON {
+//   // const user = analytics.user()
+//   // json.previousId =
+//   //   json.previousId ?? json.from ?? user.id() ?? user.anonymousId()
+//   // json.userId = json.userId ?? json.to
+//   // delete json.from
+//   // delete json.to
+//   return json
+// }
 
 export function segmentio(
   analytics: Analytics,
@@ -57,22 +57,22 @@ export function segmentio(
 ): Plugin {
   // Attach `pagehide` before buffer is created so that inflight events are added
   // to the buffer before the buffer persists events in its own `pagehide` handler.
-  window.addEventListener('pagehide', () => {
-    buffer.push(...Array.from(inflightEvents))
-    inflightEvents.clear()
-  })
+  // window.addEventListener('pagehide', () => {
+  //   buffer.push(...Array.from(inflightEvents))
+  //   inflightEvents.clear()
+  // })
 
-  const writeKey = settings?.apiKey ?? ''
+  // const writeKey = settings?.apiKey ?? ''
 
-  const buffer = analytics.options.disableClientPersistence
-    ? new PriorityQueue<Context>(analytics.queue.queue.maxAttempts, [])
-    : new PersistedPriorityQueue(
-        analytics.queue.queue.maxAttempts,
-        `${writeKey}:dest-Segment.io`
-      )
+  // const buffer = analytics.options.disableClientPersistence
+  //   ? new PriorityQueue<Context>(analytics.queue.queue.maxAttempts, [])
+  //   : new PersistedPriorityQueue(
+  //       analytics.queue.queue.maxAttempts,
+  //       `${writeKey}:dest-Segment.io`
+  //     )
 
   const inflightEvents = new Set<Context>()
-  const flushing = false
+  // const flushing = false
 
   const apiHost = settings?.apiHost ?? SEGMENT_API_HOST
   const protocol = settings?.protocol ?? 'https'
@@ -85,12 +85,12 @@ export function segmentio(
       : standard(deliveryStrategy?.config as StandardDispatcherConfig)
 
   async function send(ctx: Context): Promise<Context> {
-    if (isOffline()) {
-      buffer.push(ctx)
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
-      return ctx
-    }
+//     if (isOffline()) {
+//       buffer.push(ctx)
+//       // eslint-disable-next-line @typescript-eslint/no-use-before-define
+//       scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
+//       return ctx
+//     }
 
     inflightEvents.add(ctx)
 
@@ -102,9 +102,9 @@ export function segmentio(
       delete json.traits
     }
 
-    if (ctx.event.type === 'alias') {
-      json = onAlias(analytics, json)
-    }
+//     if (ctx.event.type === 'alias') {
+//       json = onAlias(analytics, json)
+//     }
 
     return client
       .dispatch(
@@ -112,15 +112,15 @@ export function segmentio(
         normalize(analytics, json, settings, integrations)
       )
       .then(() => ctx)
-      .catch(() => {
-        buffer.pushWithBackoff(ctx)
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
-        return ctx
-      })
-      .finally(() => {
-        inflightEvents.delete(ctx)
-      })
+      // .catch(() => {
+      //   buffer.pushWithBackoff(ctx)
+      //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      //   scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
+      //   return ctx
+      // })
+      // .finally(() => {
+      //   inflightEvents.delete(ctx)
+      // })
   }
 
   const segmentio: Plugin = {
@@ -130,18 +130,18 @@ export function segmentio(
     isLoaded: (): boolean => true,
     load: (): Promise<void> => Promise.resolve(),
     track: send,
-    identify: send,
+    // identify: send,
     page: send,
-    alias: send,
-    group: send,
-    screen: send,
+    // alias: send,
+    // group: send,
+    // screen: send,
   }
 
   // Buffer may already have items if they were previously stored in localStorage.
   // Start flushing them immediately.
-  if (buffer.todo) {
-    scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
-  }
+  // if (buffer.todo) {
+  //   scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
+  // }
 
   return segmentio
 }

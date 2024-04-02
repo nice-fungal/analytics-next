@@ -125,7 +125,7 @@ export function sourceMiddlewarePlugin(
     track: apply,
     page: apply,
     identify: apply,
-    alias: apply,
-    group: apply,
+    // alias: apply,
+    // group: apply,
   }
 }
