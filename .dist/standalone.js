@@ -2746,7 +2746,7 @@ var fetch = function () {
 
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
-var version = '1.62.0';
+var version = '1.62.1';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
 var SEGMENT_API_HOST = 'api.segment.io/v1';
@@ -6511,6 +6511,10 @@ function loadAnalytics(settings, options, preInitBuffer) {
                     // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
                     if (settings.cdnURL)
                         setGlobalCDNUrl(settings.cdnURL);
+                    if (options.initialPageview) {
+                        // capture the page context early, so it's always up-to-date
+                        preInitBuffer.push(new PreInitMethodCall('page', []));
+                    }
                     legacySettings = settings.cdnSettings;
                     retryQueue = (_b = (_a = legacySettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
                     opts = __assign({ retryQueue: retryQueue }, options);
@@ -6539,9 +6543,6 @@ function loadAnalytics(settings, options, preInitBuffer) {
                     // }
                     analytics.initialized = true;
                     analytics.emit('initialize', settings, options);
-                    if (options.initialPageview) {
-                        analytics.page().catch(console.error);
-                    }
                     return [4 /*yield*/, flushFinalBuffer(analytics, preInitBuffer)];
                 case 2:
                     _d.sent();
