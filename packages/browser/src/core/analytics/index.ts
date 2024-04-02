@@ -28,6 +28,7 @@ import { EventQueue } from '../queue/event-queue'
 import { /* Group, */ ID, User, UserOptions } from '../user'
 import autoBind from '../../lib/bind-all'
 import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
+// import type { LegacyDestination } from '../../plugins/ajs-destination'
 // import type {
 //   LegacyIntegration,
 //   ClassicIntegrationSource,

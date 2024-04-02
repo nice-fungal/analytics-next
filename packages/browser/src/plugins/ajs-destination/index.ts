@@ -226,6 +226,7 @@
 //             type: 'Dropped by plan',
 //           })
 //         )
+//         return ctx
 //       } else {
 //         ctx.updateEvent('integrations', {
 //           ...ctx.event.integrations,
@@ -241,6 +242,7 @@
 //             type: 'Dropped by plan',
 //           })
 //         )
+//         return ctx
 //       }
 //     }
 
