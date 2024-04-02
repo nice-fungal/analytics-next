@@ -1,6 +1,6 @@
 import { PriorityQueue } from '.'
 import { Context, SerializedContext } from '../../core/context'
-import { isBrowser } from '../../core/environment'
+// import { isBrowser } from '../../core/environment'
 
 let loc:
   | Storage
@@ -11,7 +11,7 @@ let loc:
 }
 
 try {
-  loc = isBrowser() && window.localStorage ? window.localStorage : loc
+  loc = /* isBrowser() && */ window.localStorage ? window.localStorage : loc
 } catch (err) {
   console.warn('Unable to access localStorage', err)
 }

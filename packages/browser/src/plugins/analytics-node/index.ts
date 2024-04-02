@@ -2,7 +2,7 @@ import { Plugin } from '../../core/plugin'
 import { Context } from '../../core/context'
 import { SegmentEvent } from '../../core/events'
 import fetch from 'node-fetch'
-import { version } from '../../generated/version'
+// import { version } from '../../generated/version'
 
 interface AnalyticsNodeSettings {
   writeKey: string
@@ -36,9 +36,9 @@ export async function post(
 
 export function analyticsNode(settings: AnalyticsNodeSettings): Plugin {
   const send = async (ctx: Context): Promise<Context> => {
-    ctx.updateEvent('context.library.name', 'analytics-node-next')
-    ctx.updateEvent('context.library.version', version)
-    ctx.updateEvent('_metadata.nodeVersion', process.versions.node)
+    // ctx.updateEvent('context.library.name', 'analytics-node-next')
+    // ctx.updateEvent('context.library.version', version)
+    // ctx.updateEvent('_metadata.nodeVersion', process.versions.node)
 
     await post(ctx.event, settings.writeKey)
     return ctx
@@ -55,9 +55,9 @@ export function analyticsNode(settings: AnalyticsNodeSettings): Plugin {
     track: send,
     identify: send,
     page: send,
-    alias: send,
-    group: send,
-    screen: send,
+    // alias: send,
+    // group: send,
+    // screen: send,
   }
 
   return plugin

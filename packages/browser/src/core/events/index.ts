@@ -1,11 +1,11 @@
 import { v4 as uuid } from '@lukeed/uuid'
 import { dset } from 'dset'
-import { ID, User } from '../user'
+import { User } from '../user'
 import {
   Options,
   Integrations,
   EventProperties,
-  Traits,
+  // Traits,
   SegmentEvent,
 } from './interfaces'
 import md5 from 'spark-md5'
@@ -53,8 +53,7 @@ export class EventFactory {
 
     if (category !== null) {
       event.category = category
-      event.properties = event.properties ?? {}
-      event.properties.category = category
+      event.properties!.category = category
     }
 
     if (page !== null) {
@@ -70,110 +69,115 @@ export class EventFactory {
     )
   }
 
-  screen(
-    category: string | null,
-    screen: string | null,
-    properties?: EventProperties,
-    options?: Options,
-    globalIntegrations?: Integrations,
-    pageCtx?: PageContext
-  ): SegmentEvent {
-    const event: Partial<SegmentEvent> = {
-      type: 'screen' as const,
-      properties: { ...properties },
-      options: { ...options },
-      integrations: { ...globalIntegrations },
-    }
+  // screen(
+  //   category: string | null,
+  //   screen: string | null,
+  //   properties?: EventProperties,
+  //   options?: Options,
+  //   globalIntegrations?: Integrations,
+  //   pageCtx?: PageContext
+  // ): SegmentEvent {
+  //   const event: Partial<SegmentEvent> = {
+  //     type: 'screen' as const,
+  //     properties: { ...properties },
+  //     options: { ...options },
+  //     integrations: { ...globalIntegrations },
 
-    if (category !== null) {
-      event.category = category
-    }
+  // //   if (category !== null) {
+  // //     event.category = category
+  // //   }
 
-    if (screen !== null) {
-      event.name = screen
-    }
-    return this.normalize(
-      {
-        ...this.baseEvent(),
-        ...event,
-      } as SegmentEvent,
-      pageCtx
-    )
-  }
+  //   }
 
-  identify(
-    userId: ID,
-    traits?: Traits,
-    options?: Options,
-    globalIntegrations?: Integrations,
-    pageCtx?: PageContext
-  ): SegmentEvent {
-    return this.normalize(
-      {
-        ...this.baseEvent(),
-        type: 'identify' as const,
-        userId,
-        traits,
-        options: { ...options },
-        integrations: { ...globalIntegrations },
-      },
-      pageCtx
-    )
-  }
+  //   if (category !== null) {
+  //     event.category = category
+  //   }
 
-  group(
-    groupId: ID,
-    traits?: Traits,
-    options?: Options,
-    globalIntegrations?: Integrations,
-    pageCtx?: PageContext
-  ): SegmentEvent {
-    return this.normalize(
-      {
-        ...this.baseEvent(),
-        type: 'group' as const,
-        traits,
-        options: { ...options },
-        integrations: { ...globalIntegrations },
-        groupId,
-      },
-      pageCtx
-    )
-  }
+  //   if (screen !== null) {
+  //     event.name = screen
+  //   }
+  //   return this.normalize(
+  //     {
+  //       ...this.baseEvent(),
+  //       ...event,
+  //     } as SegmentEvent,
+  //     pageCtx
+  //   )
+  // }
 
-  alias(
-    to: string,
-    from: string | null,
-    options?: Options,
-    globalIntegrations?: Integrations,
-    pageCtx?: PageContext
-  ): SegmentEvent {
-    const base: Partial<SegmentEvent> = {
-      userId: to,
-      type: 'alias' as const,
-      options: { ...options },
-      integrations: { ...globalIntegrations },
-    }
+  // identify(
+  //   userId: ID,
+  //   traits?: Traits,
+  //   options?: Options,
+  //   globalIntegrations?: Integrations,
+  //   pageCtx?: PageContext
+  // ): SegmentEvent {
+  //   return this.normalize(
+  //     {
+  //       ...this.baseEvent(),
+  //       type: 'identify' as const,
+  //       userId,
+  //       traits,
+  //       options: { ...options },
+  //       integrations: { ...globalIntegrations },
+  //     },
+  //     pageCtx
+  //   )
+  // }
 
-    if (from !== null) {
-      base.previousId = from
-    }
+  // group(
+  //   groupId: ID,
+  //   traits?: Traits,
+  //   options?: Options,
+  //   globalIntegrations?: Integrations,
+  //   pageCtx?: PageContext
+  // ): SegmentEvent {
+  //   return this.normalize(
+  //     {
+  //       ...this.baseEvent(),
+  //       type: 'group' as const,
+  //       traits,
+  //       options: { ...options },
+  //       integrations: { ...globalIntegrations },
+  //       groupId,
+  //     },
+  //     pageCtx
+  //   )
+  // }
 
-    if (to === undefined) {
-      return this.normalize({
-        ...base,
-        ...this.baseEvent(),
-      } as SegmentEvent)
-    }
+  // alias(
+  //   to: string,
+  //   from: string | null,
+  //   options?: Options,
+  //   globalIntegrations?: Integrations,
+  //   pageCtx?: PageContext
+  // ): SegmentEvent {
+  //   const base: Partial<SegmentEvent> = {
+  //     userId: to,
+  //     type: 'alias' as const,
+  //     options: { ...options },
+  //     integrations: { ...globalIntegrations },
+  //   }
 
-    return this.normalize(
-      {
-        ...this.baseEvent(),
-        ...base,
-      } as SegmentEvent,
-      pageCtx
-    )
-  }
+  //   if (from !== null) {
+  //     base.previousId = from
+  //   }
+
+  //   if (to === undefined) {
+  //     return this.normalize({
+  //       ...base,
+  //       ...this.baseEvent(),
+  //     } as SegmentEvent)
+  //   }
+
+  //   return this.normalize(
+  //     {
+  //       ...this.baseEvent(),
+  //       ...base,
+  //     } as SegmentEvent,
+  //     pageCtx
+  //   )
+  // }
 
   private baseEvent(): Partial<SegmentEvent> {
     const base: Partial<SegmentEvent> = {

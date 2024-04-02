@@ -1,11 +1,11 @@
 import {
-  Alias,
+  // Alias,
   Facade,
-  Group,
+  // Group,
   Identify,
   Options,
   Page,
-  Screen,
+  // Screen,
   Track,
 } from '@segment/facade'
 import { SegmentEvent } from '../core/events'
@@ -29,17 +29,17 @@ export function toFacade(evt: SegmentEvent, options?: Options): SegmentFacade {
     fcd = new Page(evt, options)
   }
 
-  if (evt.type === 'alias') {
-    fcd = new Alias(evt, options)
-  }
+  // if (evt.type === 'alias') {
+  //   fcd = new Alias(evt, options)
+  // }
 
-  if (evt.type === 'group') {
-    fcd = new Group(evt, options)
-  }
+  // if (evt.type === 'group') {
+  //   fcd = new Group(evt, options)
+  // }
 
-  if (evt.type === 'screen') {
-    fcd = new Screen(evt, options)
-  }
+  // if (evt.type === 'screen') {
+  //   fcd = new Screen(evt, options)
+  // }
 
   Object.defineProperty(fcd, 'obj', {
     value: evt,

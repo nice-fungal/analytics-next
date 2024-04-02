@@ -16,21 +16,21 @@ import {
  * The names of any AnalyticsBrowser methods that also exist on Analytics
  */
 export type PreInitMethodName =
-  | 'screen'
+  // | 'screen'
   | 'register'
-  | 'deregister'
+  // | 'deregister'
   | 'user'
-  | 'trackSubmit'
-  | 'trackClick'
-  | 'trackLink'
-  | 'trackForm'
-  | 'pageview'
-  | 'identify'
-  | 'reset'
-  | 'group'
+  // | 'trackSubmit'
+  // | 'trackClick'
+  // | 'trackLink'
+  // | 'trackForm'
+  // | 'pageview'
+  // | 'identify'
+  // | 'reset'
+  // | 'group'
   | 'track'
   | 'ready'
-  | 'alias'
+  // | 'alias'
   | 'debug'
   | 'page'
   | 'once'
@@ -38,7 +38,7 @@ export type PreInitMethodName =
   | 'on'
   | 'addSourceMiddleware'
   | 'setAnonymousId'
-  | 'addDestinationMiddleware'
+  // | 'addDestinationMiddleware'
 
 // Union of all analytics methods that _do not_ return a Promise
 type SyncPreInitMethodName = {
@@ -182,11 +182,11 @@ export class PreInitMethodCallBuffer {
     calls.forEach((call) => {
       const eventsExpectingPageContext: PreInitMethodName[] = [
         'track',
-        'screen',
-        'alias',
-        'group',
+        // 'screen',
+        // 'alias',
+        // 'group',
         'page',
-        'identify',
+        // 'identify',
       ]
       if (
         eventsExpectingPageContext.includes(call.method) &&
@@ -311,29 +311,29 @@ export class AnalyticsBuffered
     return this._promise.finally(...args)
   }
 
-  trackSubmit = this._createMethod('trackSubmit')
-  trackClick = this._createMethod('trackClick')
-  trackLink = this._createMethod('trackLink')
-  pageView = this._createMethod('pageview')
-  identify = this._createMethod('identify')
-  reset = this._createMethod('reset')
-  group = this._createMethod('group') as AnalyticsBrowserCore['group']
+  // trackSubmit = this._createMethod('trackSubmit')
+  // trackClick = this._createMethod('trackClick')
+  // trackLink = this._createMethod('trackLink')
+  // pageView = this._createMethod('pageview')
+  // identify = this._createMethod('identify')
+  // reset = this._createMethod('reset')
+  // group = this._createMethod('group') as AnalyticsBrowserCore['group']
   track = this._createMethod('track')
-  ready = this._createMethod('ready')
-  alias = this._createMethod('alias')
-  debug = this._createChainableMethod('debug')
+  // ready = this._createMethod('ready')
+  // alias = this._createMethod('alias')
+  // debug = this._createChainableMethod('debug')
   page = this._createMethod('page')
-  once = this._createChainableMethod('once')
-  off = this._createChainableMethod('off')
-  on = this._createChainableMethod('on')
-  addSourceMiddleware = this._createMethod('addSourceMiddleware')
-  setAnonymousId = this._createMethod('setAnonymousId')
-  addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
+  // once = this._createChainableMethod('once')
+  // off = this._createChainableMethod('off')
+  // on = this._createChainableMethod('on')
+  // addSourceMiddleware = this._createMethod('addSourceMiddleware')
+  // setAnonymousId = this._createMethod('setAnonymousId')
+  // addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
 
-  screen = this._createMethod('screen')
+  // screen = this._createMethod('screen')
   register = this._createMethod('register')
-  deregister = this._createMethod('deregister')
-  user = this._createMethod('user')
+  // deregister = this._createMethod('deregister')
+  // user = this._createMethod('user')
   readonly VERSION = version
 
   private _createMethod<T extends PreInitMethodName>(methodName: T) {
@@ -356,16 +356,16 @@ export class AnalyticsBuffered
    *  These are for methods that where determining when the method gets "flushed" is not important.
    *  These methods will resolve when analytics is fully initialized, and return type (other than Analytics)will not be available.
    */
-  private _createChainableMethod<T extends PreInitMethodName>(methodName: T) {
-    return (...args: Parameters<Analytics[T]>): AnalyticsBuffered => {
-      if (this.instance) {
-        void (this.instance[methodName] as Function)(...args)
-        return this
-      } else {
-        this._preInitBuffer.push(new PreInitMethodCall(methodName, args))
-      }
+  // private _createChainableMethod<T extends PreInitMethodName>(methodName: T) {
+  //   return (...args: Parameters<Analytics[T]>): AnalyticsBuffered => {
+  //     if (this.instance) {
+  //       void (this.instance[methodName] as Function)(...args)
+  //       return this
+  //     } else {
+  //       this._preInitBuffer.push(new PreInitMethodCall(methodName, args))
+  //     }
 
-      return this
-    }
-  }
+  //     return this
+  //   }
+  // }
 }

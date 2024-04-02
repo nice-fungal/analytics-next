@@ -131,14 +131,14 @@ export class User {
     return retLeg ? (typeof retLeg === 'object' ? retLeg.id : retLeg) : null
   }
 
-  private legacySIO(): [string, string] | null {
-    const val = this.legacyUserStore.get('_sio') as string
-    if (!val) {
-      return null
-    }
-    const [anon, user] = val.split('----')
-    return [anon, user]
-  }
+  // private legacySIO(): [string, string] | null {
+  //   const val = this.legacyUserStore.get('_sio') as string
+  //   if (!val) {
+  //     return null
+  //   }
+  //   const [anon, user] = val.split('----')
+  //   return [anon, user]
+  // }
 
   anonymousId = (id?: ID): ID => {
     if (this.options.disable) {
@@ -146,8 +146,9 @@ export class User {
     }
 
     if (id === undefined) {
-      const val =
-        this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
+      // const val =
+      //   this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
+      const val = this.identityStore.getAndSync(this.anonKey)
 
       if (val) {
         return val
