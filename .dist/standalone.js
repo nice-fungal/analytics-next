@@ -2357,23 +2357,51 @@ function resolvePageArguments(category, name, properties, options, callback) {
  */
 var resolveUserArguments = function (user) {
     return function () {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c;
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        var id = null;
-        id = (_c = (_a = args.find(isString)) !== null && _a !== void 0 ? _a : (_b = args.find(isNumber)) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : user.id();
-        var objects = args.filter(function (obj) {
-            if (id === null) {
-                return isPlainObject(obj);
+        var values = {};
+        // It's a stack so it's reversed so that we go through each of the expected arguments
+        var orderStack = [
+            'callback',
+            'options',
+            'traits',
+            'id',
+        ];
+        // Read each argument and eval the possible values here
+        for (var _d = 0, args_1 = args; _d < args_1.length; _d++) {
+            var arg = args_1[_d];
+            var current = orderStack.pop();
+            if (current === 'id') {
+                if (isString(arg) || isNumber(arg)) {
+                    values.id = arg.toString();
+                    continue;
+                }
+                if (arg === null || arg === undefined) {
+                    continue;
+                }
+                // First argument should always be the id, if it is not a valid value we can skip it
+                current = orderStack.pop();
             }
-            return isPlainObject(obj) || obj === null;
-        });
-        var traits = ((_d = objects[0]) !== null && _d !== void 0 ? _d : {});
-        var opts = ((_e = objects[1]) !== null && _e !== void 0 ? _e : {});
-        var resolvedCallback = args.find(isFunction);
-        return [id, traits, opts, resolvedCallback];
+            // Traits and Options
+            if ((current === 'traits' || current === 'options') &&
+                (arg === null || arg === undefined || isPlainObject(arg))) {
+                values[current] = arg;
+            }
+            // Callback
+            if (isFunction(arg)) {
+                values.callback = arg;
+                break; // This is always the last argument
+            }
+        }
+        return [
+            (_a = values.id) !== null && _a !== void 0 ? _a : user.id(),
+            ((_b = values.traits) !== null && _b !== void 0 ? _b : {}),
+            (_c = values.options) !== null && _c !== void 0 ? _c : {},
+            values.callback,
+        ];
     };
 };
 /**
@@ -2718,7 +2746,7 @@ var fetch = function () {
 
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
-var version = '1.58.0';
+var version = '1.62.0';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
 var SEGMENT_API_HOST = 'api.segment.io/v1';
@@ -2958,7 +2986,7 @@ function dispatch(ctx, queue, emitter, options) {
     });
 }
 //# sourceMappingURL=dispatch.js.map
-;// CONCATENATED MODULE: ../core/dist/esm/emitter/index.js
+;// CONCATENATED MODULE: ../generic-utils/dist/esm/emitter/emitter.js
 /**
  * Event Emitter that takes the expected contract as a generic
  * @example
@@ -2973,15 +3001,29 @@ function dispatch(ctx, queue, emitter, options) {
  * ```
  */
 var Emitter = /** @class */ (function () {
-    function Emitter() {
+    function Emitter(options) {
+        var _a;
         this.callbacks = {};
+        this.warned = false;
+        this.maxListeners = (_a = options === null || options === void 0 ? void 0 : options.maxListeners) !== null && _a !== void 0 ? _a : 10;
     }
+    Emitter.prototype.warnIfPossibleMemoryLeak = function (event) {
+        if (this.warned) {
+            return;
+        }
+        if (this.maxListeners &&
+            this.callbacks[event].length > this.maxListeners) {
+            console.warn("Event Emitter: Possible memory leak detected; ".concat(String(event), " has exceeded ").concat(this.maxListeners, " listeners."));
+            this.warned = true;
+        }
+    };
     Emitter.prototype.on = function (event, callback) {
         if (!this.callbacks[event]) {
             this.callbacks[event] = [callback];
         }
         else {
             this.callbacks[event].push(callback);
+            this.warnIfPossibleMemoryLeak(event);
         }
         return this;
     };
@@ -3021,7 +3063,7 @@ var Emitter = /** @class */ (function () {
     return Emitter;
 }());
 
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=emitter.js.map
 // EXTERNAL MODULE: ../../node_modules/spark-md5/spark-md5.js
 var spark_md5 = __webpack_require__(791);
 var spark_md5_default = /*#__PURE__*/__webpack_require__.n(spark_md5);
@@ -5013,6 +5055,7 @@ var AnalyticsBuffered = /** @class */ (function () {
 
 
 
+
 // import { version } from '../../generated/version'
 
 
@@ -5025,7 +5068,7 @@ var deprecationWarning = 'This is being deprecated and will be not be available 
 function createDefaultQueue(name, retryQueue, disablePersistance) {
     if (retryQueue === void 0) { retryQueue = false; }
     if (disablePersistance === void 0) { disablePersistance = false; }
-    var maxAttempts = retryQueue ? 4 : 1;
+    var maxAttempts = retryQueue ? 10 : 1;
     var priorityQueue = disablePersistance
         ? new PriorityQueue(maxAttempts, [])
         : new PersistedPriorityQueue(maxAttempts, name);
@@ -5425,6 +5468,15 @@ var Analytics = /** @class */ (function (_super) {
     return Analytics;
 }(Emitter));
 
+/**
+ * @returns a no-op analytics instance that does not create cookies or localstorage, or send any events to segment.
+ */
+// export class NullAnalytics extends Analytics {
+//   constructor() {
+//     super({ writeKey: '' }, { disableClientPersistence: true })
+//     this.initialized = true
+//   }
+// }
 
 ;// CONCATENATED MODULE: ./src/lib/merged-options.ts
 
@@ -5454,7 +5506,7 @@ function mergedOptions(settings, options) {
     }, {});
 }
 
-;// CONCATENATED MODULE: ./src/lib/create-deferred.ts
+;// CONCATENATED MODULE: ../generic-utils/dist/esm/create-deferred/create-deferred.js
 /**
  * Return a promise that can be externally resolved
  */
@@ -5471,7 +5523,7 @@ var createDeferred = function () {
         promise: promise,
     };
 };
-
+//# sourceMappingURL=create-deferred.js.map
 ;// CONCATENATED MODULE: ./src/core/query-string/gracefulDecodeURIComponent.ts
 /**
  * Tries to gets the unencoded version of an encoded component of a
@@ -5887,7 +5939,18 @@ function sourceMiddlewarePlugin(fn, integrations) {
     };
 }
 
+;// CONCATENATED MODULE: ./src/core/stats/metric-helpers.ts
+function recordIntegrationMetric(ctx, _a) {
+    var methodName = _a.methodName, integrationName = _a.integrationName, type = _a.type, _b = _a.didError, didError = _b === void 0 ? false : _b;
+    ctx.stats.increment("analytics_js.integration.invoke".concat(didError ? '.error' : ''), 1, [
+        "method:".concat(methodName),
+        "integration_name:".concat(integrationName),
+        "type:".concat(type),
+    ]);
+}
+
 ;// CONCATENATED MODULE: ./src/plugins/remote-loader/index.ts
+
 
 
 
@@ -5941,7 +6004,7 @@ var ActionDestination = /** @class */ (function () {
     ActionDestination.prototype._createMethod = function (methodName) {
         var _this = this;
         return function (ctx) { return tslib_es6_awaiter(_this, void 0, Promise, function () {
-            var transformedContext;
+            var transformedContext, error_1;
             return tslib_es6_generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -5953,10 +6016,27 @@ var ActionDestination = /** @class */ (function () {
                     case 1:
                         transformedContext = _a.sent();
                         _a.label = 2;
-                    case 2: return [4 /*yield*/, this.action[methodName](transformedContext)];
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        recordIntegrationMetric(ctx, {
+                            integrationName: this.action.name,
+                            methodName: methodName,
+                            type: 'action',
+                        });
+                        return [4 /*yield*/, this.action[methodName](transformedContext)];
                     case 3:
                         _a.sent();
-                        return [2 /*return*/, ctx];
+                        return [3 /*break*/, 5];
+                    case 4:
+                        error_1 = _a.sent();
+                        recordIntegrationMetric(ctx, {
+                            integrationName: this.action.name,
+                            methodName: methodName,
+                            type: 'action',
+                            didError: true,
+                        });
+                        throw error_1;
+                    case 5: return [2 /*return*/, ctx];
                 }
             });
         }); };
@@ -5969,7 +6049,32 @@ var ActionDestination = /** @class */ (function () {
         return this.action.ready ? this.action.ready() : Promise.resolve();
     };
     ActionDestination.prototype.load = function (ctx, analytics) {
-        return this.action.load(ctx, analytics);
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var error_2;
+            return tslib_es6_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        recordIntegrationMetric(ctx, {
+                            integrationName: this.action.name,
+                            methodName: 'load',
+                            type: 'action',
+                        });
+                        return [4 /*yield*/, this.action.load(ctx, analytics)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_2 = _a.sent();
+                        recordIntegrationMetric(ctx, {
+                            integrationName: this.action.name,
+                            methodName: 'load',
+                            type: 'action',
+                            didError: true,
+                        });
+                        throw error_2;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ActionDestination.prototype.unload = function (ctx, analytics) {
         var _a, _b;
@@ -6085,7 +6190,7 @@ routingMiddleware) {
                     cdn = getCDN();
                     routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
                     pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(function (remotePlugin) { return tslib_es6_awaiter(_this, void 0, void 0, function () {
-                        var pluginFactory, plugin, plugins, routing_1, error_1;
+                        var pluginFactory, plugin, plugins, routing_1, error_3;
                         return tslib_es6_generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -6132,8 +6237,8 @@ routingMiddleware) {
                                     _a.label = 4;
                                 case 4: return [3 /*break*/, 6];
                                 case 5:
-                                    error_1 = _a.sent();
-                                    console.warn('Failed to load Remote Plugin', error_1);
+                                    error_3 = _a.sent();
+                                    console.warn('Failed to load Remote Plugin', error_3);
                                     return [3 /*break*/, 6];
                                 case 6: return [2 /*return*/];
                             }
@@ -6397,6 +6502,10 @@ function loadAnalytics(settings, options, preInitBuffer) {
         return tslib_es6_generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
+                    // return no-op analytics instance if disabled
+                    // if (options.disable === true) {
+                    //   return [new NullAnalytics(), Context.system()]
+                    // }
                     if (options.globalAnalyticsKey)
                         setGlobalAnalyticsKey(options.globalAnalyticsKey);
                     // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
