@@ -1,4 +1,4 @@
-// import { Facade } from '@segment/facade'
+// import { Facade } from '@head.js/analytics.js-facade'
 import { Analytics } from '../../core/analytics'
 import { LegacySettings } from '../../browser'
 // import { isOffline } from '../../core/connection'
