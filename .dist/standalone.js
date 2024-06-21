@@ -2746,7 +2746,7 @@ var fetch = function () {
 
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
-var version = '1.62.1';
+var version = '1.66.0';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
 var SEGMENT_API_HOST = 'api.segment.io/v1';
@@ -2776,11 +2776,12 @@ function logError(err) {
 var RemoteMetrics = /** @class */ (function () {
     function RemoteMetrics(options) {
         var _this = this;
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : SEGMENT_API_HOST;
         this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
         this.flushTimer = (_c = options === null || options === void 0 ? void 0 : options.flushTimer) !== null && _c !== void 0 ? _c : 30 * 1000; /* 30s */
         this.maxQueueSize = (_d = options === null || options === void 0 ? void 0 : options.maxQueueSize) !== null && _d !== void 0 ? _d : 20;
+        this.protocol = (_e = options === null || options === void 0 ? void 0 : options.protocol) !== null && _e !== void 0 ? _e : 'https';
         this.queue = [];
         if (this.sampleRate > 0) {
             var flushing_1 = false;
@@ -2844,7 +2845,7 @@ var RemoteMetrics = /** @class */ (function () {
                 payload = { series: this.queue };
                 this.queue = [];
                 headers = { 'Content-Type': 'text/plain' };
-                url = "https://".concat(this.host, "/m");
+                url = "".concat(this.protocol, "://").concat(this.host, "/m");
                 return [2 /*return*/, fetch(url, {
                         headers: headers,
                         body: JSON.stringify(payload),
@@ -3744,24 +3745,25 @@ var CoreEventQueue = /** @class */ (function (_super) {
             var _this = this;
             return tslib_es6_generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Promise.resolve(plugin.load(ctx, instance))
-                            .then(function () {
-                            _this.plugins.push(plugin);
-                        })
-                            .catch(function (err) {
-                            if (plugin.type === 'destination') {
-                                _this.failedInitializations.push(plugin.name);
-                                console.warn(plugin.name, err);
-                                ctx.log('warn', 'Failed to load destination', {
-                                    plugin: plugin.name,
-                                    error: err,
-                                });
-                                return;
-                            }
-                            throw err;
-                        })];
-                    case 1:
+                    case 0:
+                        if (!(plugin.type === 'destination' && plugin.name !== 'Segment.io')) return [3 /*break*/, 1];
+                        plugin.load(ctx, instance).catch(function (err) {
+                            _this.failedInitializations.push(plugin.name);
+                            _this.emit('initialization_failure', plugin);
+                            console.warn(plugin.name, err);
+                            ctx.log('warn', 'Failed to load destination', {
+                                plugin: plugin.name,
+                                error: err,
+                            });
+                            _this.plugins = _this.plugins.filter(function (p) { return p === plugin; });
+                        });
+                        return [3 /*break*/, 3];
+                    case 1: return [4 /*yield*/, plugin.load(ctx, instance)];
+                    case 2:
                         _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        this.plugins.push(plugin);
                         return [2 /*return*/];
                 }
             });
@@ -5513,14 +5515,30 @@ function mergedOptions(settings, options) {
 var createDeferred = function () {
     var resolve;
     var reject;
+    var settled = false;
     var promise = new Promise(function (_resolve, _reject) {
-        resolve = _resolve;
-        reject = _reject;
+        resolve = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            settled = true;
+            _resolve.apply(void 0, args);
+        };
+        reject = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            settled = true;
+            _reject.apply(void 0, args);
+        };
     });
     return {
         resolve: resolve,
         reject: reject,
         promise: promise,
+        isSettled: function () { return settled; },
     };
 };
 //# sourceMappingURL=create-deferred.js.map
@@ -5956,10 +5974,12 @@ function recordIntegrationMetric(ctx, _a) {
 
 
 
+
 var ActionDestination = /** @class */ (function () {
     function ActionDestination(name, action) {
         this.version = '1.0.0';
         this.alternativeNames = [];
+        this.loadPromise = createDeferred();
         this.middleware = [];
         // alias = this._createMethod('alias')
         // group = this._createMethod('group')
@@ -6017,17 +6037,22 @@ var ActionDestination = /** @class */ (function () {
                         transformedContext = _a.sent();
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 4, , 5]);
+                        _a.trys.push([2, 5, , 6]);
+                        return [4 /*yield*/, this.ready()];
+                    case 3:
+                        if (!(_a.sent())) {
+                            throw new Error('Something prevented the destination from getting ready');
+                        }
                         recordIntegrationMetric(ctx, {
                             integrationName: this.action.name,
                             methodName: methodName,
                             type: 'action',
                         });
                         return [4 /*yield*/, this.action[methodName](transformedContext)];
-                    case 3:
-                        _a.sent();
-                        return [3 /*break*/, 5];
                     case 4:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         recordIntegrationMetric(ctx, {
                             integrationName: this.action.name,
@@ -6036,7 +6061,7 @@ var ActionDestination = /** @class */ (function () {
                             didError: true,
                         });
                         throw error_1;
-                    case 5: return [2 /*return*/, ctx];
+                    case 6: return [2 /*return*/, ctx];
                 }
             });
         }); };
@@ -6046,32 +6071,58 @@ var ActionDestination = /** @class */ (function () {
         return this.action.isLoaded();
     };
     ActionDestination.prototype.ready = function () {
-        return this.action.ready ? this.action.ready() : Promise.resolve();
+        return tslib_es6_awaiter(this, void 0, Promise, function () {
+            var _a;
+            return tslib_es6_generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.loadPromise.promise];
+                    case 1:
+                        _b.sent();
+                        return [2 /*return*/, true];
+                    case 2:
+                        _a = _b.sent();
+                        return [2 /*return*/, false];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     ActionDestination.prototype.load = function (ctx, analytics) {
         return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var error_2;
-            return tslib_es6_generator(this, function (_a) {
-                switch (_a.label) {
+            var loadP, _a, _b, error_2;
+            return tslib_es6_generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        if (this.loadPromise.isSettled()) {
+                            return [2 /*return*/, this.loadPromise.promise];
+                        }
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 3, , 4]);
                         recordIntegrationMetric(ctx, {
                             integrationName: this.action.name,
                             methodName: 'load',
                             type: 'action',
                         });
-                        return [4 /*yield*/, this.action.load(ctx, analytics)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                        loadP = this.action.load(ctx, analytics);
+                        _b = (_a = this.loadPromise).resolve;
+                        return [4 /*yield*/, loadP];
                     case 2:
-                        error_2 = _a.sent();
+                        _b.apply(_a, [_c.sent()]);
+                        return [2 /*return*/, loadP];
+                    case 3:
+                        error_2 = _c.sent();
                         recordIntegrationMetric(ctx, {
                             integrationName: this.action.name,
                             methodName: 'load',
                             type: 'action',
                             didError: true,
                         });
+                        this.loadPromise.reject(error_2);
                         throw error_2;
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -6177,7 +6228,7 @@ function remoteLoader(loadSettings, settings,
 // userIntegrations: Integrations,
 // @ts-ignore
 mergedIntegrations, 
-// obfuscate?: boolean,
+// options?: InitOptions,
 routingMiddleware) {
     var _a, _b, _c;
     return tslib_es6_awaiter(this, void 0, Promise, function () {
@@ -6209,13 +6260,13 @@ routingMiddleware) {
                                     _a.trys.push([1, 5, , 6]);
                                     // pluginSources?.find(
                                     //   ({ pluginName }) => pluginName === remotePlugin.name
-                                    // ) || (await loadPluginFactory(remotePlugin, obfuscate))
+                                    // ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
                                     return [4 /*yield*/, loadPluginFactory(remotePlugin)];
                                 case 2:
                                     pluginFactory = 
                                     // pluginSources?.find(
                                     //   ({ pluginName }) => pluginName === remotePlugin.name
-                                    // ) || (await loadPluginFactory(remotePlugin, obfuscate))
+                                    // ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
                                     _a.sent();
                                     if (!pluginFactory) return [3 /*break*/, 4];
                                     return [4 /*yield*/, pluginFactory(__assign(__assign({ app: loadSettings.app || {}, rum: loadSettings.rum || {} }, remotePlugin.settings), mergedIntegrations[remotePlugin.name]))];
@@ -6311,9 +6362,15 @@ function assertTraits(event) {
         throw new ValidationError('.traits', objError);
     }
 }
+function assertMessageId(event) {
+    if (!isString(event.messageId)) {
+        throw new ValidationError('.messageId', stringError);
+    }
+}
 function validateEvent(event) {
     assertEventExists(event);
     assertEventType(event);
+    assertMessageId(event);
     if (event.type === 'track') {
         assertTrackEventName(event);
         assertTrackEventProperties(event);
@@ -6375,7 +6432,6 @@ var attachInspector = function (analytics) { var _a; return (_a = inspectorHost.
 
 
 
-// import { segmentio, SegmentioSettings } from '../plugins/segmentio'
 
 
 // import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
@@ -6495,12 +6551,12 @@ function registerPlugins(loadSettings, legacySettings, analytics, options, plugi
     });
 }
 function loadAnalytics(settings, options, preInitBuffer) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f;
     if (options === void 0) { options = {}; }
     return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var legacySettings, retryQueue, opts, analytics, plugins, ctx;
-        return tslib_es6_generator(this, function (_d) {
-            switch (_d.label) {
+        var legacySettings, retryQueue, analytics, plugins, segmentLoadOptions, ctx;
+        return tslib_es6_generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
                     // return no-op analytics instance if disabled
                     // if (options.disable === true) {
@@ -6517,12 +6573,12 @@ function loadAnalytics(settings, options, preInitBuffer) {
                     }
                     legacySettings = settings.cdnSettings;
                     retryQueue = (_b = (_a = legacySettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
-                    opts = __assign({ retryQueue: retryQueue }, options);
-                    analytics = new Analytics(settings, opts);
+                    options = __assign({ retryQueue: retryQueue }, options);
+                    analytics = new Analytics(settings, options);
                     attachInspector(analytics);
                     plugins = (_c = settings.plugins) !== null && _c !== void 0 ? _c : [];
-                    // const classicIntegrations = settings.classicIntegrations ?? []
-                    Stats.initRemoteMetrics(legacySettings.metrics);
+                    segmentLoadOptions = (_d = options.integrations) === null || _d === void 0 ? void 0 : _d['Segment.io'];
+                    Stats.initRemoteMetrics(__assign(__assign({}, legacySettings.metrics), { host: (_e = segmentLoadOptions === null || segmentLoadOptions === void 0 ? void 0 : segmentLoadOptions.apiHost) !== null && _e !== void 0 ? _e : (_f = legacySettings.metrics) === null || _f === void 0 ? void 0 : _f.host, protocol: segmentLoadOptions === null || segmentLoadOptions === void 0 ? void 0 : segmentLoadOptions.protocol }));
                     // needs to be flushed before plugins are registered
                     flushPreBuffer(analytics, preInitBuffer);
                     return [4 /*yield*/, registerPlugins(settings, legacySettings, analytics, options, plugins)
@@ -6534,7 +6590,7 @@ function loadAnalytics(settings, options, preInitBuffer) {
                         // }
                     ];
                 case 1:
-                    ctx = _d.sent();
+                    ctx = _g.sent();
                     // const search = window.location.search ?? ''
                     // const hash = window.location.hash ?? ''
                     // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
@@ -6545,7 +6601,7 @@ function loadAnalytics(settings, options, preInitBuffer) {
                     analytics.emit('initialize', settings, options);
                     return [4 /*yield*/, flushFinalBuffer(analytics, preInitBuffer)];
                 case 2:
-                    _d.sent();
+                    _g.sent();
                     return [2 /*return*/, [analytics, ctx]];
             }
         });
