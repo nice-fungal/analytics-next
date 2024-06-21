@@ -1,4 +1,4 @@
-// import { Group, Identify, Track, Page, Alias } from '@segment/facade'
+// import { Group, Identify, Track, Page, Alias } from '@head.js/analytics.js-facade'
 // import { Analytics } from '../../core/analytics'
 // import { Emitter } from '@segment/analytics-generic-utils'
 // import { User } from '../../core/user'
