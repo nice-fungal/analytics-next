@@ -1,7 +1,7 @@
 // import { getProcessEnv } from '../lib/get-process-env'
-import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
+import { /* getCDN */ setGlobalCDNUrl } from '../lib/parse-cdn'
 
-import { fetch } from '../lib/fetch'
+// import { fetch } from '../lib/fetch'
 import {
   Analytics,
   AnalyticsSettings,
@@ -21,7 +21,7 @@ import {
   RemotePlugin,
 } from '../plugins/remote-loader'
 import type { RoutingRule } from '../plugins/routing-middleware'
-import { segmentio, SegmentioSettings } from '../plugins/segmentio'
+import { /* segmentio, */ SegmentioSettings } from '../plugins/segmentio'
 import { validation } from '../plugins/validation'
 import {
   AnalyticsBuffered,
@@ -117,26 +117,26 @@ export interface AnalyticsBrowserSettings extends AnalyticsSettings {
   cdnURL?: string
 }
 
-export function loadLegacySettings(
-  writeKey: string,
-  cdnURL?: string
-): Promise<LegacySettings> {
-  const baseUrl = cdnURL ?? getCDN()
+// export function loadLegacySettings(
+//   writeKey: string,
+//   cdnURL?: string
+// ): Promise<LegacySettings> {
+//   const baseUrl = cdnURL ?? getCDN()
 
-  return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
-    .then((res) => {
-      if (!res.ok) {
-        return res.text().then((errorResponseMessage) => {
-          throw new Error(errorResponseMessage)
-        })
-      }
-      return res.json()
-    })
-    .catch((err) => {
-      console.error(err.message)
-      throw err
-    })
-}
+//   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
+//     .then((res) => {
+//       if (!res.ok) {
+//         return res.text().then((errorResponseMessage) => {
+//           throw new Error(errorResponseMessage)
+//         })
+//       }
+//       return res.json()
+//     })
+//     .catch((err) => {
+//       console.error(err.message)
+//       throw err
+//     })
+// }
 
 // function hasLegacyDestinations(settings: LegacySettings): boolean {
 //   return (
@@ -185,7 +185,7 @@ async function flushFinalBuffer(
 }
 
 async function registerPlugins(
-  writeKey: string,
+  loadSettings: AnalyticsSettings,
   legacySettings: LegacySettings,
   analytics: Analytics,
   options: InitOptions,
@@ -246,6 +246,7 @@ async function registerPlugins(
 
   const mergedSettings = mergedOptions(legacySettings, options)
   const remotePlugins = await remoteLoader(
+    loadSettings,
     legacySettings,
     // analytics.integrations,
     mergedSettings,
@@ -266,20 +267,20 @@ async function registerPlugins(
   //   toRegister.push(schemaFilter)
   // }
 
-  const shouldIgnoreSegmentio =
-    (options.integrations?.All === false &&
-      !options.integrations['Segment.io']) ||
-    (options.integrations && options.integrations['Segment.io'] === false)
+  // const shouldIgnoreSegmentio =
+  //   (options.integrations?.All === false &&
+  //     !options.integrations['Segment.io']) ||
+  //   (options.integrations && options.integrations['Segment.io'] === false)
 
-  if (!shouldIgnoreSegmentio) {
-    toRegister.push(
-      await segmentio(
-        analytics,
-        mergedSettings['Segment.io'] as SegmentioSettings,
-        legacySettings.integrations
-      )
-    )
-  }
+  // if (!shouldIgnoreSegmentio) {
+  //   toRegister.push(
+  //     await segmentio(
+  //       analytics,
+  //       mergedSettings['Segment.io'] as SegmentioSettings,
+  //       legacySettings.integrations
+  //     )
+  //   )
+  // }
 
   const ctx = await analytics.register(...toRegister)
 
@@ -326,13 +327,14 @@ async function loadAnalytics(
     preInitBuffer.push(new PreInitMethodCall('page', []))
   }
 
-  let legacySettings =
-    settings.cdnSettings ??
-    (await loadLegacySettings(settings.writeKey, settings.cdnURL))
+  // let legacySettings =
+  //   settings.cdnSettings ??
+  //   (await loadLegacySettings(settings.writeKey, settings.cdnURL))
+  let legacySettings = settings.cdnSettings!;
 
-  if (options.updateCDNSettings) {
-    legacySettings = options.updateCDNSettings(legacySettings)
-  }
+  // if (options.updateCDNSettings) {
+  //   legacySettings = options.updateCDNSettings(legacySettings)
+  // }
 
   // if options.disable is a function, we allow user to disable analytics based on CDN Settings
   // if (typeof options.disable === 'function') {
@@ -372,7 +374,7 @@ async function loadAnalytics(
   flushPreBuffer(analytics, preInitBuffer)
 
   const ctx = await registerPlugins(
-    settings.writeKey,
+    settings,
     legacySettings,
     analytics,
     options,
@@ -470,9 +472,9 @@ export class AnalyticsBrowser extends AnalyticsBuffered {
   }
 
   static standalone(
-    writeKey: string,
+    settings: AnalyticsBrowserSettings,
     options?: InitOptions
   ): Promise<Analytics> {
-    return AnalyticsBrowser.load({ writeKey }, options).then((res) => res[0])
+    return AnalyticsBrowser.load(settings, options).then((res) => res[0])
   }
 }
