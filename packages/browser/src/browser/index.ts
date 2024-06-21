@@ -1,4 +1,6 @@
 // import { getProcessEnv } from '../lib/get-process-env'
+import { /* getCDN */ setGlobalCDNUrl } from '../lib/parse-cdn'
+
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
 import { fetch } from '../lib/fetch'
@@ -128,26 +130,26 @@ export interface AnalyticsBrowserSettings {
   classicIntegrations?: ClassicIntegrationSource[]
 }
 
-export function loadCDNSettings(
-  writeKey: string,
-  cdnURL?: string
-): Promise<CDNSettings> {
-  const baseUrl = cdnURL ?? getCDN()
-
-  return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
-    .then((res) => {
-      if (!res.ok) {
-        return res.text().then((errorResponseMessage) => {
-          throw new Error(errorResponseMessage)
-        })
-      }
-      return res.json()
-    })
-    .catch((err) => {
-      console.error(err.message)
-      throw err
-    })
-}
+// export function loadCDNSettings(
+//   writeKey: string,
+//   cdnURL?: string
+// ): Promise<CDNSettings> {
+//   const baseUrl = cdnURL ?? getCDN()
+// 
+//   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
+//     .then((res) => {
+//       if (!res.ok) {
+//         return res.text().then((errorResponseMessage) => {
+//           throw new Error(errorResponseMessage)
+//         })
+//       }
+//       return res.json()
+//     })
+//     .catch((err) => {
+//       console.error(err.message)
+//       throw err
+//     })
+// }
 
 // function hasLegacyDestinations(settings: CDNSettings): boolean {
 //   return (
@@ -197,6 +199,7 @@ async function flushFinalBuffer(
 
 async function registerPlugins(
   writeKey: string,
+  loadSettings: AnalyticsSettings,
   cdnSettings: CDNSettings,
   analytics: Analytics,
   options: InitOptions,
@@ -255,6 +258,7 @@ async function registerPlugins(
 
   const mergedSettings = mergedOptions(cdnSettings, options)
   const remotePlugins = await remoteLoader(
+    loadSettings,
     cdnSettings,
     // analytics.integrations,
     mergedSettings,
@@ -274,20 +278,20 @@ async function registerPlugins(
   //   toRegister.push(schemaFilter)
   // }
 
-  const shouldIgnoreSegmentio =
-    (options.integrations?.All === false &&
-      !options.integrations['Segment.io']) ||
-    (options.integrations && options.integrations['Segment.io'] === false)
+  // const shouldIgnoreSegmentio =
+  //   (options.integrations?.All === false &&
+  //     !options.integrations['Segment.io']) ||
+  //   (options.integrations && options.integrations['Segment.io'] === false)
 
-  if (!shouldIgnoreSegmentio) {
-    toRegister.push(
-      await segmentio(
-        analytics,
-        mergedSettings['Segment.io'] as SegmentioSettings,
-        cdnSettings.integrations
-      )
-    )
-  }
+  // if (!shouldIgnoreSegmentio) {
+  //   toRegister.push(
+  //     await segmentio(
+  //       analytics,
+  //       mergedSettings['Segment.io'] as SegmentioSettings,
+  //       cdnSettings.integrations
+  //     )
+  //   )
+  // }
 
   const ctx = await analytics.register(...toRegister)
 
@@ -334,13 +338,14 @@ async function loadAnalytics(
     preInitBuffer.push(new PreInitMethodCall('page', []))
   }
 
-  let cdnSettings =
-    settings.cdnSettings ??
-    (await loadCDNSettings(settings.writeKey, settings.cdnURL))
+  // let cdnSettings =
+  //   settings.cdnSettings ??
+  //   (await loadCDNSettings(settings.writeKey, settings.cdnURL))
+  let cdnSettings = settings.cdnSettings!;
 
-  if (options.updateCDNSettings) {
-    cdnSettings = options.updateCDNSettings(cdnSettings)
-  }
+  // if (options.updateCDNSettings) {
+  //   cdnSettings = options.updateCDNSettings(cdnSettings)
+  // }
 
   // if options.disable is a function, we allow user to disable analytics based on CDN Settings
   // if (typeof options.disable === 'function') {
@@ -380,7 +385,7 @@ async function loadAnalytics(
   flushPreBuffer(analytics, preInitBuffer)
 
   const ctx = await registerPlugins(
-    settings.writeKey,
+    settings,
     cdnSettings,
     analytics,
     options,
@@ -478,9 +483,9 @@ export class AnalyticsBrowser extends AnalyticsBuffered {
   }
 
   static standalone(
-    writeKey: string,
+    settings: AnalyticsBrowserSettings,
     options?: InitOptions
   ): Promise<Analytics> {
-    return AnalyticsBrowser.load({ writeKey }, options).then((res) => res[0])
+    return AnalyticsBrowser.load(settings, options).then((res) => res[0])
   }
 }

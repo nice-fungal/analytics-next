@@ -10,7 +10,7 @@ import {
 } from '../middleware'
 import { Context, ContextCancelation } from '../../core/context'
 import { recordIntegrationMetric } from '../../core/stats/metric-helpers'
-import { Analytics, InitOptions } from '../../core/analytics'
+import { Analytics, AnalyticsSettings /* , InitOptions */ } from '../../core/analytics'
 import { createDeferred } from '@segment/analytics-generic-utils'
 
 export interface RemotePlugin {
@@ -254,6 +254,7 @@ async function loadPluginFactory(
 }
 
 export async function remoteLoader(
+  loadSettings: AnalyticsSettings,
   settings: CDNSettings,
   // userIntegrations: Integrations,
   // @ts-ignore
@@ -263,12 +264,23 @@ export async function remoteLoader(
   // pluginSources?: PluginFactory[]
 ): Promise<Plugin[]> {
   const allPlugins: Plugin[] = []
+  const cdn = getCDN()
 
   const routingRules = settings.middlewareSettings?.routingRules ?? []
 
   const pluginPromises = (settings.remotePlugins ?? []).map(
     async (remotePlugin) => {
       // if (isPluginDisabled(userIntegrations, remotePlugin)) return
+
+      if (!remotePlugin.creationName) {
+        remotePlugin.creationName = `AnalyticsPlugin${remotePlugin.name}`;
+      }
+      if (!remotePlugin.libraryName) {
+        remotePlugin.libraryName = `AnalyticsPlugin${remotePlugin.name}`;
+      }
+      if (!remotePlugin.url) {
+        remotePlugin.url = `${cdn}analytics-plugin-${remotePlugin.name.toLocaleLowerCase()}.js`;
+      }
 
       try {
         const pluginFactory =
@@ -280,6 +292,8 @@ export async function remoteLoader(
         if (pluginFactory) {
           // console.log(pluginFactory);
           const plugin = await pluginFactory({
+            app: loadSettings.app || {},
+            rum: loadSettings.rum || {},
             ...remotePlugin.settings,
             ...mergedIntegrations[remotePlugin.name]
           })

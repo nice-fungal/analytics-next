@@ -13,7 +13,7 @@ import {
 // import type { FormArgs, LinkArgs } from '../auto-track'
 import { isOffline } from '../connection'
 import { Context } from '../context'
-import { dispatch } from '@segment/analytics-core'
+import { dispatch, JSONValue } from '@segment/analytics-core'
 import { Emitter } from '@segment/analytics-generic-utils'
 import {
   Callback,
@@ -102,6 +102,9 @@ export interface AnalyticsSettings {
   timeout?: number
   plugins?: (Plugin | PluginFactory)[]
   // classicIntegrations?: ClassicIntegrationSource[]
+  // @head/o11y, uniOptions
+  app?: JSONValue,
+  rum?: JSONValue,
 }
 
 export interface InitOptions {
