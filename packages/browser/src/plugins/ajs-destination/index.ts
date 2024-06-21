@@ -1,5 +1,5 @@
 // import { Integrations, JSONObject } from '../../core/events'
-// import { Alias, Facade, Group, Identify, Page, Track } from '@segment/facade'
+// import { Alias, Facade, Group, Identify, Page, Track } from '@head.js/analytics.js-facade'
 // import { Analytics, InitOptions } from '../../core/analytics'
 // import { LegacySettings } from '../../browser'
 // import { isOffline, isOnline } from '../../core/connection'

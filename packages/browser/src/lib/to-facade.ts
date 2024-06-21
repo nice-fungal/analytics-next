@@ -7,7 +7,7 @@ import {
   Page,
   // Screen,
   Track,
-} from '@segment/facade'
+} from '@head.js/analytics.js-facade'
 import { SegmentEvent } from '../core/events'
 
 export type SegmentFacade = Facade<SegmentEvent> & {
