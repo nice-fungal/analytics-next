@@ -6,9 +6,9 @@ import { NodeEventFactory } from './event-factory'
 import { Callback, dispatchAndEmit } from './dispatch-emit'
 import { NodeEmitter } from './emitter'
 import {
-  AliasParams,
-  GroupParams,
-  IdentifyParams,
+  // AliasParams,
+  // GroupParams,
+  // IdentifyParams,
   PageParams,
   TrackParams,
   Plugin,
@@ -147,81 +147,81 @@ export class Analytics extends NodeEmitter implements CoreAnalytics {
    * Combines two unassociated user identities.
    * @link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#alias
    */
-  alias(
-    {
-      userId,
-      previousId,
-      context,
-      timestamp,
-      integrations,
-      messageId,
-    }: AliasParams,
-    callback?: Callback
-  ): void {
-    const segmentEvent = this._eventFactory.alias(userId, previousId, {
-      context,
-      integrations,
-      timestamp,
-      messageId,
-    })
-    this._dispatch(segmentEvent, callback)
-  }
+  // alias(
+  //   {
+  //     userId,
+  //     previousId,
+  //     context,
+  //     timestamp,
+  //     integrations,
+  //     messageId,
+  //   }: AliasParams,
+  //   callback?: Callback
+  // ): void {
+  //   const segmentEvent = this._eventFactory.alias(userId, previousId, {
+  //     context,
+  //     integrations,
+  //     timestamp,
+  //     messageId,
+  //   })
+  //   this._dispatch(segmentEvent, callback)
+  // }
 
   /**
    * Associates an identified user with a collective.
    *  @link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#group
    */
-  group(
-    {
-      timestamp,
-      groupId,
-      userId,
-      anonymousId,
-      traits = {},
-      context,
-      integrations,
-      messageId,
-    }: GroupParams,
-    callback?: Callback
-  ): void {
-    const segmentEvent = this._eventFactory.group(groupId, traits, {
-      context,
-      anonymousId,
-      userId,
-      timestamp,
-      integrations,
-      messageId,
-    })
+  // group(
+  //   {
+  //     timestamp,
+  //     groupId,
+  //     userId,
+  //     anonymousId,
+  //     traits = {},
+  //     context,
+  //     integrations,
+  //     messageId,
+  //   }: GroupParams,
+  //   callback?: Callback
+  // ): void {
+  //   const segmentEvent = this._eventFactory.group(groupId, traits, {
+  //     context,
+  //     anonymousId,
+  //     userId,
+  //     timestamp,
+  //     integrations,
+  //     messageId,
+  //   })
 
-    this._dispatch(segmentEvent, callback)
-  }
+  //   this._dispatch(segmentEvent, callback)
+  // }
 
   /**
    * Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
    * @link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify
    */
-  identify(
-    {
-      userId,
-      anonymousId,
-      traits = {},
-      context,
-      timestamp,
-      integrations,
-      messageId,
-    }: IdentifyParams,
-    callback?: Callback
-  ): void {
-    const segmentEvent = this._eventFactory.identify(userId, traits, {
-      context,
-      anonymousId,
-      userId,
-      timestamp,
-      integrations,
-      messageId,
-    })
-    this._dispatch(segmentEvent, callback)
-  }
+  // identify(
+  //   {
+  //     userId,
+  //     anonymousId,
+  //     traits = {},
+  //     context,
+  //     timestamp,
+  //     integrations,
+  //     messageId,
+  //   }: IdentifyParams,
+  //   callback?: Callback
+  // ): void {
+  //   const segmentEvent = this._eventFactory.identify(userId, traits, {
+  //     context,
+  //     anonymousId,
+  //     userId,
+  //     timestamp,
+  //     integrations,
+  //     messageId,
+  //   })
+  //   this._dispatch(segmentEvent, callback)
+  // }
 
   /**
    * The page method lets you record page views on your website, along with optional extra information about the page being viewed.
@@ -256,29 +256,29 @@ export class Analytics extends NodeEmitter implements CoreAnalytics {
    *
    * TODO: This is not documented on the segment docs ATM (for node).
    */
-  screen(
-    {
-      userId,
-      anonymousId,
-      category,
-      name,
-      properties,
-      context,
-      timestamp,
-      integrations,
-      messageId,
-    }: PageParams,
-    callback?: Callback
-  ): void {
-    const segmentEvent = this._eventFactory.screen(
-      category ?? null,
-      name ?? null,
-      properties,
-      { context, anonymousId, userId, timestamp, integrations, messageId }
-    )
+  // screen(
+  //   {
+  //     userId,
+  //     anonymousId,
+  //     category,
+  //     name,
+  //     properties,
+  //     context,
+  //     timestamp,
+  //     integrations,
+  //     messageId,
+  //   }: PageParams,
+  //   callback?: Callback
+  // ): void {
+  //   const segmentEvent = this._eventFactory.screen(
+  //     category ?? null,
+  //     name ?? null,
+  //     properties,
+  //     { context, anonymousId, userId, timestamp, integrations, messageId }
+  //   )
 
-    this._dispatch(segmentEvent, callback)
-  }
+  //   this._dispatch(segmentEvent, callback)
+  // }
 
   /**
    * Records actions your users perform.
