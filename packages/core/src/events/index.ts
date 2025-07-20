@@ -1,14 +1,14 @@
 export * from './interfaces'
 import { dset } from 'dset'
-import { ID } from '../user'
+// import { ID } from '../user'
 import {
   Integrations,
   EventProperties,
   CoreSegmentEvent,
   CoreOptions,
   CoreExtraContext,
-  UserTraits,
-  GroupTraits,
+  // UserTraits,
+  // GroupTraits,
 } from './interfaces'
 import { pickBy } from '../utils/pick'
 import type { RemoveIndexSignature } from '../utils/ts-helpers'
@@ -111,99 +111,99 @@ export abstract class CoreEventFactory {
     })
   }
 
-  screen(
-    category: string | null,
-    screen: string | null,
-    properties?: EventProperties,
-    options?: CoreOptions,
-    globalIntegrations?: Integrations
-  ): CoreSegmentEvent {
-    this.settings.onEventMethodCall({ type: 'screen', options })
-    const event: CoreSegmentEvent = {
-      type: 'screen',
-      properties: { ...properties },
-      options: { ...options },
-      integrations: { ...globalIntegrations },
-    }
+  // screen(
+  //   category: string | null,
+  //   screen: string | null,
+  //   properties?: EventProperties,
+  //   options?: CoreOptions,
+  //   globalIntegrations?: Integrations
+  // ): CoreSegmentEvent {
+  //   this.settings.onEventMethodCall({ type: 'screen', options })
+  //   const event: CoreSegmentEvent = {
+  //     type: 'screen',
+  //     properties: { ...properties },
+  //     options: { ...options },
+  //     integrations: { ...globalIntegrations },
+  //   }
 
-    if (category !== null) {
-      event.category = category
-    }
+  //   if (category !== null) {
+  //     event.category = category
+  //   }
 
-    if (screen !== null) {
-      event.name = screen
-    }
+  //   if (screen !== null) {
+  //     event.name = screen
+  //   }
 
-    return this.normalize({
-      ...this.baseEvent(),
-      ...event,
-    })
-  }
+  //   return this.normalize({
+  //     ...this.baseEvent(),
+  //     ...event,
+  //   })
+  // }
 
-  identify(
-    userId: ID,
-    traits?: UserTraits,
-    options?: CoreOptions,
-    globalIntegrations?: Integrations
-  ): CoreSegmentEvent {
-    this.settings.onEventMethodCall({ type: 'identify', options })
-    return this.normalize({
-      ...this.baseEvent(),
-      type: 'identify',
-      userId,
-      traits: traits ?? {},
-      options: { ...options },
-      integrations: globalIntegrations,
-    })
-  }
+  // identify(
+  //   userId: ID,
+  //   traits?: UserTraits,
+  //   options?: CoreOptions,
+  //   globalIntegrations?: Integrations
+  // ): CoreSegmentEvent {
+  //   this.settings.onEventMethodCall({ type: 'identify', options })
+  //   return this.normalize({
+  //     ...this.baseEvent(),
+  //     type: 'identify',
+  //     userId,
+  //     traits: traits ?? {},
+  //     options: { ...options },
+  //     integrations: globalIntegrations,
+  //   })
+  // }
 
-  group(
-    groupId: ID,
-    traits?: GroupTraits,
-    options?: CoreOptions,
-    globalIntegrations?: Integrations
-  ): CoreSegmentEvent {
-    this.settings.onEventMethodCall({ type: 'group', options })
-    return this.normalize({
-      ...this.baseEvent(),
-      type: 'group',
-      traits: traits ?? {},
-      options: { ...options }, // this spreading is intentional
-      integrations: { ...globalIntegrations }, //
-      groupId,
-    })
-  }
+  // group(
+  //   groupId: ID,
+  //   traits?: GroupTraits,
+  //   options?: CoreOptions,
+  //   globalIntegrations?: Integrations
+  // ): CoreSegmentEvent {
+  //   this.settings.onEventMethodCall({ type: 'group', options })
+  //   return this.normalize({
+  //     ...this.baseEvent(),
+  //     type: 'group',
+  //     traits: traits ?? {},
+  //     options: { ...options }, // this spreading is intentional
+  //     integrations: { ...globalIntegrations }, //
+  //     groupId,
+  //   })
+  // }
 
-  alias(
-    to: string,
-    from: string | null, // TODO: can we make this undefined?
-    options?: CoreOptions,
-    globalIntegrations?: Integrations
-  ): CoreSegmentEvent {
-    this.settings.onEventMethodCall({ type: 'alias', options })
-    const base: CoreSegmentEvent = {
-      userId: to,
-      type: 'alias',
-      options: { ...options },
-      integrations: { ...globalIntegrations },
-    }
+  // alias(
+  //   to: string,
+  //   from: string | null, // TODO: can we make this undefined?
+  //   options?: CoreOptions,
+  //   globalIntegrations?: Integrations
+  // ): CoreSegmentEvent {
+  //   this.settings.onEventMethodCall({ type: 'alias', options })
+  //   const base: CoreSegmentEvent = {
+  //     userId: to,
+  //     type: 'alias',
+  //     options: { ...options },
+  //     integrations: { ...globalIntegrations },
+  //   }
 
-    if (from !== null) {
-      base.previousId = from
-    }
+  //   if (from !== null) {
+  //     base.previousId = from
+  //   }
 
-    if (to === undefined) {
-      return this.normalize({
-        ...base,
-        ...this.baseEvent(),
-      })
-    }
+  //   if (to === undefined) {
+  //     return this.normalize({
+  //       ...base,
+  //       ...this.baseEvent(),
+  //     })
+  //   }
 
-    return this.normalize({
-      ...this.baseEvent(),
-      ...base,
-    })
-  }
+  //   return this.normalize({
+  //     ...this.baseEvent(),
+  //     ...base,
+  //   })
+  // }
 
   private baseEvent(): Partial<CoreSegmentEvent> {
     return {
