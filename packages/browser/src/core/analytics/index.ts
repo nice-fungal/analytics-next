@@ -49,6 +49,7 @@ import {
   initializeStorages,
   isArrayOfStoreType,
 } from '../storage'
+import { PluginFactory } from '../../plugins/remote-loader'
 // import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
 import { popPageContext } from '../buffer'
 
