@@ -1,10 +1,7 @@
 // import { getProcessEnv } from '../lib/get-process-env'
 import { /* getCDN */ setGlobalCDNUrl } from '../lib/parse-cdn'
-
-import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
-
-import { fetch } from '../lib/fetch'
-import { Analytics, /* NullAnalytics, */ InitOptions } from '../core/analytics'
+// import { fetch } from '../lib/fetch'
+import { Analytics, /* NullAnalytics, */ AnalyticsSettings, InitOptions } from '../core/analytics'
 import { Context } from '../core/context'
 // import { Plan } from '../core/events'
 import { Plugin } from '../core/plugin'
@@ -18,7 +15,7 @@ import {
   RemotePlugin,
 } from '../plugins/remote-loader'
 import type { RoutingRule } from '../plugins/routing-middleware'
-import { segmentio, SegmentioSettings } from '../plugins/segmentio'
+// import { segmentio, SegmentioSettings } from '../plugins/segmentio'
 import {
   AnalyticsBuffered,
   PreInitMethodCallBuffer,
@@ -30,7 +27,7 @@ import {
 } from '../core/buffer'
 // import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector'
-import { Stats } from '../core/stats'
+// import { Stats } from '../core/stats'
 import { setGlobalAnalyticsKey } from '../lib/global-analytics-helper'
 
 export interface RemoteIntegrationSettings {
@@ -127,7 +124,7 @@ export interface AnalyticsBrowserSettings {
   /**
    * npm-installed classic destinations
    */
-  classicIntegrations?: ClassicIntegrationSource[]
+  // classicIntegrations?: ClassicIntegrationSource[]
 }
 
 // export function loadCDNSettings(
@@ -198,7 +195,6 @@ async function flushFinalBuffer(
 }
 
 async function registerPlugins(
-  writeKey: string,
   loadSettings: AnalyticsSettings,
   cdnSettings: CDNSettings,
   analytics: Analytics,
@@ -319,7 +315,7 @@ async function registerPlugins(
 }
 
 async function loadAnalytics(
-  settings: AnalyticsBrowserSettings,
+  settings: AnalyticsSettings,
   options: InitOptions = {},
   preInitBuffer: PreInitMethodCallBuffer
 ): Promise<[Analytics, Context]> {
@@ -371,15 +367,15 @@ async function loadAnalytics(
 
   // const classicIntegrations = settings.classicIntegrations ?? []
 
-  const segmentLoadOptions = options.integrations?.['Segment.io'] as
-    | SegmentioSettings
-    | undefined
+  // const segmentLoadOptions = options.integrations?.['Segment.io'] as
+  //   | SegmentioSettings
+  //   | undefined
 
-  Stats.initRemoteMetrics({
-    ...cdnSettings.metrics,
-    host: segmentLoadOptions?.apiHost ?? cdnSettings.metrics?.host,
-    protocol: segmentLoadOptions?.protocol,
-  })
+  // Stats.initRemoteMetrics({
+  //   ...cdnSettings.metrics,
+  //   host: segmentLoadOptions?.apiHost ?? cdnSettings.metrics?.host,
+  //   protocol: segmentLoadOptions?.protocol,
+  // })
 
   // needs to be flushed before plugins are registered
   flushPreBuffer(analytics, preInitBuffer)
@@ -422,7 +418,7 @@ async function loadAnalytics(
  */
 export class AnalyticsBrowser extends AnalyticsBuffered {
   private _resolveLoadStart: (
-    settings: AnalyticsBrowserSettings,
+    settings: AnalyticsSettings,
     options: InitOptions
   ) => void
 
@@ -457,7 +453,7 @@ export class AnalyticsBrowser extends AnalyticsBuffered {
    * ```
    */
   load(
-    settings: AnalyticsBrowserSettings,
+    settings: AnalyticsSettings,
     options: InitOptions = {}
   ): AnalyticsBrowser {
     this._resolveLoadStart(settings, options)
@@ -476,14 +472,14 @@ export class AnalyticsBrowser extends AnalyticsBuffered {
    * ```
    */
   static load(
-    settings: AnalyticsBrowserSettings,
+    settings: AnalyticsSettings,
     options: InitOptions = {}
   ): AnalyticsBrowser {
     return new AnalyticsBrowser().load(settings, options)
   }
 
   static standalone(
-    settings: AnalyticsBrowserSettings,
+    settings: AnalyticsSettings,
     options?: InitOptions
   ): Promise<Analytics> {
     return AnalyticsBrowser.load(settings, options).then((res) => res[0])

@@ -30,7 +30,7 @@ import autoBind from '../../lib/bind-all'
 import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
 // import type { LegacyIntegration } from '../../plugins/ajs-destination/types'
 import type {
-  DestinationMiddlewareFunction,
+  // DestinationMiddlewareFunction,
   MiddlewareFunction,
 } from '../../plugins/middleware'
 // import { version } from '../../generated/version'
@@ -105,6 +105,8 @@ export interface AnalyticsSettings {
   // @head/o11y, uniOptions
   app?: JSONValue,
   rum?: JSONValue,
+  // FIXME
+  cdnURL?: string,
 }
 
 export interface InitOptions {

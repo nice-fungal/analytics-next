@@ -9,7 +9,7 @@ import {
   DestinationMiddlewareFunction,
 } from '../middleware'
 import { Context, ContextCancelation } from '../../core/context'
-import { recordIntegrationMetric } from '../../core/stats/metric-helpers'
+// import { recordIntegrationMetric } from '../../core/stats/metric-helpers'
 import { Analytics, AnalyticsSettings /* , InitOptions */ } from '../../core/analytics'
 import { createDeferred } from '@segment/analytics-generic-utils'
 
@@ -95,20 +95,20 @@ export class ActionDestination implements InternalPluginWithAddMiddleware {
           )
         }
 
-        recordIntegrationMetric(ctx, {
-          integrationName: this.action.name,
-          methodName,
-          type: 'action',
-        })
+        // recordIntegrationMetric(ctx, {
+        //   integrationName: this.action.name,
+        //   methodName,
+        //   type: 'action',
+        // })
 
         await this.action[methodName]!(transformedContext)
       } catch (error) {
-        recordIntegrationMetric(ctx, {
-          integrationName: this.action.name,
-          methodName,
-          type: 'action',
-          didError: true,
-        })
+        // recordIntegrationMetric(ctx, {
+        //   integrationName: this.action.name,
+        //   methodName,
+        //   type: 'action',
+        //   didError: true,
+        // })
         throw error
       }
 
@@ -143,23 +143,23 @@ export class ActionDestination implements InternalPluginWithAddMiddleware {
     }
 
     try {
-      recordIntegrationMetric(ctx, {
-        integrationName: this.action.name,
-        methodName: 'load',
-        type: 'action',
-      })
+      // recordIntegrationMetric(ctx, {
+      //   integrationName: this.action.name,
+      //   methodName: 'load',
+      //   type: 'action',
+      // })
 
       const loadP = this.action.load(ctx, analytics)
 
       this.loadPromise.resolve(await loadP)
       return loadP
     } catch (error) {
-      recordIntegrationMetric(ctx, {
-        integrationName: this.action.name,
-        methodName: 'load',
-        type: 'action',
-        didError: true,
-      })
+      // recordIntegrationMetric(ctx, {
+      //   integrationName: this.action.name,
+      //   methodName: 'load',
+      //   type: 'action',
+      //   didError: true,
+      // })
 
       this.loadPromise.reject(error)
       throw error
