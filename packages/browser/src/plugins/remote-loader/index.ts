@@ -1,4 +1,4 @@
-import type { Integrations } from '../../core/events/interfaces'
+// import type { Integrations } from '../../core/events/interfaces'
 import { CDNSettings } from '../../browser'
 import { JSONObject, JSONValue } from '../../core/events'
 import { Plugin, InternalPluginWithAddMiddleware } from '../../core/plugin'
@@ -77,7 +77,7 @@ export class ActionDestination implements InternalPluginWithAddMiddleware {
   }
 
   private _createMethod(
-    methodName: 'track' | 'page' | 'identify' | 'alias' | 'group' | 'screen'
+    methodName: 'track' | 'page' | 'identify'
   ) {
     return async (ctx: Context): Promise<Context> => {
       if (!this.action[methodName]) return ctx
@@ -116,11 +116,11 @@ export class ActionDestination implements InternalPluginWithAddMiddleware {
     }
   }
 
-  alias = this._createMethod('alias')
-  group = this._createMethod('group')
+  // alias = this._createMethod('alias')
+  // group = this._createMethod('group')
   identify = this._createMethod('identify')
   page = this._createMethod('page')
-  screen = this._createMethod('screen')
+  // screen = this._createMethod('screen')
   track = this._createMethod('track')
 
   /* --- PASSTHROUGH METHODS --- */
@@ -197,54 +197,54 @@ function validate(pluginLike: unknown): pluginLike is Plugin[] {
   return true
 }
 
-function isPluginDisabled(
-  userIntegrations: Integrations,
-  remotePlugin: RemotePlugin
-) {
-  const creationNameEnabled = userIntegrations[remotePlugin.creationName]
-  const currentNameEnabled = userIntegrations[remotePlugin.name]
+// function isPluginDisabled(
+//   userIntegrations: Integrations,
+//   remotePlugin: RemotePlugin
+// ) {
+//   const creationNameEnabled = userIntegrations[remotePlugin.creationName]
+//   const currentNameEnabled = userIntegrations[remotePlugin.name]
 
-  // Check that the plugin isn't explicitly enabled when All: false
-  if (
-    userIntegrations.All === false &&
-    !creationNameEnabled &&
-    !currentNameEnabled
-  ) {
-    return true
-  }
+//   // Check that the plugin isn't explicitly enabled when All: false
+//   if (
+//     userIntegrations.All === false &&
+//     !creationNameEnabled &&
+//     !currentNameEnabled
+//   ) {
+//     return true
+//   }
 
-  // Check that the plugin isn't explicitly disabled
-  if (creationNameEnabled === false || currentNameEnabled === false) {
-    return true
-  }
+//   // Check that the plugin isn't explicitly disabled
+//   if (creationNameEnabled === false || currentNameEnabled === false) {
+//     return true
+//   }
 
-  return false
-}
+//   return false
+// }
 
 async function loadPluginFactory(
   remotePlugin: RemotePlugin,
-  obfuscate?: boolean
+  // obfuscate?: boolean
 ): Promise<void | PluginFactory> {
   const defaultCdn = new RegExp('https://cdn.segment.(com|build)')
   const cdn = getCDN()
 
-  if (obfuscate) {
-    const urlSplit = remotePlugin.url.split('/')
-    const name = urlSplit[urlSplit.length - 2]
-    const obfuscatedURL = remotePlugin.url.replace(
-      name,
-      btoa(name).replace(/=/g, '')
-    )
-    try {
-      await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
-    } catch (error) {
-      // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
-      // We should use the unobfuscated version as a fallback.
-      await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-    }
-  } else {
+  // if (obfuscate) {
+  //   const urlSplit = remotePlugin.url.split('/')
+  //   const name = urlSplit[urlSplit.length - 2]
+  //   const obfuscatedURL = remotePlugin.url.replace(
+  //     name,
+  //     btoa(name).replace(/=/g, '')
+  //   )
+  //   try {
+  //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
+  //   } catch (error) {
+  //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
+  //     // We should use the unobfuscated version as a fallback.
+  //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
+  //   }
+  // } else {
     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-  }
+  // }
 
   // @ts-expect-error
   if (typeof window[remotePlugin.libraryName] === 'function') {
@@ -255,11 +255,12 @@ async function loadPluginFactory(
 
 export async function remoteLoader(
   settings: CDNSettings,
-  userIntegrations: Integrations,
+  // userIntegrations: Integrations,
+  // @ts-ignore
   mergedIntegrations: Record<string, JSONObject>,
-  options?: InitOptions,
+  // options?: InitOptions,
   routingMiddleware?: DestinationMiddlewareFunction,
-  pluginSources?: PluginFactory[]
+  // pluginSources?: PluginFactory[]
 ): Promise<Plugin[]> {
   const allPlugins: Plugin[] = []
 
@@ -267,18 +268,20 @@ export async function remoteLoader(
 
   const pluginPromises = (settings.remotePlugins ?? []).map(
     async (remotePlugin) => {
-      if (isPluginDisabled(userIntegrations, remotePlugin)) return
+      // if (isPluginDisabled(userIntegrations, remotePlugin)) return
 
       try {
         const pluginFactory =
-          pluginSources?.find(
-            ({ pluginName }) => pluginName === remotePlugin.name
-          ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
+          // pluginSources?.find(
+          //   ({ pluginName }) => pluginName === remotePlugin.name
+          // ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
+        await loadPluginFactory(remotePlugin)
 
         if (pluginFactory) {
+          // console.log(pluginFactory);
           const plugin = await pluginFactory({
             ...remotePlugin.settings,
-            ...mergedIntegrations[remotePlugin.name],
+            ...mergedIntegrations[remotePlugin.name]
           })
           const plugins = Array.isArray(plugin) ? plugin : [plugin]
 

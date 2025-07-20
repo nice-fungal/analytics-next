@@ -1,16 +1,16 @@
 import {
-  AliasParams,
+//   AliasParams,
   DispatchedEvent,
   EventParams,
-  GroupParams,
+//   GroupParams,
   PageParams,
-  resolveAliasArguments,
+//   resolveAliasArguments,
   resolveArguments,
   resolvePageArguments,
-  resolveUserArguments,
-  IdentifyParams,
+//   resolveUserArguments,
+//   IdentifyParams,
 } from '../arguments-resolver'
-import type { FormArgs, LinkArgs } from '../auto-track'
+// import type { FormArgs, LinkArgs } from '../auto-track'
 import { isOffline } from '../connection'
 import { Context } from '../context'
 import { dispatch } from '@segment/analytics-core'
@@ -23,19 +23,19 @@ import {
   EventProperties,
   SegmentEvent,
 } from '../events'
-import { isDestinationPluginWithAddMiddleware, Plugin } from '../plugin'
+import { /* isDestinationPluginWithAddMiddleware, */ Plugin } from '../plugin'
 import { EventQueue } from '../queue/event-queue'
-import { Group, ID, User, UserOptions } from '../user'
+import { /* Group, */ ID, User, UserOptions } from '../user'
 import autoBind from '../../lib/bind-all'
 import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
-import type { LegacyIntegration } from '../../plugins/ajs-destination/types'
+// import type { LegacyIntegration } from '../../plugins/ajs-destination/types'
 import type {
   DestinationMiddlewareFunction,
   MiddlewareFunction,
 } from '../../plugins/middleware'
-import { version } from '../../generated/version'
+// import { version } from '../../generated/version'
 import { PriorityQueue } from '../../lib/priority-queue'
-import { getGlobal } from '../../lib/get-global'
+// import { getGlobal } from '../../lib/get-global'
 import { AnalyticsClassic, AnalyticsCore } from './interfaces'
 import { HighEntropyHint } from '../../lib/client-hints/interfaces'
 import type { CDNSettings } from '../../browser'
@@ -49,15 +49,15 @@ import {
   initializeStorages,
   isArrayOfStoreType,
 } from '../storage'
-import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
+// import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
 import { popPageContext } from '../buffer'
 
 const deprecationWarning =
   'This is being deprecated and will be not be available in future releases of Analytics JS'
 
-// reference any pre-existing "analytics" object so a user can restore the reference
-const global: any = getGlobal()
-const _analytics = global?.analytics
+// // reference any pre-existing "analytics" object so a user can restore the reference
+// const global: any = getGlobal()
+// const _analytics = global?.analytics
 
 function createDefaultQueue(
   name: string,
@@ -98,6 +98,9 @@ export class AnalyticsInstanceSettings {
 export interface AnalyticsSettings {
   writeKey: string
   cdnSettings?: CDNSettings
+  timeout?: number
+  plugins?: (Plugin | PluginFactory)[]
+  // classicIntegrations?: ClassicIntegrationSource[]
 }
 
 export interface InitOptions {
@@ -118,7 +121,7 @@ export interface InitOptions {
   cookie?: CookieOptions
   storage?: StorageSettings
   user?: UserOptions
-  group?: UserOptions
+  // group?: UserOptions
   integrations?: Integrations
   plan?: Plan
   retryQueue?: boolean
@@ -164,10 +167,10 @@ export interface InitOptions {
   disable?: boolean | ((cdnSettings: CDNSettings) => boolean | Promise<boolean>)
 }
 
-/* analytics-classic stubs */
-function _stub(this: never) {
-  console.warn(deprecationWarning)
-}
+// /* analytics-classic stubs */
+// function _stub(this: never) {
+//   console.warn(deprecationWarning)
+// }
 
 export class Analytics
   extends Emitter
@@ -175,7 +178,7 @@ export class Analytics
 {
   settings: AnalyticsInstanceSettings
   private _user: User
-  private _group: Group
+//   private _group: Group
   private eventFactory: EventFactory
   private _debug = false
   private _universalStorage: UniversalStorage
@@ -188,16 +191,16 @@ export class Analytics
   constructor(
     settings: AnalyticsSettings,
     options?: InitOptions,
-    queue?: EventQueue,
-    user?: User,
-    group?: Group
+    // queue?: EventQueue,
+    // user?: User,
+    // group?: Group
   ) {
     super()
     const cookieOptions = options?.cookie
     const disablePersistance = options?.disableClientPersistence ?? false
     this.settings = new AnalyticsInstanceSettings(settings)
     this.queue =
-      queue ??
+      // queue ??
       createDefaultQueue(
         `${settings.writeKey}:event-queue`,
         options?.retryQueue,
@@ -212,7 +215,7 @@ export class Analytics
     )
 
     this._user =
-      user ??
+      // user ??
       new User(
         {
           persist: !disablePersistance,
@@ -222,17 +225,17 @@ export class Analytics
         },
         cookieOptions
       ).load()
-    this._group =
-      group ??
-      new Group(
-        {
-          persist: !disablePersistance,
-          storage: options?.storage,
-          // Any group specific options override everything else
-          ...options?.group,
-        },
-        cookieOptions
-      ).load()
+    // this._group =
+    //   group ??
+    //   new Group(
+    //     {
+    //       persist: !disablePersistance,
+    //       storage: options?.storage,
+    //       // Any group specific options override everything else
+    //       ...options?.group,
+    //     },
+    //     cookieOptions
+    //   ).load()
     this.eventFactory = new EventFactory(this._user)
     this.integrations = options?.integrations ?? {}
     this.options = options ?? {}
@@ -322,130 +325,130 @@ export class Analytics
     })
   }
 
-  async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
-    const pageCtx = popPageContext(args)
-    const [id, _traits, options, callback] = resolveUserArguments(this._user)(
-      ...args
-    )
+  // async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
+  //   const pageCtx = popPageContext(args)
+  //   const [id, _traits, options, callback] = resolveUserArguments(this._user)(
+  //     ...args
+  //   )
 
-    this._user.identify(id, _traits)
-    const segmentEvent = this.eventFactory.identify(
-      this._user.id(),
-      this._user.traits(),
-      options,
-      this.integrations,
-      pageCtx
-    )
+  //   this._user.identify(id, _traits)
+  //   const segmentEvent = this.eventFactory.identify(
+  //     this._user.id(),
+  //     this._user.traits(),
+  //     options,
+  //     this.integrations,
+  //     pageCtx
+  //   )
 
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit(
-        'identify',
-        ctx.event.userId,
-        ctx.event.traits,
-        ctx.event.options
-      )
-      return ctx
-    })
-  }
+  //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+  //     this.emit(
+  //       'identify',
+  //       ctx.event.userId,
+  //       ctx.event.traits,
+  //       ctx.event.options
+  //     )
+  //     return ctx
+  //   })
+  // }
 
-  group(): Group
-  group(...args: GroupParams): Promise<DispatchedEvent>
-  group(...args: GroupParams): Promise<DispatchedEvent> | Group {
-    const pageCtx = popPageContext(args)
-    if (args.length === 0) {
-      return this._group
-    }
+  // group(): Group
+  // group(...args: GroupParams): Promise<DispatchedEvent>
+  // group(...args: GroupParams): Promise<DispatchedEvent> | Group {
+  //   const pageCtx = popPageContext(args)
+  //   if (args.length === 0) {
+  //     return this._group
+  //   }
 
-    const [id, _traits, options, callback] = resolveUserArguments(this._group)(
-      ...args
-    )
+  //   const [id, _traits, options, callback] = resolveUserArguments(this._group)(
+  //     ...args
+  //   )
 
-    this._group.identify(id, _traits)
-    const groupId = this._group.id()
-    const groupTraits = this._group.traits()
+  //   this._group.identify(id, _traits)
+  //   const groupId = this._group.id()
+  //   const groupTraits = this._group.traits()
 
-    const segmentEvent = this.eventFactory.group(
-      groupId,
-      groupTraits,
-      options,
-      this.integrations,
-      pageCtx
-    )
+  //   const segmentEvent = this.eventFactory.group(
+  //     groupId,
+  //     groupTraits,
+  //     options,
+  //     this.integrations,
+  //     pageCtx
+  //   )
 
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
-      return ctx
-    })
-  }
+  //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+  //     this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
+  //     return ctx
+  //   })
+  // }
 
-  async alias(...args: AliasParams): Promise<DispatchedEvent> {
-    const pageCtx = popPageContext(args)
-    const [to, from, options, callback] = resolveAliasArguments(...args)
-    const segmentEvent = this.eventFactory.alias(
-      to,
-      from,
-      options,
-      this.integrations,
-      pageCtx
-    )
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit('alias', to, from, ctx.event.options)
-      return ctx
-    })
-  }
+  // async alias(...args: AliasParams): Promise<DispatchedEvent> {
+  //   const pageCtx = popPageContext(args)
+  //   const [to, from, options, callback] = resolveAliasArguments(...args)
+  //   const segmentEvent = this.eventFactory.alias(
+  //     to,
+  //     from,
+  //     options,
+  //     this.integrations,
+  //     pageCtx
+  //   )
+  //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+  //     this.emit('alias', to, from, ctx.event.options)
+  //     return ctx
+  //   })
+  // }
 
-  async screen(...args: PageParams): Promise<DispatchedEvent> {
-    const pageCtx = popPageContext(args)
-    const [category, page, properties, options, callback] =
-      resolvePageArguments(...args)
+  // async screen(...args: PageParams): Promise<DispatchedEvent> {
+  //   const pageCtx = popPageContext(args)
+  //   const [category, page, properties, options, callback] =
+  //     resolvePageArguments(...args)
 
-    const segmentEvent = this.eventFactory.screen(
-      category,
-      page,
-      properties,
-      options,
-      this.integrations,
-      pageCtx
-    )
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit(
-        'screen',
-        category,
-        page,
-        ctx.event.properties,
-        ctx.event.options
-      )
-      return ctx
-    })
-  }
+  //   const segmentEvent = this.eventFactory.screen(
+  //     category,
+  //     page,
+  //     properties,
+  //     options,
+  //     this.integrations,
+  //     pageCtx
+  //   )
+  //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+  //     this.emit(
+  //       'screen',
+  //       category,
+  //       page,
+  //       ctx.event.properties,
+  //       ctx.event.options
+  //     )
+  //     return ctx
+  //   })
+  // }
 
-  async trackClick(...args: LinkArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.link.call(this, ...args)
-  }
+  // async trackClick(...args: LinkArgs): Promise<Analytics> {
+  //   const autotrack = await import(
+  //     /* webpackChunkName: "auto-track" */ '../auto-track'
+  //   )
+  //   return autotrack.link.call(this, ...args)
+  // }
 
-  async trackLink(...args: LinkArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.link.call(this, ...args)
-  }
+  // async trackLink(...args: LinkArgs): Promise<Analytics> {
+  //   const autotrack = await import(
+  //     /* webpackChunkName: "auto-track" */ '../auto-track'
+  //   )
+  //   return autotrack.link.call(this, ...args)
+  // }
 
-  async trackSubmit(...args: FormArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.form.call(this, ...args)
-  }
+  // async trackSubmit(...args: FormArgs): Promise<Analytics> {
+  //   const autotrack = await import(
+  //     /* webpackChunkName: "auto-track" */ '../auto-track'
+  //   )
+  //   return autotrack.form.call(this, ...args)
+  // }
 
-  async trackForm(...args: FormArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.form.call(this, ...args)
-  }
+  // async trackForm(...args: FormArgs): Promise<Analytics> {
+  //   const autotrack = await import(
+  //     /* webpackChunkName: "auto-track" */ '../auto-track'
+  //   )
+  //   return autotrack.form.call(this, ...args)
+  // }
 
   async register(...plugins: Plugin[]): Promise<Context> {
     const ctx = Context.system()
@@ -458,22 +461,22 @@ export class Analytics
     return ctx
   }
 
-  async deregister(...plugins: string[]): Promise<Context> {
-    const ctx = Context.system()
+  // async deregister(...plugins: string[]): Promise<Context> {
+  //   const ctx = Context.system()
 
-    const deregistrations = plugins.map((pl) => {
-      const plugin = this.queue.plugins.find((p) => p.name === pl)
-      if (plugin) {
-        return this.queue.deregister(ctx, plugin, this)
-      } else {
-        ctx.log('warn', `plugin ${pl} not found`)
-      }
-    })
+  //   const deregistrations = plugins.map((pl) => {
+  //     const plugin = this.queue.plugins.find((p) => p.name === pl)
+  //     if (plugin) {
+  //       return this.queue.deregister(ctx, plugin, this)
+  //     } else {
+  //       ctx.log('warn', `plugin ${pl} not found`)
+  //     }
+  //   })
 
-    await Promise.all(deregistrations)
+  //   await Promise.all(deregistrations)
 
-    return ctx
-  }
+  //   return ctx
+  // }
 
   debug(toggle: boolean): Analytics {
     // Make sure legacy ajs debug gets turned off if it was enabled before upgrading.
@@ -484,11 +487,11 @@ export class Analytics
     return this
   }
 
-  reset(): void {
-    this._user.reset()
-    this._group.reset()
-    this.emit('reset')
-  }
+  // reset(): void {
+  //   this._user.reset()
+  //   this._group.reset()
+  //   this.emit('reset')
+  // }
 
   timeout(timeout: number): void {
     this.settings.timeout = timeout
@@ -510,71 +513,72 @@ export class Analytics
   }
 
   async addSourceMiddleware(fn: MiddlewareFunction): Promise<Analytics> {
-    await this.queue.criticalTasks.run(async () => {
-      const { sourceMiddlewarePlugin } = await import(
-        /* webpackChunkName: "middleware" */ '../../plugins/middleware'
-      )
+    console.debug(fn);
+    // await this.queue.criticalTasks.run(async () => {
+    //   const { sourceMiddlewarePlugin } = await import(
+    //     /* webpackChunkName: "middleware" */ '../../plugins/middleware'
+    //   )
 
-      const integrations: Record<string, boolean> = {}
-      this.queue.plugins.forEach((plugin) => {
-        if (plugin.type === 'destination') {
-          return (integrations[plugin.name] = true)
-        }
-      })
+    //   const integrations: Record<string, boolean> = {}
+    //   this.queue.plugins.forEach((plugin) => {
+    //     if (plugin.type === 'destination') {
+    //       return (integrations[plugin.name] = true)
+    //     }
+    //   })
 
-      const plugin = sourceMiddlewarePlugin(fn, integrations)
-      await this.register(plugin)
-    })
+    //   const plugin = sourceMiddlewarePlugin(fn, integrations)
+    //   await this.register(plugin)
+    // })
 
     return this
   }
 
-  /* TODO: This does not have to return a promise? */
-  addDestinationMiddleware(
-    integrationName: string,
-    ...middlewares: DestinationMiddlewareFunction[]
-  ): Promise<Analytics> {
-    this.queue.plugins
-      .filter(isDestinationPluginWithAddMiddleware)
-      .forEach((p) => {
-        if (
-          integrationName === '*' ||
-          p.name.toLowerCase() === integrationName.toLowerCase()
-        ) {
-          p.addMiddleware(...middlewares)
-        }
-      })
+//   /* TODO: This does not have to return a promise? */
+//   addDestinationMiddleware(
+//     integrationName: string,
+//     ...middlewares: DestinationMiddlewareFunction[]
+//   ): Promise<Analytics> {
+//     this.queue.plugins
+//       .filter(isDestinationPluginWithAddMiddleware)
+//       .forEach((p) => {
+//         if (
+//           integrationName === '*' ||
+//           p.name.toLowerCase() === integrationName.toLowerCase()
+//         ) {
+//           p.addMiddleware(...middlewares)
+//         }
+//       })
 
-    return Promise.resolve(this)
-  }
+//     return Promise.resolve(this)
+//   }
 
   setAnonymousId(id?: string): ID {
     return this._user.anonymousId(id)
   }
 
-  async queryString(query: string): Promise<Context[]> {
-    if (this.options.useQueryString === false) {
-      return []
-    }
+//   async queryString(query: string): Promise<Context[]> {
+//     if (this.options.useQueryString === false) {
+//       return []
+//     }
+//
+//     const { queryString } = await import(
+//       /* webpackChunkName: "queryString" */ '../query-string'
+//     )
+//     return queryString(this, query)
+//   }
 
-    const { queryString } = await import(
-      /* webpackChunkName: "queryString" */ '../query-string'
-    )
-    return queryString(this, query)
-  }
-
-  /**
-   * @deprecated This function does not register a destination plugin.
-   *
-   * Instantiates a legacy Analytics.js destination.
-   *
-   * This function does not register the destination as an Analytics.JS plugin,
-   * all the it does it to invoke the factory function back.
-   */
-  use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
-    legacyPluginFactory(this)
-    return this
-  }
+//   /**
+//    * @deprecated This function does not register a destination plugin.
+//    *
+//    * Instantiates a legacy Analytics.js destination.
+//    *
+//    * This function does not register the destination as an Analytics.JS plugin,
+//    * all the it does it to invoke the factory function back.
+//    */
+//   use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
+//     legacyPluginFactory(this)
+//     return this
+//   }
 
   async ready(
     callback: Function = (res: Promise<unknown>[]): Promise<unknown>[] => res
@@ -589,25 +593,25 @@ export class Analytics
 
   // analytics-classic api
 
-  noConflict(): Analytics {
-    console.warn(deprecationWarning)
-    setGlobalAnalytics(_analytics ?? this)
-    return this
-  }
+  // noConflict(): Analytics {
+  //   console.warn(deprecationWarning)
+  //   setGlobalAnalytics(_analytics ?? this)
+  //   return this
+  // }
 
-  normalize(msg: SegmentEvent): SegmentEvent {
-    console.warn(deprecationWarning)
-    return this.eventFactory['normalize'](msg)
-  }
+  // normalize(msg: SegmentEvent): SegmentEvent {
+  //   console.warn(deprecationWarning)
+  //   return this.eventFactory['normalize'](msg)
+  // }
 
-  get failedInitializations(): string[] {
-    console.warn(deprecationWarning)
-    return this.queue.failedInitializations
-  }
+//   get failedInitializations(): string[] {
+//     console.warn(deprecationWarning)
+//     return this.queue.failedInitializations
+//   }
 
-  get VERSION(): string {
-    return version
-  }
+//   get VERSION(): string {
+//     return version
+//   }
 
   /* @deprecated - noop */
   async initialize(
@@ -618,83 +622,83 @@ export class Analytics
     return Promise.resolve(this)
   }
 
-  init = this.initialize.bind(this)
+//   init = this.initialize.bind(this)
 
-  async pageview(url: string): Promise<Analytics> {
-    console.warn(deprecationWarning)
-    await this.page({ path: url })
-    return this
-  }
+//   async pageview(url: string): Promise<Analytics> {
+//     console.warn(deprecationWarning)
+//     await this.page({ path: url })
+//     return this
+//   }
 
-  get plugins() {
-    console.warn(deprecationWarning)
-    // @ts-expect-error
-    return this._plugins ?? {}
-  }
+//   get plugins() {
+//     console.warn(deprecationWarning)
+//     // @ts-expect-error
+//     return this._plugins ?? {}
+//   }
 
-  get Integrations() {
-    console.warn(deprecationWarning)
-    const integrations = this.queue.plugins
-      .filter((plugin) => plugin.type === 'destination')
-      .reduce((acc, plugin) => {
-        const name = `${plugin.name
-          .toLowerCase()
-          .replace('.', '')
-          .split(' ')
-          .join('-')}Integration`
+//   get Integrations() {
+//     console.warn(deprecationWarning)
+//     const integrations = this.queue.plugins
+//       .filter((plugin) => plugin.type === 'destination')
+//       .reduce((acc, plugin) => {
+//         const name = `${plugin.name
+//           .toLowerCase()
+//           .replace('.', '')
+//           .split(' ')
+//           .join('-')}Integration`
 
-        // @ts-expect-error
-        const integration = window[name] as
-          | (LegacyIntegration & { Integration?: LegacyIntegration })
-          | undefined
+//         // @ts-expect-error
+//         const integration = window[name] as
+//           | (LegacyIntegration & { Integration?: LegacyIntegration })
+//           | undefined
 
-        if (!integration) {
-          return acc
-        }
+//         if (!integration) {
+//           return acc
+//         }
 
-        const nested = integration.Integration // hack - Google Analytics function resides in the "Integration" field
-        if (nested) {
-          acc[plugin.name] = nested
-          return acc
-        }
+//         const nested = integration.Integration // hack - Google Analytics function resides in the "Integration" field
+//         if (nested) {
+//           acc[plugin.name] = nested
+//           return acc
+//         }
 
-        acc[plugin.name] = integration as LegacyIntegration
-        return acc
-      }, {} as Record<string, LegacyIntegration>)
+//         acc[plugin.name] = integration as LegacyIntegration
+//         return acc
+//       }, {} as Record<string, LegacyIntegration>)
 
-    return integrations
-  }
+//     return integrations
+//   }
 
-  log = _stub
-  addIntegrationMiddleware = _stub
-  listeners = _stub
-  addEventListener = _stub
-  removeAllListeners = _stub
-  removeListener = _stub
-  removeEventListener = _stub
-  hasListeners = _stub
-  add = _stub
-  addIntegration = _stub
+//   log = _stub
+//   addIntegrationMiddleware = _stub
+//   listeners = _stub
+//   addEventListener = _stub
+//   removeAllListeners = _stub
+//   removeListener = _stub
+//   removeEventListener = _stub
+//   hasListeners = _stub
+//   add = _stub
+//   addIntegration = _stub
 
-  // snippet function
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  push(args: any[]) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const an = this as any
-    const method = args.shift()
-    if (method) {
-      if (!an[method]) return
-    }
-    an[method].apply(this, args)
-  }
+//   // snippet function
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   push(args: any[]) {
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     const an = this as any
+//     const method = args.shift()
+//     if (method) {
+//       if (!an[method]) return
+//     }
+//     an[method].apply(this, args)
+//   }
 }
 
 /**
  * @returns a no-op analytics instance that does not create cookies or localstorage, or send any events to segment.
  */
-export class NullAnalytics extends Analytics {
-  constructor() {
-    super({ writeKey: '' }, { disableClientPersistence: true })
-    this.initialized = true
-  }
-}
+// export class NullAnalytics extends Analytics {
+//   constructor() {
+//     super({ writeKey: '' }, { disableClientPersistence: true })
+//     this.initialized = true
+//   }
+// }
