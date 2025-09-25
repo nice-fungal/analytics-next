@@ -1,4 +1,4 @@
-import { CookieOptions, CookieStorage } from './cookieStorage'
+import { CookieOptions /* , CookieStorage */ } from './cookieStorage'
 import { LocalStorage } from './localStorage'
 import { MemoryStorage } from './memoryStorage'
 import { isStoreTypeWithSettings } from './settings'
@@ -19,18 +19,18 @@ export * from './settings'
 export function initializeStorages(args: InitializeStorageArgs): Store[] {
   const storages = args.map((s) => {
     let type: StoreType
-    let settings
+    // let settings
 
     if (isStoreTypeWithSettings(s)) {
       type = s.name
-      settings = s.settings
+      // settings = s.settings
     } else {
       type = s
     }
 
     switch (type) {
-      case StoreType.Cookie:
-        return new CookieStorage(settings)
+      // case StoreType.Cookie:
+      //   return new CookieStorage(settings)
       case StoreType.LocalStorage:
         return new LocalStorage()
       case StoreType.Memory:

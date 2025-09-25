@@ -45,9 +45,9 @@ import {
   UniversalStorage,
   StorageSettings,
   StoreType,
-  applyCookieOptions,
+  // applyCookieOptions,
   initializeStorages,
-  isArrayOfStoreType,
+  // isArrayOfStoreType,
 } from '../storage'
 import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
 import { popPageContext } from '../buffer'
@@ -255,33 +255,35 @@ export class Analytics
    */
   private createStore(
     disablePersistance: boolean,
+    // @ts-ignore unused
     storageSetting: InitOptions['storage'],
+    // @ts-ignore unused
     cookieOptions?: CookieOptions | undefined
   ): UniversalStorage {
     // DisablePersistance option overrides all, no storage will be used outside of memory even if specified
     if (disablePersistance) {
       return new UniversalStorage([new MemoryStorage()])
     } else {
-      if (storageSetting) {
-        if (isArrayOfStoreType(storageSetting)) {
-          // We will create the store with the priority for customer settings
-          return new UniversalStorage(
-            initializeStorages(
-              applyCookieOptions(storageSetting.stores, cookieOptions)
-            )
-          )
-        }
-      }
+      // if (storageSetting) {
+      //   if (isArrayOfStoreType(storageSetting)) {
+      //     // We will create the store with the priority for customer settings
+      //     return new UniversalStorage(
+      //       initializeStorages(
+      //         applyCookieOptions(storageSetting.stores, cookieOptions)
+      //       )
+      //     )
+      //   }
+      // }
     }
     // We default to our multi storage with priority
     return new UniversalStorage(
       initializeStorages([
         StoreType.LocalStorage,
-        {
-          name: StoreType.Cookie,
-          settings: cookieOptions,
-        },
-        StoreType.Memory,
+        // {
+        //   name: StoreType.Cookie,
+        //   settings: cookieOptions,
+        // },
+        // StoreType.Memory,
       ])
     )
   }

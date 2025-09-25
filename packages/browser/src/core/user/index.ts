@@ -10,7 +10,7 @@ import {
   StoreType,
   applyCookieOptions,
   initializeStorages,
-  isArrayOfStoreType,
+  // isArrayOfStoreType,
 } from '../storage'
 
 export type ID = string | null | undefined
@@ -240,26 +240,26 @@ export class User implements WithId {
   ): UniversalStorage<T> {
     let stores: StoreType[] = [
       StoreType.LocalStorage,
-      StoreType.Cookie,
+      // StoreType.Cookie,
       StoreType.Memory,
     ]
 
     // If disabled we won't have any storage functionality
-    if (options.disable) {
-      return new UniversalStorage<T>([])
-    }
+    // if (options.disable) {
+    //   return new UniversalStorage<T>([])
+    // }
 
     // If persistance is disabled we will always fallback to Memory Storage
     if (!options.persist) {
       return new UniversalStorage<T>([new MemoryStorage<T>()])
     }
 
-    if (options.storage !== undefined && options.storage !== null) {
-      if (isArrayOfStoreType(options.storage)) {
-        // If the user only specified order of stores we will still apply filters and transformations e.g. not using localStorage if localStorageFallbackDisabled
-        stores = options.storage.stores
-      }
-    }
+    // if (options.storage !== undefined && options.storage !== null) {
+    //   if (isArrayOfStoreType(options.storage)) {
+    //     // If the user only specified order of stores we will still apply filters and transformations e.g. not using localStorage if localStorageFallbackDisabled
+    //     stores = options.storage.stores
+    //   }
+    // }
 
     // Disable LocalStorage
     if (options.localStorageFallbackDisabled) {
