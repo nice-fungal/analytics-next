@@ -2,8 +2,8 @@ import { Analytics } from '../core/analytics'
 import { Context } from '../core/context'
 import { analyticsNode } from '../plugins/analytics-node'
 import { Plugin } from '../core/plugin'
-import { EventQueue } from '../core/queue/event-queue'
-import { PriorityQueue } from '../lib/priority-queue'
+// import { EventQueue } from '../core/queue/event-queue'
+// import { PriorityQueue } from '../lib/priority-queue'
 
 /**
  * @deprecated Please use the standalone `@segment/analytics-node` package.
@@ -16,9 +16,9 @@ export class AnalyticsNode {
       persist: false,
     }
 
-    const queue = new EventQueue(new PriorityQueue(3, []))
+    // const queue = new EventQueue(new PriorityQueue(3, []))
     const options = { user: cookieOptions, group: cookieOptions }
-    const analytics = new Analytics(settings, options, queue)
+    const analytics = new Analytics(settings, options/* , queue */)
 
     const nodeSettings = {
       writeKey: settings.writeKey,

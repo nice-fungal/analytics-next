@@ -135,14 +135,14 @@ export class User implements WithId {
     return retLeg ? (typeof retLeg === 'object' ? retLeg.id : retLeg) : null
   }
 
-  private legacySIO(): [string, string] | null {
-    const val = this.legacyUserStore.get('_sio') as string
-    if (!val) {
-      return null
-    }
-    const [anon, user] = val.split('----')
-    return [anon, user]
-  }
+  // private legacySIO(): [string, string] | null {
+  //   const val = this.legacyUserStore.get('_sio') as string
+  //   if (!val) {
+  //     return null
+  //   }
+  //   const [anon, user] = val.split('----')
+  //   return [anon, user]
+  // }
 
   anonymousId = (id?: ID): ID => {
     if (this.options.disable) {
@@ -150,8 +150,9 @@ export class User implements WithId {
     }
 
     if (id === undefined) {
-      const val =
-        this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
+      // const val =
+      //   this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
+      const val = this.identityStore.getAndSync(this.anonKey)
 
       if (val) {
         return val
@@ -277,23 +278,23 @@ export class User implements WithId {
   }
 }
 
-const groupDefaults: UserOptions = {
-  persist: true,
-  cookie: {
-    key: 'ajs_group_id',
-  },
-  localStorage: {
-    key: 'ajs_group_properties',
-  },
-}
+// const groupDefaults: UserOptions = {
+//   persist: true,
+//   cookie: {
+//     key: 'ajs_group_id',
+//   },
+//   localStorage: {
+//     key: 'ajs_group_properties',
+//   },
+// }
 
-export class Group extends User {
-  constructor(options: UserOptions = groupDefaults, cookie?: CookieOptions) {
-    super({ ...groupDefaults, ...options }, cookie)
-    autoBind(this)
-  }
+// export class Group extends User {
+//   constructor(options: UserOptions = groupDefaults, cookie?: CookieOptions) {
+//     super({ ...groupDefaults, ...options }, cookie)
+//     autoBind(this)
+//   }
 
-  anonymousId = (_id?: ID): ID => {
-    return undefined
-  }
-}
+//   anonymousId = (_id?: ID): ID => {
+//     return undefined
+//   }
+// }
