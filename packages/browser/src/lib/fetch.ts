@@ -1,4 +1,4 @@
-import unfetch from 'unfetch'
+// import unfetch from 'unfetch'
 import { getGlobal } from './get-global'
 
 /**
@@ -6,5 +6,6 @@ import { getGlobal } from './get-global'
  */
 export const fetch: typeof global.fetch = (...args) => {
   const global = getGlobal()
-  return ((global && global.fetch) || unfetch)(...args)
+  // @ts-ignore
+  return ((global && global.fetch))(...args)
 }
