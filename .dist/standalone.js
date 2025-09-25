@@ -1138,12 +1138,306 @@ __webpack_require__.r(__webpack_exports__);
 
 ;// CONCATENATED MODULE: ./src/lib/version-type.ts
 // Default value will be updated to 'web' in `bundle-umd.ts` for web build.
-var _version = 'npm';
+let _version = 'npm';
 function setVersionType(version) {
     _version = version;
 }
 function getVersionType() {
     return _version;
+}
+
+;// CONCATENATED MODULE: ./src/lib/global-analytics-helper.ts
+/**
+ * Stores the global window analytics key
+ */
+let _globalAnalyticsKey = 'analytics';
+/**
+ * Gets the global analytics/buffer
+ * @param key name of the window property where the buffer is stored (default: analytics)
+ * @returns AnalyticsSnippet
+ */
+function getGlobalAnalytics() {
+    return window[_globalAnalyticsKey];
+}
+/**
+ * Replaces the global window key for the analytics/buffer object
+ * @param key key name
+ */
+function setGlobalAnalyticsKey(key) {
+    _globalAnalyticsKey = key;
+}
+/**
+ * Sets the global analytics object
+ * @param analytics analytics snippet
+ */
+function setGlobalAnalytics(analytics) {
+    ;
+    window[_globalAnalyticsKey] = analytics;
+}
+
+;// CONCATENATED MODULE: ./src/lib/parse-cdn.ts
+
+// import { embeddedWriteKey } from './embedded-write-key'
+// const analyticsScriptRegex =
+//   /(https:\/\/.*)\/analytics\.js\/v1\/(?:.*?)\/(?:platform|analytics.*)?/
+// const getCDNUrlFromScriptTag = (): string | undefined => {
+//   let cdn: string | undefined
+//   const scripts = Array.prototype.slice.call(
+//     document.querySelectorAll('script')
+//   )
+//   scripts.forEach((s) => {
+//     const src = s.getAttribute('src') ?? ''
+//     const result = analyticsScriptRegex.exec(src)
+//     if (result && result[1]) {
+//       cdn = result[1]
+//     }
+//   })
+//   return cdn
+// }
+let _globalCDN; // set globalCDN as in-memory singleton
+const getGlobalCDNUrl = () => {
+    var _a;
+    const result = _globalCDN !== null && _globalCDN !== void 0 ? _globalCDN : (_a = getGlobalAnalytics()) === null || _a === void 0 ? void 0 : _a._cdn;
+    return result;
+};
+const setGlobalCDNUrl = (cdn) => {
+    const globalAnalytics = getGlobalAnalytics();
+    if (globalAnalytics) {
+        globalAnalytics._cdn = cdn;
+    }
+    _globalCDN = cdn;
+};
+const getCDN = () => {
+    const globalCdnUrl = getGlobalCDNUrl();
+    if (globalCdnUrl)
+        return globalCdnUrl;
+    // const cdnFromScriptTag = getCDNUrlFromScriptTag()
+    // if (cdnFromScriptTag) {
+    //   return cdnFromScriptTag
+    // } else {
+    //   // it's possible that the CDN is not found in the page because:
+    //   // - the script is loaded through a proxy
+    //   // - the script is removed after execution
+    //   // in this case, we fall back to the default Segment CDN
+    return `https://cdn.segment.com`;
+    // }
+};
+// export const getNextIntegrationsURL = () => {
+//   const cdn = getCDN()
+//   return `${cdn}/next-integrations`
+// }
+/**
+ * Replaces the CDN URL in the script tag with the one from Analytics.js 1.0
+ *
+ * @returns the path to Analytics JS 1.0
+ **/
+// export function getLegacyAJSPath(): string {
+//   const writeKey = embeddedWriteKey() ?? getGlobalAnalytics()?._writeKey
+//   const scripts = Array.prototype.slice.call(
+//     document.querySelectorAll('script')
+//   )
+//   let path: string | undefined = undefined
+//   for (const s of scripts) {
+//     const src = s.getAttribute('src') ?? ''
+//     const result = analyticsScriptRegex.exec(src)
+//     if (result && result[1]) {
+//       path = src
+//       break
+//     }
+//   }
+//   if (path) {
+//     return path.replace('analytics.min.js', 'analytics.classic.js')
+//   }
+//   return `https://cdn.segment.com/analytics.js/v1/${writeKey}/analytics.classic.js`
+// }
+
+;// CONCATENATED MODULE: ../core/dist/esm/validation/helpers.js
+function helpers_isString(obj) {
+    return typeof obj === 'string';
+}
+function helpers_isNumber(obj) {
+    return typeof obj === 'number';
+}
+function helpers_isFunction(obj) {
+    return typeof obj === 'function';
+}
+function helpers_exists(val) {
+    return val !== undefined && val !== null;
+}
+function helpers_isPlainObject(obj) {
+    return (Object.prototype.toString.call(obj).slice(8, -1).toLowerCase() === 'object');
+}
+//# sourceMappingURL=helpers.js.map
+;// CONCATENATED MODULE: ./src/core/arguments-resolver/index.ts
+
+/**
+ * Helper for the track method
+ */
+function resolveArguments(eventName, properties, options, callback) {
+    var _a;
+    const args = [eventName, properties, options, callback];
+    const name = helpers_isPlainObject(eventName) ? eventName.event : eventName;
+    if (!name || !helpers_isString(name)) {
+        throw new Error('Event missing');
+    }
+    const data = helpers_isPlainObject(eventName)
+        ? (_a = eventName.properties) !== null && _a !== void 0 ? _a : {}
+        : helpers_isPlainObject(properties)
+            ? properties
+            : {};
+    let opts = {};
+    if (!helpers_isFunction(options)) {
+        opts = options !== null && options !== void 0 ? options : {};
+    }
+    if (helpers_isPlainObject(eventName) && !helpers_isFunction(properties)) {
+        opts = properties !== null && properties !== void 0 ? properties : {};
+    }
+    const cb = args.find(helpers_isFunction);
+    return [name, data, opts, cb];
+}
+/**
+ * Helper for page, screen methods
+ */
+function resolvePageArguments(category, name, properties, options, callback) {
+    var _a, _b;
+    let resolvedCategory = null;
+    let resolvedName = null;
+    const args = [category, name, properties, options, callback];
+    const strings = args.filter(helpers_isString);
+    if (strings[0] !== undefined && strings[1] !== undefined) {
+        resolvedCategory = strings[0];
+        resolvedName = strings[1];
+    }
+    if (strings.length === 1) {
+        resolvedCategory = null;
+        resolvedName = strings[0];
+    }
+    const resolvedCallback = args.find(helpers_isFunction);
+    const objects = args.filter((obj) => {
+        if (resolvedName === null) {
+            return helpers_isPlainObject(obj);
+        }
+        return helpers_isPlainObject(obj) || obj === null;
+    });
+    const resolvedProperties = ((_a = objects[0]) !== null && _a !== void 0 ? _a : {});
+    const resolvedOptions = ((_b = objects[1]) !== null && _b !== void 0 ? _b : {});
+    return [
+        resolvedCategory,
+        resolvedName,
+        resolvedProperties,
+        resolvedOptions,
+        resolvedCallback,
+    ];
+}
+/**
+ * Helper for group, identify methods
+ */
+const resolveUserArguments = (user) => {
+    return (...args) => {
+        var _a, _b, _c;
+        const values = {};
+        // It's a stack so it's reversed so that we go through each of the expected arguments
+        const orderStack = [
+            'callback',
+            'options',
+            'traits',
+            'id',
+        ];
+        // Read each argument and eval the possible values here
+        for (const arg of args) {
+            let current = orderStack.pop();
+            if (current === 'id') {
+                if (isString(arg) || isNumber(arg)) {
+                    values.id = arg.toString();
+                    continue;
+                }
+                if (arg === null || arg === undefined) {
+                    continue;
+                }
+                // First argument should always be the id, if it is not a valid value we can skip it
+                current = orderStack.pop();
+            }
+            // Traits and Options
+            if ((current === 'traits' || current === 'options') &&
+                (arg === null || arg === undefined || isPlainObject(arg))) {
+                values[current] = arg;
+            }
+            // Callback
+            if (isFunction(arg)) {
+                values.callback = arg;
+                break; // This is always the last argument
+            }
+        }
+        return [
+            (_a = values.id) !== null && _a !== void 0 ? _a : user.id(),
+            ((_b = values.traits) !== null && _b !== void 0 ? _b : {}),
+            (_c = values.options) !== null && _c !== void 0 ? _c : {},
+            values.callback,
+        ];
+    };
+};
+/**
+ * Helper for alias method
+ */
+function resolveAliasArguments(to, from, options, callback) {
+    if (isNumber(to))
+        to = to.toString(); // Legacy behaviour - allow integers for alias calls
+    if (isNumber(from))
+        from = from.toString();
+    const args = [to, from, options, callback];
+    const [aliasTo = to, aliasFrom = null] = args.filter(isString);
+    const [opts = {}] = args.filter(isPlainObject);
+    const resolvedCallback = args.find(isFunction);
+    return [aliasTo, aliasFrom, opts, resolvedCallback];
+}
+
+;// CONCATENATED MODULE: ./src/core/connection/index.ts
+// import { isBrowser } from '../environment'
+function isOnline() {
+    // if (isBrowser()) {
+    return window.navigator.onLine;
+    // }
+    // return true
+}
+function isOffline() {
+    return !isOnline();
+}
+
+;// CONCATENATED MODULE: ../../node_modules/@lukeed/uuid/dist/index.mjs
+var IDX=256, HEX=[], BUFFER;
+while (IDX--) HEX[IDX] = (IDX + 256).toString(16).substring(1);
+
+function v4() {
+	var i=0, num, out='';
+
+	if (!BUFFER || ((IDX + 16) > 256)) {
+		BUFFER = Array(i=256);
+		while (i--) BUFFER[i] = 256 * Math.random() | 0;
+		i = IDX = 0;
+	}
+
+	for (; i < 16; i++) {
+		num = BUFFER[IDX + i];
+		if (i==6) out += HEX[num & 15 | 64];
+		else if (i==8) out += HEX[num & 63 | 128];
+		else out += HEX[num];
+
+		if (i & 1 && i > 1 && i < 11) out += '-';
+	}
+
+	IDX++;
+	return out;
+}
+
+;// CONCATENATED MODULE: ../../node_modules/dset/dist/index.mjs
+function dset(obj, keys, val) {
+	keys.split && (keys=keys.split('.'));
+	var i=0, l=keys.length, t=obj, x, k;
+	while (i < l) {
+		k = keys[i++];
+		if (k === '__proto__' || k === 'constructor' || k === 'prototype') break;
+		t = t[k] = (i === l) ? val : (typeof(x=t[k])===typeof(keys)) ? x : (keys[i]*0 !== 0 || !!~(''+keys[i]).indexOf('.')) ? {} : [];
+	}
 }
 
 ;// CONCATENATED MODULE: ../../node_modules/tslib/tslib.es6.js
@@ -1216,7 +1510,7 @@ function __metadata(metadataKey, metadataValue) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
 }
 
-function tslib_es6_awaiter(thisArg, _arguments, P, generator) {
+function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1226,7 +1520,7 @@ function tslib_es6_awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-function tslib_es6_generator(thisArg, body) {
+function __generator(thisArg, body) {
     var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
     return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
@@ -1394,305 +1688,6 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
 function __classPrivateFieldIn(state, receiver) {
     if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
     return typeof state === "function" ? receiver === state : state.has(receiver);
-}
-
-;// CONCATENATED MODULE: ./src/lib/global-analytics-helper.ts
-/**
- * Stores the global window analytics key
- */
-var _globalAnalyticsKey = 'analytics';
-/**
- * Gets the global analytics/buffer
- * @param key name of the window property where the buffer is stored (default: analytics)
- * @returns AnalyticsSnippet
- */
-function getGlobalAnalytics() {
-    return window[_globalAnalyticsKey];
-}
-/**
- * Replaces the global window key for the analytics/buffer object
- * @param key key name
- */
-function setGlobalAnalyticsKey(key) {
-    _globalAnalyticsKey = key;
-}
-/**
- * Sets the global analytics object
- * @param analytics analytics snippet
- */
-function setGlobalAnalytics(analytics) {
-    ;
-    window[_globalAnalyticsKey] = analytics;
-}
-
-;// CONCATENATED MODULE: ./src/lib/parse-cdn.ts
-
-// import { embeddedWriteKey } from './embedded-write-key'
-// const analyticsScriptRegex =
-//   /(https:\/\/.*)\/analytics\.js\/v1\/(?:.*?)\/(?:platform|analytics.*)?/
-// const getCDNUrlFromScriptTag = (): string | undefined => {
-//   let cdn: string | undefined
-//   const scripts = Array.prototype.slice.call(
-//     document.querySelectorAll('script')
-//   )
-//   scripts.forEach((s) => {
-//     const src = s.getAttribute('src') ?? ''
-//     const result = analyticsScriptRegex.exec(src)
-//     if (result && result[1]) {
-//       cdn = result[1]
-//     }
-//   })
-//   return cdn
-// }
-var _globalCDN; // set globalCDN as in-memory singleton
-var getGlobalCDNUrl = function () {
-    var _a;
-    var result = _globalCDN !== null && _globalCDN !== void 0 ? _globalCDN : (_a = getGlobalAnalytics()) === null || _a === void 0 ? void 0 : _a._cdn;
-    return result;
-};
-var setGlobalCDNUrl = function (cdn) {
-    var globalAnalytics = getGlobalAnalytics();
-    if (globalAnalytics) {
-        globalAnalytics._cdn = cdn;
-    }
-    _globalCDN = cdn;
-};
-var getCDN = function () {
-    var globalCdnUrl = getGlobalCDNUrl();
-    if (globalCdnUrl)
-        return globalCdnUrl;
-    // const cdnFromScriptTag = getCDNUrlFromScriptTag()
-    // if (cdnFromScriptTag) {
-    //   return cdnFromScriptTag
-    // } else {
-    //   // it's possible that the CDN is not found in the page because:
-    //   // - the script is loaded through a proxy
-    //   // - the script is removed after execution
-    //   // in this case, we fall back to the default Segment CDN
-    return "https://cdn.segment.com";
-    // }
-};
-// export const getNextIntegrationsURL = () => {
-//   const cdn = getCDN()
-//   return `${cdn}/next-integrations`
-// }
-/**
- * Replaces the CDN URL in the script tag with the one from Analytics.js 1.0
- *
- * @returns the path to Analytics JS 1.0
- **/
-// export function getLegacyAJSPath(): string {
-//   const writeKey = embeddedWriteKey() ?? getGlobalAnalytics()?._writeKey
-//   const scripts = Array.prototype.slice.call(
-//     document.querySelectorAll('script')
-//   )
-//   let path: string | undefined = undefined
-//   for (const s of scripts) {
-//     const src = s.getAttribute('src') ?? ''
-//     const result = analyticsScriptRegex.exec(src)
-//     if (result && result[1]) {
-//       path = src
-//       break
-//     }
-//   }
-//   if (path) {
-//     return path.replace('analytics.min.js', 'analytics.classic.js')
-//   }
-//   return `https://cdn.segment.com/analytics.js/v1/${writeKey}/analytics.classic.js`
-// }
-
-;// CONCATENATED MODULE: ../core/dist/esm/validation/helpers.js
-function helpers_isString(obj) {
-    return typeof obj === 'string';
-}
-function helpers_isNumber(obj) {
-    return typeof obj === 'number';
-}
-function helpers_isFunction(obj) {
-    return typeof obj === 'function';
-}
-function helpers_exists(val) {
-    return val !== undefined && val !== null;
-}
-function helpers_isPlainObject(obj) {
-    return (Object.prototype.toString.call(obj).slice(8, -1).toLowerCase() === 'object');
-}
-//# sourceMappingURL=helpers.js.map
-;// CONCATENATED MODULE: ./src/core/arguments-resolver/index.ts
-
-/**
- * Helper for the track method
- */
-function resolveArguments(eventName, properties, options, callback) {
-    var _a;
-    var args = [eventName, properties, options, callback];
-    var name = helpers_isPlainObject(eventName) ? eventName.event : eventName;
-    if (!name || !helpers_isString(name)) {
-        throw new Error('Event missing');
-    }
-    var data = helpers_isPlainObject(eventName)
-        ? (_a = eventName.properties) !== null && _a !== void 0 ? _a : {}
-        : helpers_isPlainObject(properties)
-            ? properties
-            : {};
-    var opts = {};
-    if (!helpers_isFunction(options)) {
-        opts = options !== null && options !== void 0 ? options : {};
-    }
-    if (helpers_isPlainObject(eventName) && !helpers_isFunction(properties)) {
-        opts = properties !== null && properties !== void 0 ? properties : {};
-    }
-    var cb = args.find(helpers_isFunction);
-    return [name, data, opts, cb];
-}
-/**
- * Helper for page, screen methods
- */
-function resolvePageArguments(category, name, properties, options, callback) {
-    var _a, _b;
-    var resolvedCategory = null;
-    var resolvedName = null;
-    var args = [category, name, properties, options, callback];
-    var strings = args.filter(helpers_isString);
-    if (strings[0] !== undefined && strings[1] !== undefined) {
-        resolvedCategory = strings[0];
-        resolvedName = strings[1];
-    }
-    if (strings.length === 1) {
-        resolvedCategory = null;
-        resolvedName = strings[0];
-    }
-    var resolvedCallback = args.find(helpers_isFunction);
-    var objects = args.filter(function (obj) {
-        if (resolvedName === null) {
-            return helpers_isPlainObject(obj);
-        }
-        return helpers_isPlainObject(obj) || obj === null;
-    });
-    var resolvedProperties = ((_a = objects[0]) !== null && _a !== void 0 ? _a : {});
-    var resolvedOptions = ((_b = objects[1]) !== null && _b !== void 0 ? _b : {});
-    return [
-        resolvedCategory,
-        resolvedName,
-        resolvedProperties,
-        resolvedOptions,
-        resolvedCallback,
-    ];
-}
-/**
- * Helper for group, identify methods
- */
-var resolveUserArguments = function (user) {
-    return function () {
-        var _a, _b, _c;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var values = {};
-        // It's a stack so it's reversed so that we go through each of the expected arguments
-        var orderStack = [
-            'callback',
-            'options',
-            'traits',
-            'id',
-        ];
-        // Read each argument and eval the possible values here
-        for (var _d = 0, args_1 = args; _d < args_1.length; _d++) {
-            var arg = args_1[_d];
-            var current = orderStack.pop();
-            if (current === 'id') {
-                if (isString(arg) || isNumber(arg)) {
-                    values.id = arg.toString();
-                    continue;
-                }
-                if (arg === null || arg === undefined) {
-                    continue;
-                }
-                // First argument should always be the id, if it is not a valid value we can skip it
-                current = orderStack.pop();
-            }
-            // Traits and Options
-            if ((current === 'traits' || current === 'options') &&
-                (arg === null || arg === undefined || isPlainObject(arg))) {
-                values[current] = arg;
-            }
-            // Callback
-            if (isFunction(arg)) {
-                values.callback = arg;
-                break; // This is always the last argument
-            }
-        }
-        return [
-            (_a = values.id) !== null && _a !== void 0 ? _a : user.id(),
-            ((_b = values.traits) !== null && _b !== void 0 ? _b : {}),
-            (_c = values.options) !== null && _c !== void 0 ? _c : {},
-            values.callback,
-        ];
-    };
-};
-/**
- * Helper for alias method
- */
-function resolveAliasArguments(to, from, options, callback) {
-    if (isNumber(to))
-        to = to.toString(); // Legacy behaviour - allow integers for alias calls
-    if (isNumber(from))
-        from = from.toString();
-    var args = [to, from, options, callback];
-    var _a = args.filter(isString), _b = _a[0], aliasTo = _b === void 0 ? to : _b, _c = _a[1], aliasFrom = _c === void 0 ? null : _c;
-    var _d = args.filter(isPlainObject)[0], opts = _d === void 0 ? {} : _d;
-    var resolvedCallback = args.find(isFunction);
-    return [aliasTo, aliasFrom, opts, resolvedCallback];
-}
-
-;// CONCATENATED MODULE: ./src/core/connection/index.ts
-// import { isBrowser } from '../environment'
-function isOnline() {
-    // if (isBrowser()) {
-    return window.navigator.onLine;
-    // }
-    // return true
-}
-function isOffline() {
-    return !isOnline();
-}
-
-;// CONCATENATED MODULE: ../../node_modules/@lukeed/uuid/dist/index.mjs
-var IDX=256, HEX=[], BUFFER;
-while (IDX--) HEX[IDX] = (IDX + 256).toString(16).substring(1);
-
-function v4() {
-	var i=0, num, out='';
-
-	if (!BUFFER || ((IDX + 16) > 256)) {
-		BUFFER = Array(i=256);
-		while (i--) BUFFER[i] = 256 * Math.random() | 0;
-		i = IDX = 0;
-	}
-
-	for (; i < 16; i++) {
-		num = BUFFER[IDX + i];
-		if (i==6) out += HEX[num & 15 | 64];
-		else if (i==8) out += HEX[num & 63 | 128];
-		else out += HEX[num];
-
-		if (i & 1 && i > 1 && i < 11) out += '-';
-	}
-
-	IDX++;
-	return out;
-}
-
-;// CONCATENATED MODULE: ../../node_modules/dset/dist/index.mjs
-function dset(obj, keys, val) {
-	keys.split && (keys=keys.split('.'));
-	var i=0, l=keys.length, t=obj, x, k;
-	while (i < l) {
-		k = keys[i++];
-		if (k === '__proto__' || k === 'constructor' || k === 'prototype') break;
-		t = t[k] = (i === l) ? val : (typeof(x=t[k])===typeof(keys)) ? x : (keys[i]*0 !== 0 || !!~(''+keys[i]).indexOf('.')) ? {} : [];
-	}
 }
 
 ;// CONCATENATED MODULE: ../core/dist/esm/logger/index.js
@@ -1934,13 +1929,9 @@ var CoreContext = /** @class */ (function () {
 }());
 
 //# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ../../node_modules/unfetch/dist/unfetch.mjs
-/* harmony default export */ function unfetch(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(JSON.parse(s.responseText))},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})}
-//# sourceMappingURL=unfetch.mjs.map
-
 ;// CONCATENATED MODULE: ./src/lib/get-global.ts
 // This an imperfect polyfill for globalThis
-var getGlobal = function () {
+const getGlobal = () => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }
@@ -1957,52 +1948,47 @@ var getGlobal = function () {
 };
 
 ;// CONCATENATED MODULE: ./src/lib/fetch.ts
-
+// import unfetch from 'unfetch'
 
 /**
  * Wrapper around native `fetch` containing `unfetch` fallback.
  */
-var fetch = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    var global = getGlobal();
-    return ((global && global.fetch) || unfetch).apply(void 0, args);
+const fetch = (...args) => {
+    const global = getGlobal();
+    // @ts-ignore
+    return ((global && global.fetch))(...args);
 };
 
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
-var version = '1.70.0';
+const version = '1.70.0';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
-var SEGMENT_API_HOST = 'api.segment.io/v1';
+const SEGMENT_API_HOST = 'api.segment.io/v1';
 
 ;// CONCATENATED MODULE: ./src/core/stats/remote-metrics.ts
 
 
 
 
-
-var createRemoteMetric = function (metric, tags, versionType) {
-    var formattedTags = tags.reduce(function (acc, t) {
-        var _a = t.split(':'), k = _a[0], v = _a[1];
+const createRemoteMetric = (metric, tags, versionType) => {
+    const formattedTags = tags.reduce((acc, t) => {
+        const [k, v] = t.split(':');
         acc[k] = v;
         return acc;
     }, {});
     return {
         type: 'Counter',
-        metric: metric,
+        metric,
         value: 1,
-        tags: __assign(__assign({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? "next-".concat(version) : "npm:next-".concat(version) }),
+        tags: Object.assign(Object.assign({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? `next-${version}` : `npm:next-${version}` }),
     };
 };
 function logError(err) {
     console.error('Error sending segment performance metrics', err);
 }
-var RemoteMetrics = /** @class */ (function () {
-    function RemoteMetrics(options) {
-        var _this = this;
+class RemoteMetrics {
+    constructor(options) {
         var _a, _b, _c, _d, _e;
         this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : SEGMENT_API_HOST;
         this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
@@ -2011,20 +1997,20 @@ var RemoteMetrics = /** @class */ (function () {
         this.protocol = (_e = options === null || options === void 0 ? void 0 : options.protocol) !== null && _e !== void 0 ? _e : 'https';
         this.queue = [];
         if (this.sampleRate > 0) {
-            var flushing_1 = false;
-            var run_1 = function () {
-                if (flushing_1) {
+            let flushing = false;
+            const run = () => {
+                if (flushing) {
                     return;
                 }
-                flushing_1 = true;
-                _this.flush().catch(logError);
-                flushing_1 = false;
-                setTimeout(run_1, _this.flushTimer);
+                flushing = true;
+                this.flush().catch(logError);
+                flushing = false;
+                setTimeout(run, this.flushTimer);
             };
-            run_1();
+            run();
         }
     }
-    RemoteMetrics.prototype.increment = function (metric, tags) {
+    increment(metric, tags) {
         // All metrics are part of an allow list in Tracking API
         if (!metric.includes('analytics_js.')) {
             return;
@@ -2039,88 +2025,59 @@ var RemoteMetrics = /** @class */ (function () {
         if (this.queue.length >= this.maxQueueSize) {
             return;
         }
-        var remoteMetric = createRemoteMetric(metric, tags, getVersionType());
+        const remoteMetric = createRemoteMetric(metric, tags, getVersionType());
         this.queue.push(remoteMetric);
         if (metric.includes('error')) {
             this.flush().catch(logError);
         }
-    };
-    RemoteMetrics.prototype.flush = function () {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var _this = this;
-            return tslib_es6_generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.queue.length <= 0) {
-                            return [2 /*return*/];
-                        }
-                        return [4 /*yield*/, this.send().catch(function (error) {
-                                logError(error);
-                                _this.sampleRate = 0;
-                            })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
+    }
+    async flush() {
+        if (this.queue.length <= 0) {
+            return;
+        }
+        await this.send().catch((error) => {
+            logError(error);
+            this.sampleRate = 0;
         });
-    };
-    RemoteMetrics.prototype.send = function () {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var payload, headers, url;
-            return tslib_es6_generator(this, function (_a) {
-                payload = { series: this.queue };
-                this.queue = [];
-                headers = { 'Content-Type': 'text/plain' };
-                url = "".concat(this.protocol, "://").concat(this.host, "/m");
-                return [2 /*return*/, fetch(url, {
-                        headers: headers,
-                        body: JSON.stringify(payload),
-                        method: 'POST',
-                    })];
-            });
+    }
+    async send() {
+        const payload = { series: this.queue };
+        this.queue = [];
+        const headers = { 'Content-Type': 'text/plain' };
+        const url = `${this.protocol}://${this.host}/m`;
+        return fetch(url, {
+            headers,
+            body: JSON.stringify(payload),
+            method: 'POST',
         });
-    };
-    return RemoteMetrics;
-}());
-
+    }
+}
 
 ;// CONCATENATED MODULE: ./src/core/stats/index.ts
 
 
-
-var remoteMetrics;
-var Stats = /** @class */ (function (_super) {
-    __extends(Stats, _super);
-    function Stats() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Stats.initRemoteMetrics = function (options) {
+let remoteMetrics;
+class Stats extends CoreStats {
+    static initRemoteMetrics(options) {
         remoteMetrics = new RemoteMetrics(options);
-    };
-    Stats.prototype.increment = function (metric, by, tags) {
-        _super.prototype.increment.call(this, metric, by, tags);
+    }
+    increment(metric, by, tags) {
+        super.increment(metric, by, tags);
         remoteMetrics === null || remoteMetrics === void 0 ? void 0 : remoteMetrics.increment(metric, tags !== null && tags !== void 0 ? tags : []);
-    };
-    return Stats;
-}(CoreStats));
-
+    }
+}
 
 ;// CONCATENATED MODULE: ./src/core/context/index.ts
 
 
-
-var Context = /** @class */ (function (_super) {
-    __extends(Context, _super);
-    function Context(event, id) {
-        return _super.call(this, event, id, new Stats()) || this;
-    }
-    Context.system = function () {
+class Context extends CoreContext {
+    static system() {
         return new this({ type: 'track', event: 'system' });
-    };
-    return Context;
-}(CoreContext));
-
+    }
+    constructor(event, id) {
+        super(event, id, new Stats());
+    }
+}
 
 
 ;// CONCATENATED MODULE: ../core/dist/esm/callback/index.js
@@ -2182,9 +2139,9 @@ var getDelay = function (startTimeInEpochMS, timeoutInMS) {
  * @param options
  */
 function dispatch(ctx, queue, emitter, options) {
-    return tslib_es6_awaiter(this, void 0, void 0, function () {
+    return __awaiter(this, void 0, void 0, function () {
         var startTime, dispatched;
-        return tslib_es6_generator(this, function (_a) {
+        return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     emitter.emit('dispatch_start', ctx);
@@ -2293,28 +2250,26 @@ var Emitter = /** @class */ (function () {
 
 //# sourceMappingURL=emitter.js.map
 ;// CONCATENATED MODULE: ./src/lib/pick.ts
-
 /**
  * @example
  * pick({ 'a': 1, 'b': '2', 'c': 3 }, ['a', 'c'])
  * => { 'a': 1, 'c': 3 }
  */
 function pick(object, keys) {
-    return Object.assign.apply(Object, __spreadArray([{}], keys.map(function (key) {
-        var _a;
+    return Object.assign({}, ...keys.map((key) => {
         if (object && Object.prototype.hasOwnProperty.call(object, key)) {
-            return _a = {}, _a[key] = object[key], _a;
+            return { [key]: object[key] };
         }
-    }), false));
+    }));
 }
 
 ;// CONCATENATED MODULE: ./src/core/page/get-page-context.ts
 
-var BufferedPageContextDiscriminant = 'bpc';
+const BufferedPageContextDiscriminant = 'bpc';
 /**
  * `BufferedPageContext` object builder
  */
-var createBufferedPageContext = function (url, canonicalUrl, search, path, title, referrer) { return ({
+const createBufferedPageContext = (url, canonicalUrl, search, path, title, referrer) => ({
     __t: BufferedPageContextDiscriminant,
     c: canonicalUrl,
     p: path,
@@ -2322,16 +2277,16 @@ var createBufferedPageContext = function (url, canonicalUrl, search, path, title
     s: search,
     t: title,
     r: referrer,
-}); };
+});
 // my clever/dubious way of making sure this type guard does not get out sync with the type definition
-var BUFFERED_PAGE_CONTEXT_KEYS = Object.keys(createBufferedPageContext('', '', '', '', '', ''));
+const BUFFERED_PAGE_CONTEXT_KEYS = Object.keys(createBufferedPageContext('', '', '', '', '', ''));
 function isBufferedPageContext(bufferedPageCtx) {
     if (!helpers_isPlainObject(bufferedPageCtx))
         return false;
     if (bufferedPageCtx.__t !== BufferedPageContextDiscriminant)
         return false;
     // ensure obj has all the keys we expect, and none we don't.
-    for (var k in bufferedPageCtx) {
+    for (const k in bufferedPageCtx) {
         if (!BUFFERED_PAGE_CONTEXT_KEYS.includes(k)) {
             return false;
         }
@@ -2339,7 +2294,7 @@ function isBufferedPageContext(bufferedPageCtx) {
     return true;
 }
 //  Legacy logic: we are we appending search parameters to the canonical URL -- I guess the canonical URL is  "not canonical enough" (lol)
-var createCanonicalURL = function (canonicalUrl, searchParams) {
+const createCanonicalURL = (canonicalUrl, searchParams) => {
     return canonicalUrl.indexOf('?') > -1
         ? canonicalUrl
         : canonicalUrl + searchParams;
@@ -2348,11 +2303,11 @@ var createCanonicalURL = function (canonicalUrl, searchParams) {
  * Strips hash from URL.
  * http://www.segment.local#test -> http://www.segment.local
  */
-var removeHash = function (href) {
-    var hashIdx = href.indexOf('#');
+const removeHash = (href) => {
+    const hashIdx = href.indexOf('#');
     return hashIdx === -1 ? href : href.slice(0, hashIdx);
 };
-var parseCanonicalPath = function (canonicalUrl) {
+const parseCanonicalPath = (canonicalUrl) => {
     try {
         return new URL(canonicalUrl).pathname;
     }
@@ -2365,36 +2320,32 @@ var parseCanonicalPath = function (canonicalUrl) {
  * Create a `PageContext` from a `BufferedPageContext`.
  * `BufferedPageContext` keys are minified to save bytes in the snippet.
  */
-var createPageContext = function (_a) {
-    var canonicalUrl = _a.c, pathname = _a.p, search = _a.s, url = _a.u, referrer = _a.r, title = _a.t;
-    var newPath = canonicalUrl ? parseCanonicalPath(canonicalUrl) : pathname;
-    var newUrl = canonicalUrl
+const createPageContext = ({ c: canonicalUrl, p: pathname, s: search, u: url, r: referrer, t: title, }) => {
+    const newPath = canonicalUrl ? parseCanonicalPath(canonicalUrl) : pathname;
+    const newUrl = canonicalUrl
         ? createCanonicalURL(canonicalUrl, search)
         : removeHash(url);
     return {
         path: newPath,
-        referrer: referrer,
-        search: search,
-        title: title,
+        referrer,
+        search,
+        title,
         url: newUrl,
     };
 };
 /**
  * Get page properties from the browser window/document.
  */
-var getDefaultBufferedPageContext = function () {
-    var c = document.querySelector("link[rel='canonical']");
+const getDefaultBufferedPageContext = () => {
+    const c = document.querySelector("link[rel='canonical']");
     return createBufferedPageContext(location.href, (c && c.getAttribute('href')) || undefined, location.search, location.pathname, document.title, document.referrer);
 };
 /**
  * Get page properties from the browser window/document.
  */
-var getDefaultPageContext = function () {
-    return createPageContext(getDefaultBufferedPageContext());
-};
+const getDefaultPageContext = () => createPageContext(getDefaultBufferedPageContext());
 
 ;// CONCATENATED MODULE: ./src/core/page/add-page-context.ts
-
 
 
 /**
@@ -2403,16 +2354,15 @@ var getDefaultPageContext = function () {
  * Things like `userAgent` do not change, so they can be added later in the flow.
  * We prefer not to add this information to this function, as it increases the main bundle size.
  */
-var addPageContext = function (event, pageCtx) {
-    if (pageCtx === void 0) { pageCtx = getDefaultPageContext(); }
-    var evtCtx = event.context; // Context should be set earlier in the flow
-    var pageContextFromEventProps;
+const addPageContext = (event, pageCtx = getDefaultPageContext()) => {
+    const evtCtx = event.context; // Context should be set earlier in the flow
+    let pageContextFromEventProps;
     if (event.type === 'page') {
         pageContextFromEventProps =
             event.properties && pick(event.properties, Object.keys(pageCtx));
-        event.properties = __assign(__assign(__assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
+        event.properties = Object.assign(Object.assign(Object.assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
     }
-    evtCtx.page = __assign(__assign(__assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
+    evtCtx.page = Object.assign(Object.assign(Object.assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
 };
 
 ;// CONCATENATED MODULE: ../core/dist/esm/utils/pick.js
@@ -2702,55 +2652,49 @@ var CoreEventFactory = /** @class */ (function () {
 
 
 
-
-var EventFactory = /** @class */ (function (_super) {
-    __extends(EventFactory, _super);
-    function EventFactory(user) {
-        var _this = _super.call(this, {
-            createMessageId: function () { return "ajs-next-".concat(Date.now(), "-").concat(v4()); },
-            onEventMethodCall: function (_a) {
-                var options = _a.options;
-                _this.maybeUpdateAnonId(options);
+class EventFactory extends CoreEventFactory {
+    constructor(user) {
+        super({
+            createMessageId: () => `ajs-next-${Date.now()}-${v4()}`,
+            onEventMethodCall: ({ options }) => {
+                this.maybeUpdateAnonId(options);
             },
-            onFinishedEvent: function (event) {
-                _this.addIdentity(event);
+            onFinishedEvent: (event) => {
+                this.addIdentity(event);
                 return event;
             },
-        }) || this;
-        _this.user = user;
-        return _this;
+        });
+        this.user = user;
     }
     /**
      * Updates the anonymousId *globally* if it's provided in the options.
      * This should generally be done in the identify method, but some customers rely on this.
      */
-    EventFactory.prototype.maybeUpdateAnonId = function (options) {
+    maybeUpdateAnonId(options) {
         (options === null || options === void 0 ? void 0 : options.anonymousId) && this.user.anonymousId(options.anonymousId);
-    };
+    }
     /**
      * add user id / anonymous id to the event
      */
-    EventFactory.prototype.addIdentity = function (event) {
+    addIdentity(event) {
         if (this.user.id()) {
             event.userId = this.user.id();
         }
         if (this.user.anonymousId()) {
             event.anonymousId = this.user.anonymousId();
         }
-    };
-    EventFactory.prototype.track = function (event, properties, options, globalIntegrations, pageCtx) {
-        var ev = _super.prototype.track.call(this, event, properties, options, globalIntegrations);
+    }
+    track(event, properties, options, globalIntegrations, pageCtx) {
+        const ev = super.track(event, properties, options, globalIntegrations);
         addPageContext(ev, pageCtx);
         return ev;
-    };
-    EventFactory.prototype.page = function (category, page, properties, options, globalIntegrations, pageCtx) {
-        var ev = _super.prototype.page.call(this, category, page, properties, options, globalIntegrations);
+    }
+    page(category, page, properties, options, globalIntegrations, pageCtx) {
+        const ev = super.page(category, page, properties, options, globalIntegrations);
         addPageContext(ev, pageCtx);
         return ev;
-    };
-    return EventFactory;
-}(CoreEventFactory));
-
+    }
+}
 
 ;// CONCATENATED MODULE: ../core/dist/esm/priority-queue/backoff.js
 function backoff(params) {
@@ -2852,12 +2796,11 @@ var PriorityQueue = /** @class */ (function (_super) {
 ;// CONCATENATED MODULE: ./src/lib/priority-queue/persisted.ts
 
 
-
 // import { isBrowser } from '../../core/environment'
-var loc = {
-    getItem: function () { },
-    setItem: function () { },
-    removeItem: function () { },
+let loc = {
+    getItem() { },
+    setItem() { },
+    removeItem() { },
 };
 try {
     loc = /* isBrowser() && */ window.localStorage ? window.localStorage : loc;
@@ -2866,38 +2809,36 @@ catch (err) {
     console.warn('Unable to access localStorage', err);
 }
 function persisted(key) {
-    var items = loc.getItem(key);
-    return (items ? JSON.parse(items) : []).map(function (p) { return new Context(p.event, p.id); });
+    const items = loc.getItem(key);
+    return (items ? JSON.parse(items) : []).map((p) => new Context(p.event, p.id));
 }
 function persistItems(key, items) {
-    var existing = persisted(key);
-    var all = __spreadArray(__spreadArray([], items, true), existing, true);
-    var merged = all.reduce(function (acc, item) {
-        var _a;
-        return __assign(__assign({}, acc), (_a = {}, _a[item.id] = item, _a));
+    const existing = persisted(key);
+    const all = [...items, ...existing];
+    const merged = all.reduce((acc, item) => {
+        return Object.assign(Object.assign({}, acc), { [item.id]: item });
     }, {});
     loc.setItem(key, JSON.stringify(Object.values(merged)));
 }
 function seen(key) {
-    var stored = loc.getItem(key);
+    const stored = loc.getItem(key);
     return stored ? JSON.parse(stored) : {};
 }
 function persistSeen(key, memory) {
-    var stored = seen(key);
-    loc.setItem(key, JSON.stringify(__assign(__assign({}, stored), memory)));
+    const stored = seen(key);
+    loc.setItem(key, JSON.stringify(Object.assign(Object.assign({}, stored), memory)));
 }
 function remove(key) {
     loc.removeItem(key);
 }
-var now = function () { return new Date().getTime(); };
-function mutex(key, onUnlock, attempt) {
-    if (attempt === void 0) { attempt = 0; }
-    var lockTimeout = 50;
-    var lockKey = "persisted-queue:v1:".concat(key, ":lock");
-    var expired = function (lock) { return new Date().getTime() > lock; };
-    var rawLock = loc.getItem(lockKey);
-    var lock = rawLock ? JSON.parse(rawLock) : null;
-    var allowed = lock === null || expired(lock);
+const now = () => new Date().getTime();
+function mutex(key, onUnlock, attempt = 0) {
+    const lockTimeout = 50;
+    const lockKey = `persisted-queue:v1:${key}:lock`;
+    const expired = (lock) => new Date().getTime() > lock;
+    const rawLock = loc.getItem(lockKey);
+    const lock = rawLock ? JSON.parse(rawLock) : null;
+    const allowed = lock === null || expired(lock);
     if (allowed) {
         loc.setItem(lockKey, JSON.stringify(now() + lockTimeout));
         onUnlock();
@@ -2905,7 +2846,7 @@ function mutex(key, onUnlock, attempt) {
         return;
     }
     if (!allowed && attempt < 3) {
-        setTimeout(function () {
+        setTimeout(() => {
             mutex(key, onUnlock, attempt + 1);
         }, lockTimeout);
     }
@@ -2913,35 +2854,34 @@ function mutex(key, onUnlock, attempt) {
         console.error('Unable to retrieve lock');
     }
 }
-var PersistedPriorityQueue = /** @class */ (function (_super) {
-    __extends(PersistedPriorityQueue, _super);
-    function PersistedPriorityQueue(maxAttempts, key) {
-        var _this = _super.call(this, maxAttempts, []) || this;
-        var itemsKey = "persisted-queue:v1:".concat(key, ":items");
-        var seenKey = "persisted-queue:v1:".concat(key, ":seen");
-        var saved = [];
-        var lastSeen = {};
-        mutex(key, function () {
+class PersistedPriorityQueue extends PriorityQueue {
+    constructor(maxAttempts, key) {
+        super(maxAttempts, []);
+        const itemsKey = `persisted-queue:v1:${key}:items`;
+        const seenKey = `persisted-queue:v1:${key}:seen`;
+        let saved = [];
+        let lastSeen = {};
+        mutex(key, () => {
             try {
                 saved = persisted(itemsKey);
                 lastSeen = seen(seenKey);
                 remove(itemsKey);
                 remove(seenKey);
-                _this.queue = __spreadArray(__spreadArray([], saved, true), _this.queue, true);
-                _this.seen = __assign(__assign({}, lastSeen), _this.seen);
+                this.queue = [...saved, ...this.queue];
+                this.seen = Object.assign(Object.assign({}, lastSeen), this.seen);
             }
             catch (err) {
                 console.error(err);
             }
         });
-        window.addEventListener('pagehide', function () {
+        window.addEventListener('pagehide', () => {
             // we deliberately want to use the less powerful 'pagehide' API to only persist on events where the analytics instance gets destroyed, and not on tab away.
-            if (_this.todo > 0) {
-                var items_1 = __spreadArray(__spreadArray([], _this.queue, true), _this.future, true);
+            if (this.todo > 0) {
+                const items = [...this.queue, ...this.future];
                 try {
-                    mutex(key, function () {
-                        persistItems(itemsKey, items_1);
-                        persistSeen(seenKey, _this.seen);
+                    mutex(key, () => {
+                        persistItems(itemsKey, items);
+                        persistSeen(seenKey, this.seen);
                     });
                 }
                 catch (err) {
@@ -2949,11 +2889,8 @@ var PersistedPriorityQueue = /** @class */ (function (_super) {
                 }
             }
         });
-        return _this;
     }
-    return PersistedPriorityQueue;
-}(PriorityQueue));
-
+}
 
 ;// CONCATENATED MODULE: ../core/dist/esm/utils/group-by.js
 
@@ -3017,9 +2954,9 @@ var createTaskGroup = function () {
 
 
 function tryAsync(fn) {
-    return tslib_es6_awaiter(this, void 0, void 0, function () {
+    return __awaiter(this, void 0, void 0, function () {
         var err_1;
-        return tslib_es6_generator(this, function (_a) {
+        return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
@@ -3108,10 +3045,10 @@ var CoreEventQueue = /** @class */ (function (_super) {
         return _this;
     }
     CoreEventQueue.prototype.register = function (ctx, plugin, instance) {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var handleLoadError, err_1;
             var _this = this;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.plugins.push(plugin);
@@ -3145,9 +3082,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.deregister = function (ctx, plugin, instance) {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var e_1;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
@@ -3172,9 +3109,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.dispatch = function (ctx) {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var willDeliver;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 ctx.log('debug', 'Dispatching');
                 ctx.stats.increment('message_dispatched');
                 this.queue.push(ctx);
@@ -3185,9 +3122,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.subscribeToDelivery = function (ctx) {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) {
                         var onDeliver = function (flushed, delivered) {
                             if (flushed.isSame(ctx)) {
@@ -3206,9 +3143,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         });
     };
     CoreEventQueue.prototype.dispatchSingle = function (ctx) {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 ctx.log('debug', 'Dispatching');
                 ctx.stats.increment('message_dispatched');
                 this.queue.updateAttempts(ctx);
@@ -3247,9 +3184,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         }, timeout);
     };
     CoreEventQueue.prototype.deliver = function (ctx) {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var start, done, err_2, error;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.criticalTasks.done()];
                     case 1:
@@ -3286,9 +3223,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
         return this.queue.pushWithBackoff(ctx);
     };
     CoreEventQueue.prototype.flush = function () {
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var ctx, err_3, accepted;
-            return tslib_es6_generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (this.queue.length === 0) {
@@ -3351,9 +3288,9 @@ var CoreEventQueue = /** @class */ (function (_super) {
     };
     CoreEventQueue.prototype.flushOne = function (ctx) {
         var _a, _b;
-        return tslib_es6_awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var _c, before, enrichment, _i, before_1, beforeWare, temp, _d, enrichment_1, enrichmentWare, temp, _e, destinations, after, afterCalls;
-            return tslib_es6_generator(this, function (_f) {
+            return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
                         if (!this.isReady()) {
@@ -3427,34 +3364,25 @@ var CoreEventQueue = /** @class */ (function (_super) {
 
 
 
-
-var EventQueue = /** @class */ (function (_super) {
-    __extends(EventQueue, _super);
-    function EventQueue(nameOrQueue) {
-        return _super.call(this, typeof nameOrQueue === 'string'
+class EventQueue extends CoreEventQueue {
+    constructor(nameOrQueue) {
+        super(typeof nameOrQueue === 'string'
             ? new PersistedPriorityQueue(4, nameOrQueue)
-            : nameOrQueue) || this;
+            : nameOrQueue);
     }
-    EventQueue.prototype.flush = function () {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            return tslib_es6_generator(this, function (_a) {
-                if (isOffline())
-                    return [2 /*return*/, []];
-                return [2 /*return*/, _super.prototype.flush.call(this)];
-            });
-        });
-    };
-    return EventQueue;
-}(CoreEventQueue));
-
+    async flush() {
+        if (isOffline())
+            return [];
+        return super.flush();
+    }
+}
 
 ;// CONCATENATED MODULE: ./src/lib/bind-all.ts
 function bindAll(obj) {
-    var proto = obj.constructor.prototype;
-    for (var _i = 0, _a = Object.getOwnPropertyNames(proto); _i < _a.length; _i++) {
-        var key = _a[_i];
+    const proto = obj.constructor.prototype;
+    for (const key of Object.getOwnPropertyNames(proto)) {
         if (key !== 'constructor') {
-            var desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, key);
+            const desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, key);
             if (!!desc && typeof desc.value === 'function') {
                 obj[key] = obj[key].bind(obj);
             }
@@ -3464,7 +3392,7 @@ function bindAll(obj) {
 }
 
 ;// CONCATENATED MODULE: ./src/core/storage/types.ts
-var StoreType = {
+const types_StoreType = {
     Cookie: 'cookie',
     LocalStorage: 'localStorage',
     Memory: 'memory',
@@ -3472,20 +3400,19 @@ var StoreType = {
 
 ;// CONCATENATED MODULE: ./src/core/storage/universalStorage.ts
 // not adding to private method because those method names do not get minified atm, and does not use 'this'
-var _logStoreKeyError = function (store, action, key, err) {
-    console.warn("".concat(store.constructor.name, ": Can't ").concat(action, " key \"").concat(key, "\" | Err: ").concat(err));
+const _logStoreKeyError = (store, action, key, err) => {
+    console.warn(`${store.constructor.name}: Can't ${action} key "${key}" | Err: ${err}`);
 };
 /**
  * Uses multiple storages in a priority list to get/set values in the order they are specified.
  */
-var UniversalStorage = /** @class */ (function () {
-    function UniversalStorage(stores) {
+class UniversalStorage {
+    constructor(stores) {
         this.stores = stores;
     }
-    UniversalStorage.prototype.get = function (key) {
-        var val = null;
-        for (var _i = 0, _a = this.stores; _i < _a.length; _i++) {
-            var store = _a[_i];
+    get(key) {
+        let val = null;
+        for (const store of this.stores) {
             try {
                 val = store.get(key);
                 if (val !== undefined && val !== null) {
@@ -3497,9 +3424,9 @@ var UniversalStorage = /** @class */ (function () {
             }
         }
         return null;
-    };
-    UniversalStorage.prototype.set = function (key, value) {
-        this.stores.forEach(function (store) {
+    }
+    set(key, value) {
+        this.stores.forEach((store) => {
             try {
                 store.set(key, value);
             }
@@ -3507,9 +3434,9 @@ var UniversalStorage = /** @class */ (function () {
                 _logStoreKeyError(store, 'set', key, e);
             }
         });
-    };
-    UniversalStorage.prototype.clear = function (key) {
-        this.stores.forEach(function (store) {
+    }
+    clear(key) {
+        this.stores.forEach((store) => {
             try {
                 store.remove(key);
             }
@@ -3517,44 +3444,85 @@ var UniversalStorage = /** @class */ (function () {
                 _logStoreKeyError(store, 'remove', key, e);
             }
         });
-    };
+    }
     /*
       This is to support few scenarios where:
       - value exist in one of the stores ( as a result of other stores being cleared from browser ) and we want to resync them
       - read values in AJS 1.0 format ( for customers after 1.0 --> 2.0 migration ) and then re-write them in AJS 2.0 format
     */
-    UniversalStorage.prototype.getAndSync = function (key) {
-        var val = this.get(key);
+    getAndSync(key) {
+        const val = this.get(key);
         // legacy behavior, getAndSync can change the type of a value from number to string (AJS 1.0 stores numerical values as a number)
-        var coercedValue = (typeof val === 'number' ? val.toString() : val);
+        const coercedValue = (typeof val === 'number' ? val.toString() : val);
         this.set(key, coercedValue);
         return coercedValue;
-    };
-    return UniversalStorage;
-}());
-
+    }
+}
 
 ;// CONCATENATED MODULE: ./src/core/storage/memoryStorage.ts
 /**
  * Data Storage using in memory object
  */
-var MemoryStorage = /** @class */ (function () {
-    function MemoryStorage() {
+class MemoryStorage {
+    constructor() {
         this.cache = {};
     }
-    MemoryStorage.prototype.get = function (key) {
+    get(key) {
         var _a;
         return ((_a = this.cache[key]) !== null && _a !== void 0 ? _a : null);
-    };
-    MemoryStorage.prototype.set = function (key, value) {
+    }
+    set(key, value) {
         this.cache[key] = value;
-    };
-    MemoryStorage.prototype.remove = function (key) {
+    }
+    remove(key) {
         delete this.cache[key];
-    };
-    return MemoryStorage;
-}());
+    }
+}
 
+;// CONCATENATED MODULE: ./src/core/storage/localStorage.ts
+/**
+ * Data storage using browser's localStorage
+ */
+class LocalStorage {
+    localStorageWarning(key, state) {
+        console.warn(`Unable to access ${key}, localStorage may be ${state}`);
+    }
+    get(key) {
+        var _a;
+        try {
+            const val = localStorage.getItem(key);
+            if (val === null) {
+                return null;
+            }
+            try {
+                return (_a = JSON.parse(val)) !== null && _a !== void 0 ? _a : null;
+            }
+            catch (e) {
+                return (val !== null && val !== void 0 ? val : null);
+            }
+        }
+        catch (err) {
+            this.localStorageWarning(key, 'unavailable');
+            return null;
+        }
+    }
+    set(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+        catch (_a) {
+            this.localStorageWarning(key, 'full');
+        }
+    }
+    remove(key) {
+        try {
+            return localStorage.removeItem(key);
+        }
+        catch (err) {
+            this.localStorageWarning(key, 'unavailable');
+        }
+    }
+}
 
 ;// CONCATENATED MODULE: ./src/core/storage/settings.ts
 
@@ -3562,12 +3530,906 @@ function isArrayOfStoreType(s) {
     return (s &&
         s.stores &&
         Array.isArray(s.stores) &&
-        s.stores.every(function (e) { return Object.values(StoreType).includes(e); }));
+        s.stores.every((e) => Object.values(StoreType).includes(e)));
 }
 function isStoreTypeWithSettings(s) {
     return typeof s === 'object' && s.name !== undefined;
 }
 
+;// CONCATENATED MODULE: ./src/core/storage/index.ts
+
+
+
+
+
+
+
+
+
+
+/**
+ * Creates multiple storage systems from an array of StoreType and options
+ * @param args StoreType and options
+ * @returns Storage array
+ */
+function initializeStorages(args) {
+    const storages = args.map((s) => {
+        let type;
+        // let settings
+        if (isStoreTypeWithSettings(s)) {
+            type = s.name;
+            // settings = s.settings
+        }
+        else {
+            type = s;
+        }
+        switch (type) {
+            // case StoreType.Cookie:
+            //   return new CookieStorage(settings)
+            case types_StoreType.LocalStorage:
+                return new LocalStorage();
+            case types_StoreType.Memory:
+                return new MemoryStorage();
+            default:
+                throw new Error(`Unknown Store Type: ${s}`);
+        }
+    });
+    return storages;
+}
+/**
+ * Injects the CookieOptions into a the arguments for initializeStorage
+ * @param storeTypes list of storeType
+ * @param cookieOptions cookie Options
+ * @returns arguments for initializeStorage
+ */
+function applyCookieOptions(storeTypes, cookieOptions) {
+    return storeTypes.map((s) => {
+        if (cookieOptions && s === types_StoreType.Cookie) {
+            return {
+                name: s,
+                settings: cookieOptions,
+            };
+        }
+        return s;
+    });
+}
+
+;// CONCATENATED MODULE: ./src/core/user/index.ts
+
+
+
+const defaults = {
+    persist: true,
+    cookie: {
+        key: 'ajs_user_id',
+        oldKey: 'ajs_user',
+    },
+    localStorage: {
+        key: 'ajs_user_traits',
+    },
+};
+class User {
+    constructor(options = defaults, cookieOptions) {
+        var _a, _b, _c, _d;
+        this.options = {};
+        this.id = (id) => {
+            if (this.options.disable) {
+                return null;
+            }
+            const prevId = this.identityStore.getAndSync(this.idKey);
+            if (id !== undefined) {
+                this.identityStore.set(this.idKey, id);
+                const changingIdentity = id !== prevId && prevId !== null && id !== null;
+                if (changingIdentity) {
+                    this.anonymousId(null);
+                }
+            }
+            const retId = this.identityStore.getAndSync(this.idKey);
+            if (retId)
+                return retId;
+            const retLeg = this.legacyUserStore.get(defaults.cookie.oldKey);
+            return retLeg ? (typeof retLeg === 'object' ? retLeg.id : retLeg) : null;
+        };
+        // private legacySIO(): [string, string] | null {
+        //   const val = this.legacyUserStore.get('_sio') as string
+        //   if (!val) {
+        //     return null
+        //   }
+        //   const [anon, user] = val.split('----')
+        //   return [anon, user]
+        // }
+        this.anonymousId = (id) => {
+            if (this.options.disable) {
+                return null;
+            }
+            if (id === undefined) {
+                // const val =
+                //   this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
+                const val = this.identityStore.getAndSync(this.anonKey);
+                if (val) {
+                    return val;
+                }
+            }
+            if (id === null) {
+                this.identityStore.set(this.anonKey, null);
+                return this.identityStore.getAndSync(this.anonKey);
+            }
+            this.identityStore.set(this.anonKey, id !== null && id !== void 0 ? id : v4());
+            return this.identityStore.getAndSync(this.anonKey);
+        };
+        this.traits = (traits) => {
+            var _a;
+            if (this.options.disable) {
+                return;
+            }
+            if (traits === null) {
+                traits = {};
+            }
+            if (traits) {
+                this.traitsStore.set(this.traitsKey, traits !== null && traits !== void 0 ? traits : {});
+            }
+            return (_a = this.traitsStore.get(this.traitsKey)) !== null && _a !== void 0 ? _a : {};
+        };
+        this.options = Object.assign(Object.assign({}, defaults), options);
+        this.cookieOptions = cookieOptions;
+        this.idKey = (_b = (_a = options.cookie) === null || _a === void 0 ? void 0 : _a.key) !== null && _b !== void 0 ? _b : defaults.cookie.key;
+        this.traitsKey = (_d = (_c = options.localStorage) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : defaults.localStorage.key;
+        this.anonKey = 'ajs_anonymous_id';
+        this.identityStore = this.createStorage(this.options, cookieOptions);
+        // using only cookies for legacy user store
+        this.legacyUserStore = this.createStorage(this.options, cookieOptions, (s) => s === types_StoreType.Cookie);
+        // using only localStorage / memory for traits store
+        this.traitsStore = this.createStorage(this.options, cookieOptions, (s) => s !== types_StoreType.Cookie);
+        const legacyUser = this.legacyUserStore.get(defaults.cookie.oldKey);
+        if (legacyUser && typeof legacyUser === 'object') {
+            legacyUser.id && this.id(legacyUser.id);
+            legacyUser.traits && this.traits(legacyUser.traits);
+        }
+        bindAll(this);
+    }
+    identify(id, traits) {
+        if (this.options.disable) {
+            return;
+        }
+        traits = traits !== null && traits !== void 0 ? traits : {};
+        const currentId = this.id();
+        if (currentId === null || currentId === id) {
+            traits = Object.assign(Object.assign({}, this.traits()), traits);
+        }
+        if (id) {
+            this.id(id);
+        }
+        this.traits(traits);
+    }
+    logout() {
+        this.anonymousId(null);
+        this.id(null);
+        this.traits({});
+    }
+    reset() {
+        this.logout();
+        this.identityStore.clear(this.idKey);
+        this.identityStore.clear(this.anonKey);
+        this.traitsStore.clear(this.traitsKey);
+    }
+    load() {
+        return new User(this.options, this.cookieOptions);
+    }
+    save() {
+        return true;
+    }
+    /**
+     * Creates the right storage system applying all the user options, cookie options and particular filters
+     * @param options UserOptions
+     * @param cookieOpts CookieOptions
+     * @param filterStores filter function to apply to any StoreTypes (skipped if options specify using a custom storage)
+     * @returns a Storage object
+     */
+    createStorage(options, cookieOpts, filterStores) {
+        let stores = [
+            types_StoreType.LocalStorage,
+            // StoreType.Cookie,
+            types_StoreType.Memory,
+        ];
+        // If disabled we won't have any storage functionality
+        // if (options.disable) {
+        //   return new UniversalStorage<T>([])
+        // }
+        // If persistance is disabled we will always fallback to Memory Storage
+        if (!options.persist) {
+            return new UniversalStorage([new MemoryStorage()]);
+        }
+        // if (options.storage !== undefined && options.storage !== null) {
+        //   if (isArrayOfStoreType(options.storage)) {
+        //     // If the user only specified order of stores we will still apply filters and transformations e.g. not using localStorage if localStorageFallbackDisabled
+        //     stores = options.storage.stores
+        //   }
+        // }
+        // Disable LocalStorage
+        if (options.localStorageFallbackDisabled) {
+            stores = stores.filter((s) => s !== types_StoreType.LocalStorage);
+        }
+        // Apply Additional filters
+        if (filterStores) {
+            stores = stores.filter(filterStores);
+        }
+        return new UniversalStorage(initializeStorages(applyCookieOptions(stores, cookieOpts)));
+    }
+}
+User.defaults = defaults;
+// const groupDefaults: UserOptions = {
+//   persist: true,
+//   cookie: {
+//     key: 'ajs_group_id',
+//   },
+//   localStorage: {
+//     key: 'ajs_group_properties',
+//   },
+// }
+// export class Group extends User {
+//   constructor(options: UserOptions = groupDefaults, cookie?: CookieOptions) {
+//     super({ ...groupDefaults, ...options }, cookie)
+//     autoBind(this)
+//   }
+//   anonymousId = (_id?: ID): ID => {
+//     return undefined
+//   }
+// }
+
+;// CONCATENATED MODULE: ./src/lib/is-thenable.ts
+/**
+ *  Check if  thenable
+ *  (instanceof Promise doesn't respect realms)
+ */
+const is_thenable_isThenable = (value) => typeof value === 'object' &&
+    value !== null &&
+    'then' in value &&
+    typeof value.then === 'function';
+
+;// CONCATENATED MODULE: ./src/core/buffer/index.ts
+
+
+
+
+const flushSyncAnalyticsCalls = (name, analytics, buffer) => {
+    buffer.getCalls(name).forEach((c) => {
+        // While the underlying methods are synchronous, the callAnalyticsMethod returns a promise,
+        // which normalizes success and error states between async and non-async methods, with no perf penalty.
+        callAnalyticsMethod(analytics, c).catch(console.error);
+    });
+};
+const flushAddSourceMiddleware = async (analytics, buffer) => {
+    for (const c of buffer.getCalls('addSourceMiddleware')) {
+        await callAnalyticsMethod(analytics, c).catch(console.error);
+    }
+};
+const flushOn = flushSyncAnalyticsCalls.bind(undefined, 'on');
+const flushSetAnonymousID = flushSyncAnalyticsCalls.bind(undefined, 'setAnonymousId');
+const flushAnalyticsCallsInNewTask = (analytics, buffer) => {
+    buffer.toArray().forEach((m) => {
+        setTimeout(() => {
+            callAnalyticsMethod(analytics, m).catch(console.error);
+        }, 0);
+    });
+};
+const popPageContext = (args) => {
+    if (hasBufferedPageContextAsLastArg(args)) {
+        const ctx = args.pop();
+        return createPageContext(ctx);
+    }
+};
+const hasBufferedPageContextAsLastArg = (args) => {
+    const lastArg = args[args.length - 1];
+    return isBufferedPageContext(lastArg);
+};
+/**
+ *  Represents a buffered method call that occurred before initialization.
+ */
+class PreInitMethodCall {
+    constructor(method, args, resolve = () => { }, reject = console.error) {
+        this.method = method;
+        this.resolve = resolve;
+        this.reject = reject;
+        this.called = false;
+        this.args = args;
+    }
+}
+/**
+ *  Represents any and all the buffered method calls that occurred before initialization.
+ */
+class PreInitMethodCallBuffer {
+    constructor(...calls) {
+        this._callMap = {};
+        this.push(...calls);
+    }
+    /**
+     * Pull any buffered method calls from the window object, and use them to hydrate the instance buffer.
+     */
+    get calls() {
+        this._pushSnippetWindowBuffer();
+        return this._callMap;
+    }
+    set calls(calls) {
+        this._callMap = calls;
+    }
+    getCalls(methodName) {
+        var _a;
+        return ((_a = this.calls[methodName]) !== null && _a !== void 0 ? _a : []);
+    }
+    push(...calls) {
+        calls.forEach((call) => {
+            const eventsExpectingPageContext = [
+                'track',
+                // 'screen',
+                // 'alias',
+                // 'group',
+                'page',
+                // 'identify',
+            ];
+            if (eventsExpectingPageContext.includes(call.method) &&
+                !hasBufferedPageContextAsLastArg(call.args)) {
+                call.args = [...call.args, getDefaultBufferedPageContext()];
+            }
+            if (this.calls[call.method]) {
+                this.calls[call.method].push(call);
+            }
+            else {
+                this.calls[call.method] = [call];
+            }
+        });
+    }
+    clear() {
+        // clear calls in the global snippet buffered array.
+        this._pushSnippetWindowBuffer();
+        // clear calls in this instance
+        this.calls = {};
+    }
+    toArray() {
+        return [].concat(...Object.values(this.calls));
+    }
+    /**
+     * Fetch the buffered method calls from the window object,
+     * normalize them, and use them to hydrate the buffer.
+     * This removes existing buffered calls from the window object.
+     */
+    _pushSnippetWindowBuffer() {
+        const wa = getGlobalAnalytics();
+        if (!Array.isArray(wa))
+            return undefined;
+        const buffered = wa.splice(0, wa.length);
+        const calls = buffered.map(([methodName, ...args]) => new PreInitMethodCall(methodName, args));
+        this.push(...calls);
+    }
+}
+/**
+ *  Call method and mark as "called"
+ *  This function should never throw an error
+ */
+async function callAnalyticsMethod(analytics, call) {
+    try {
+        if (call.called) {
+            return undefined;
+        }
+        call.called = true;
+        const result = analytics[call.method](...call.args);
+        if (is_thenable_isThenable(result)) {
+            // do not defer for non-async methods
+            await result;
+        }
+        call.resolve(result);
+    }
+    catch (err) {
+        call.reject(err);
+    }
+}
+class AnalyticsBuffered {
+    constructor(loader) {
+        // trackSubmit = this._createMethod('trackSubmit')
+        // trackClick = this._createMethod('trackClick')
+        // trackLink = this._createMethod('trackLink')
+        // pageView = this._createMethod('pageview')
+        // identify = this._createMethod('identify')
+        // reset = this._createMethod('reset')
+        // group = this._createMethod('group') as AnalyticsBrowserCore['group']
+        this.track = this._createMethod('track');
+        // ready = this._createMethod('ready')
+        // alias = this._createMethod('alias')
+        // debug = this._createChainableMethod('debug')
+        this.page = this._createMethod('page');
+        // once = this._createChainableMethod('once')
+        // off = this._createChainableMethod('off')
+        // on = this._createChainableMethod('on')
+        // addSourceMiddleware = this._createMethod('addSourceMiddleware')
+        // setAnonymousId = this._createMethod('setAnonymousId')
+        // addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
+        // screen = this._createMethod('screen')
+        this.register = this._createMethod('register');
+        // deregister = this._createMethod('deregister')
+        // user = this._createMethod('user')
+        this.VERSION = version;
+        this._preInitBuffer = new PreInitMethodCallBuffer();
+        this._promise = loader(this._preInitBuffer);
+        this._promise
+            .then(([ajs, ctx]) => {
+            this.instance = ajs;
+            this.ctx = ctx;
+        })
+            .catch(() => {
+            // intentionally do nothing...
+            // this result of this promise will be caught by the 'catch' block on this class.
+        });
+    }
+    then(...args) {
+        return this._promise.then(...args);
+    }
+    catch(...args) {
+        return this._promise.catch(...args);
+    }
+    finally(...args) {
+        return this._promise.finally(...args);
+    }
+    _createMethod(methodName) {
+        return (...args) => {
+            if (this.instance) {
+                const result = this.instance[methodName](...args);
+                return Promise.resolve(result);
+            }
+            return new Promise((resolve, reject) => {
+                this._preInitBuffer.push(new PreInitMethodCall(methodName, args, resolve, reject));
+            });
+        };
+    }
+}
+
+;// CONCATENATED MODULE: ./src/core/analytics/index.ts
+
+// import type { FormArgs, LinkArgs } from '../auto-track'
+
+
+
+
+
+
+
+
+
+// import { version } from '../../generated/version'
+
+
+// import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
+
+const deprecationWarning = 'This is being deprecated and will be not be available in future releases of Analytics JS';
+// // reference any pre-existing "analytics" object so a user can restore the reference
+// const global: any = getGlobal()
+// const _analytics = global?.analytics
+function createDefaultQueue(name, retryQueue = false, disablePersistance = false) {
+    const maxAttempts = retryQueue ? 10 : 1;
+    const priorityQueue = disablePersistance
+        ? new PriorityQueue(maxAttempts, [])
+        : new PersistedPriorityQueue(maxAttempts, name);
+    return new EventQueue(priorityQueue);
+}
+/**
+ * The public settings that are set on the analytics instance
+ */
+class AnalyticsInstanceSettings {
+    constructor(settings) {
+        var _a;
+        /**
+         * Auto-track specific timeout setting   for legacy purposes.
+         */
+        this.timeout = 300;
+        this.writeKey = settings.writeKey;
+        this.cdnSettings = (_a = settings.cdnSettings) !== null && _a !== void 0 ? _a : { integrations: {} };
+    }
+}
+// /* analytics-classic stubs */
+// function _stub(this: never) {
+//   console.warn(deprecationWarning)
+// }
+class Analytics extends Emitter {
+    constructor(settings, options) {
+        var _a, _b;
+        super();
+        this._debug = false;
+        this.initialized = false;
+        this.user = () => {
+            return this._user;
+        };
+        const cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
+        const disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
+        this.settings = new AnalyticsInstanceSettings(settings);
+        this.queue =
+            // queue ??
+            createDefaultQueue(`${settings.writeKey}:event-queue`, options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
+        const storageSetting = options === null || options === void 0 ? void 0 : options.storage;
+        this._universalStorage = this.createStore(disablePersistance, storageSetting, cookieOptions);
+        this._user =
+            // user ??
+            new User(Object.assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.user), cookieOptions).load();
+        // this._group =
+        //   group ??
+        //   new Group(
+        //     {
+        //       persist: !disablePersistance,
+        //       storage: options?.storage,
+        //       // Any group specific options override everything else
+        //       ...options?.group,
+        //     },
+        //     cookieOptions
+        //   ).load()
+        this.eventFactory = new EventFactory(this._user);
+        this.integrations = (_b = options === null || options === void 0 ? void 0 : options.integrations) !== null && _b !== void 0 ? _b : {};
+        this.options = options !== null && options !== void 0 ? options : {};
+        bindAll(this);
+    }
+    /**
+     * Creates the storage system based on the settings received
+     * @returns Storage
+     */
+    createStore(disablePersistance, 
+    // @ts-ignore unused
+    storageSetting, 
+    // @ts-ignore unused
+    cookieOptions) {
+        // DisablePersistance option overrides all, no storage will be used outside of memory even if specified
+        if (disablePersistance) {
+            return new UniversalStorage([new MemoryStorage()]);
+        }
+        else {
+            // if (storageSetting) {
+            //   if (isArrayOfStoreType(storageSetting)) {
+            //     // We will create the store with the priority for customer settings
+            //     return new UniversalStorage(
+            //       initializeStorages(
+            //         applyCookieOptions(storageSetting.stores, cookieOptions)
+            //       )
+            //     )
+            //   }
+            // }
+        }
+        // We default to our multi storage with priority
+        return new UniversalStorage(initializeStorages([
+            types_StoreType.LocalStorage,
+            // {
+            //   name: StoreType.Cookie,
+            //   settings: cookieOptions,
+            // },
+            // StoreType.Memory,
+        ]));
+    }
+    get storage() {
+        return this._universalStorage;
+    }
+    async track(...args) {
+        const pageCtx = popPageContext(args);
+        const [name, data, opts, cb] = resolveArguments(...args);
+        const segmentEvent = this.eventFactory.track(name, data, opts, this.integrations, pageCtx);
+        return this._dispatch(segmentEvent, cb).then((ctx) => {
+            this.emit('track', name, ctx.event.properties, ctx.event.options);
+            return ctx;
+        });
+    }
+    async page(...args) {
+        const pageCtx = popPageContext(args);
+        const [category, page, properties, options, callback] = resolvePageArguments(...args);
+        const segmentEvent = this.eventFactory.page(category, page, properties, options, this.integrations, pageCtx);
+        return this._dispatch(segmentEvent, callback).then((ctx) => {
+            this.emit('page', category, page, ctx.event.properties, ctx.event.options);
+            return ctx;
+        });
+    }
+    // async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
+    //   const pageCtx = popPageContext(args)
+    //   const [id, _traits, options, callback] = resolveUserArguments(this._user)(
+    //     ...args
+    //   )
+    //   this._user.identify(id, _traits)
+    //   const segmentEvent = this.eventFactory.identify(
+    //     this._user.id(),
+    //     this._user.traits(),
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit(
+    //       'identify',
+    //       ctx.event.userId,
+    //       ctx.event.traits,
+    //       ctx.event.options
+    //     )
+    //     return ctx
+    //   })
+    // }
+    // group(): Group
+    // group(...args: GroupParams): Promise<DispatchedEvent>
+    // group(...args: GroupParams): Promise<DispatchedEvent> | Group {
+    //   const pageCtx = popPageContext(args)
+    //   if (args.length === 0) {
+    //     return this._group
+    //   }
+    //   const [id, _traits, options, callback] = resolveUserArguments(this._group)(
+    //     ...args
+    //   )
+    //   this._group.identify(id, _traits)
+    //   const groupId = this._group.id()
+    //   const groupTraits = this._group.traits()
+    //   const segmentEvent = this.eventFactory.group(
+    //     groupId,
+    //     groupTraits,
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
+    //     return ctx
+    //   })
+    // }
+    // async alias(...args: AliasParams): Promise<DispatchedEvent> {
+    //   const pageCtx = popPageContext(args)
+    //   const [to, from, options, callback] = resolveAliasArguments(...args)
+    //   const segmentEvent = this.eventFactory.alias(
+    //     to,
+    //     from,
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit('alias', to, from, ctx.event.options)
+    //     return ctx
+    //   })
+    // }
+    // async screen(...args: PageParams): Promise<DispatchedEvent> {
+    //   const pageCtx = popPageContext(args)
+    //   const [category, page, properties, options, callback] =
+    //     resolvePageArguments(...args)
+    //   const segmentEvent = this.eventFactory.screen(
+    //     category,
+    //     page,
+    //     properties,
+    //     options,
+    //     this.integrations,
+    //     pageCtx
+    //   )
+    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
+    //     this.emit(
+    //       'screen',
+    //       category,
+    //       page,
+    //       ctx.event.properties,
+    //       ctx.event.options
+    //     )
+    //     return ctx
+    //   })
+    // }
+    // async trackClick(...args: LinkArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.link.call(this, ...args)
+    // }
+    // async trackLink(...args: LinkArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.link.call(this, ...args)
+    // }
+    // async trackSubmit(...args: FormArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.form.call(this, ...args)
+    // }
+    // async trackForm(...args: FormArgs): Promise<Analytics> {
+    //   const autotrack = await import(
+    //     /* webpackChunkName: "auto-track" */ '../auto-track'
+    //   )
+    //   return autotrack.form.call(this, ...args)
+    // }
+    async register(...plugins) {
+        const ctx = Context.system();
+        const registrations = plugins.map((xt) => this.queue.register(ctx, xt, this));
+        await Promise.all(registrations);
+        return ctx;
+    }
+    // async deregister(...plugins: string[]): Promise<Context> {
+    //   const ctx = Context.system()
+    //   const deregistrations = plugins.map((pl) => {
+    //     const plugin = this.queue.plugins.find((p) => p.name === pl)
+    //     if (plugin) {
+    //       return this.queue.deregister(ctx, plugin, this)
+    //     } else {
+    //       ctx.log('warn', `plugin ${pl} not found`)
+    //     }
+    //   })
+    //   await Promise.all(deregistrations)
+    //   return ctx
+    // }
+    debug(toggle) {
+        // Make sure legacy ajs debug gets turned off if it was enabled before upgrading.
+        if (toggle === false && localStorage.getItem('debug')) {
+            localStorage.removeItem('debug');
+        }
+        this._debug = toggle;
+        return this;
+    }
+    // reset(): void {
+    //   this._user.reset()
+    //   this._group.reset()
+    //   this.emit('reset')
+    // }
+    timeout(timeout) {
+        this.settings.timeout = timeout;
+    }
+    async _dispatch(event, callback) {
+        const ctx = new Context(event);
+        if (isOffline() && !this.options.retryQueue) {
+            return ctx;
+        }
+        return dispatch(ctx, this.queue, this, {
+            callback,
+            debug: this._debug,
+            timeout: this.settings.timeout,
+        });
+    }
+    async addSourceMiddleware(fn) {
+        console.debug(fn);
+        // await this.queue.criticalTasks.run(async () => {
+        //   const { sourceMiddlewarePlugin } = await import(
+        //     /* webpackChunkName: "middleware" */ '../../plugins/middleware'
+        //   )
+        //   const integrations: Record<string, boolean> = {}
+        //   this.queue.plugins.forEach((plugin) => {
+        //     if (plugin.type === 'destination') {
+        //       return (integrations[plugin.name] = true)
+        //     }
+        //   })
+        //   const plugin = sourceMiddlewarePlugin(fn, integrations)
+        //   await this.register(plugin)
+        // })
+        return this;
+    }
+    //   /* TODO: This does not have to return a promise? */
+    //   addDestinationMiddleware(
+    //     integrationName: string,
+    //     ...middlewares: DestinationMiddlewareFunction[]
+    //   ): Promise<Analytics> {
+    //     this.queue.plugins
+    //       .filter(isDestinationPluginWithAddMiddleware)
+    //       .forEach((p) => {
+    //         if (
+    //           integrationName === '*' ||
+    //           p.name.toLowerCase() === integrationName.toLowerCase()
+    //         ) {
+    //           p.addMiddleware(...middlewares)
+    //         }
+    //       })
+    //     return Promise.resolve(this)
+    //   }
+    setAnonymousId(id) {
+        return this._user.anonymousId(id);
+    }
+    //   async queryString(query: string): Promise<Context[]> {
+    //     if (this.options.useQueryString === false) {
+    //       return []
+    //     }
+    //
+    //     const { queryString } = await import(
+    //       /* webpackChunkName: "queryString" */ '../query-string'
+    //     )
+    //     return queryString(this, query)
+    //   }
+    //   /**
+    //    * @deprecated This function does not register a destination plugin.
+    //    *
+    //    * Instantiates a legacy Analytics.js destination.
+    //    *
+    //    * This function does not register the destination as an Analytics.JS plugin,
+    //    * all the it does it to invoke the factory function back.
+    //    */
+    //   use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
+    //     legacyPluginFactory(this)
+    //     return this
+    //   }
+    async ready(callback = (res) => res) {
+        return Promise.all(this.queue.plugins.map((i) => (i.ready ? i.ready() : Promise.resolve()))).then((res) => {
+            callback(res);
+            return res;
+        });
+    }
+    // analytics-classic api
+    // noConflict(): Analytics {
+    //   console.warn(deprecationWarning)
+    //   setGlobalAnalytics(_analytics ?? this)
+    //   return this
+    // }
+    // normalize(msg: SegmentEvent): SegmentEvent {
+    //   console.warn(deprecationWarning)
+    //   return this.eventFactory['normalize'](msg)
+    // }
+    //   get failedInitializations(): string[] {
+    //     console.warn(deprecationWarning)
+    //     return this.queue.failedInitializations
+    //   }
+    //   get VERSION(): string {
+    //     return version
+    //   }
+    /* @deprecated - noop */
+    async initialize(_settings, _options) {
+        console.warn(deprecationWarning);
+        return Promise.resolve(this);
+    }
+}
+/**
+ * @returns a no-op analytics instance that does not create cookies or localstorage, or send any events to segment.
+ */
+// export class NullAnalytics extends Analytics {
+//   constructor() {
+//     super({ writeKey: '' }, { disableClientPersistence: true })
+//     this.initialized = true
+//   }
+// }
+
+;// CONCATENATED MODULE: ./src/lib/merged-options.ts
+/**
+ * Merge legacy settings and initialized Integration option overrides.
+ *
+ * This will merge any options that were passed from initialization into
+ * overrides for settings that are returned by the Segment CDN.
+ *
+ * i.e. this allows for passing options directly into destinations from
+ * the Analytics constructor.
+ */
+function mergedOptions(cdnSettings, options) {
+    var _a;
+    const optionOverrides = Object.entries((_a = options.integrations) !== null && _a !== void 0 ? _a : {}).reduce((overrides, [integration, options]) => {
+        if (typeof options === 'object') {
+            return Object.assign(Object.assign({}, overrides), { [integration]: options });
+        }
+        return Object.assign(Object.assign({}, overrides), { [integration]: {} });
+    }, {});
+    return Object.entries(cdnSettings.integrations).reduce((integrationSettings, [integration, settings]) => {
+        return Object.assign(Object.assign({}, integrationSettings), { [integration]: Object.assign(Object.assign({}, settings), optionOverrides[integration]) });
+    }, {});
+}
+
+;// CONCATENATED MODULE: ../generic-utils/dist/esm/create-deferred/create-deferred.js
+/**
+ * Return a promise that can be externally resolved
+ */
+var createDeferred = function () {
+    var resolve;
+    var reject;
+    var settled = false;
+    var promise = new Promise(function (_resolve, _reject) {
+        resolve = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            settled = true;
+            _resolve.apply(void 0, args);
+        };
+        reject = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            settled = true;
+            _reject.apply(void 0, args);
+        };
+    });
+    return {
+        resolve: resolve,
+        reject: reject,
+        promise: promise,
+        isSettled: function () { return settled; },
+    };
+};
+//# sourceMappingURL=create-deferred.js.map
 ;// CONCATENATED MODULE: ../../node_modules/js-cookie/dist/js.cookie.mjs
 /*! js-cookie v3.0.1 | MIT */
 /* eslint-disable no-var */
@@ -3714,10 +4576,10 @@ var api = init(defaultConverter, { path: '/' });
  * @api public
  */
 function levels(url) {
-    var host = url.hostname;
-    var parts = host.split('.');
-    var last = parts[parts.length - 1];
-    var levels = [];
+    const host = url.hostname;
+    const parts = host.split('.');
+    const last = parts[parts.length - 1];
+    const levels = [];
     // Ip address.
     if (parts.length === 4 && parseInt(last, 10) > 0) {
         return levels;
@@ -3727,7 +4589,7 @@ function levels(url) {
         return levels;
     }
     // Create levels.
-    for (var i = parts.length - 2; i >= 0; --i) {
+    for (let i = parts.length - 2; i >= 0; --i) {
         levels.push(parts.slice(i).join('.'));
     }
     return levels;
@@ -3741,15 +4603,15 @@ function parseUrl(url) {
     }
 }
 function tld(url) {
-    var parsedUrl = parseUrl(url);
+    const parsedUrl = parseUrl(url);
     if (!parsedUrl)
         return;
-    var lvls = levels(parsedUrl);
+    const lvls = levels(parsedUrl);
     // Lookup the real top level one.
-    for (var i = 0; i < lvls.length; ++i) {
-        var cname = '__tld__';
-        var domain = lvls[i];
-        var opts = { domain: '.' + domain };
+    for (let i = 0; i < lvls.length; ++i) {
+        const cname = '__tld__';
+        const domain = lvls[i];
+        const opts = { domain: '.' + domain };
         try {
             // cookie access throw an error if the library is ran inside a sandboxed environment (e.g. sandboxed iframe)
             js_cookie.set(cname, '1', opts);
@@ -3764,1177 +4626,6 @@ function tld(url) {
     }
 }
 
-;// CONCATENATED MODULE: ./src/core/storage/cookieStorage.ts
-
-
-
-var ONE_YEAR = 365;
-/**
- * Data storage using browser cookies
- */
-var CookieStorage = /** @class */ (function () {
-    function CookieStorage(options) {
-        if (options === void 0) { options = CookieStorage.defaults; }
-        this.options = __assign(__assign({}, CookieStorage.defaults), options);
-    }
-    Object.defineProperty(CookieStorage, "defaults", {
-        get: function () {
-            return {
-                maxage: ONE_YEAR,
-                domain: tld(window.location.href),
-                path: '/',
-                sameSite: 'Lax',
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    CookieStorage.prototype.opts = function () {
-        return {
-            sameSite: this.options.sameSite,
-            expires: this.options.maxage,
-            domain: this.options.domain,
-            path: this.options.path,
-            secure: this.options.secure,
-        };
-    };
-    CookieStorage.prototype.get = function (key) {
-        var _a;
-        try {
-            var value = js_cookie.get(key);
-            if (value === undefined || value === null) {
-                return null;
-            }
-            try {
-                return (_a = JSON.parse(value)) !== null && _a !== void 0 ? _a : null;
-            }
-            catch (e) {
-                return (value !== null && value !== void 0 ? value : null);
-            }
-        }
-        catch (e) {
-            return null;
-        }
-    };
-    CookieStorage.prototype.set = function (key, value) {
-        if (typeof value === 'string') {
-            js_cookie.set(key, value, this.opts());
-        }
-        else if (value === null) {
-            js_cookie.remove(key, this.opts());
-        }
-        else {
-            js_cookie.set(key, JSON.stringify(value), this.opts());
-        }
-    };
-    CookieStorage.prototype.remove = function (key) {
-        return js_cookie.remove(key, this.opts());
-    };
-    return CookieStorage;
-}());
-
-
-;// CONCATENATED MODULE: ./src/core/storage/localStorage.ts
-/**
- * Data storage using browser's localStorage
- */
-var LocalStorage = /** @class */ (function () {
-    function LocalStorage() {
-    }
-    LocalStorage.prototype.localStorageWarning = function (key, state) {
-        console.warn("Unable to access ".concat(key, ", localStorage may be ").concat(state));
-    };
-    LocalStorage.prototype.get = function (key) {
-        var _a;
-        try {
-            var val = localStorage.getItem(key);
-            if (val === null) {
-                return null;
-            }
-            try {
-                return (_a = JSON.parse(val)) !== null && _a !== void 0 ? _a : null;
-            }
-            catch (e) {
-                return (val !== null && val !== void 0 ? val : null);
-            }
-        }
-        catch (err) {
-            this.localStorageWarning(key, 'unavailable');
-            return null;
-        }
-    };
-    LocalStorage.prototype.set = function (key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
-        catch (_a) {
-            this.localStorageWarning(key, 'full');
-        }
-    };
-    LocalStorage.prototype.remove = function (key) {
-        try {
-            return localStorage.removeItem(key);
-        }
-        catch (err) {
-            this.localStorageWarning(key, 'unavailable');
-        }
-    };
-    return LocalStorage;
-}());
-
-
-;// CONCATENATED MODULE: ./src/core/storage/index.ts
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Creates multiple storage systems from an array of StoreType and options
- * @param args StoreType and options
- * @returns Storage array
- */
-function initializeStorages(args) {
-    var storages = args.map(function (s) {
-        var type;
-        var settings;
-        if (isStoreTypeWithSettings(s)) {
-            type = s.name;
-            settings = s.settings;
-        }
-        else {
-            type = s;
-        }
-        switch (type) {
-            case StoreType.Cookie:
-                return new CookieStorage(settings);
-            case StoreType.LocalStorage:
-                return new LocalStorage();
-            case StoreType.Memory:
-                return new MemoryStorage();
-            default:
-                throw new Error("Unknown Store Type: ".concat(s));
-        }
-    });
-    return storages;
-}
-/**
- * Injects the CookieOptions into a the arguments for initializeStorage
- * @param storeTypes list of storeType
- * @param cookieOptions cookie Options
- * @returns arguments for initializeStorage
- */
-function applyCookieOptions(storeTypes, cookieOptions) {
-    return storeTypes.map(function (s) {
-        if (cookieOptions && s === StoreType.Cookie) {
-            return {
-                name: s,
-                settings: cookieOptions,
-            };
-        }
-        return s;
-    });
-}
-
-;// CONCATENATED MODULE: ./src/core/user/index.ts
-
-
-
-
-var defaults = {
-    persist: true,
-    cookie: {
-        key: 'ajs_user_id',
-        oldKey: 'ajs_user',
-    },
-    localStorage: {
-        key: 'ajs_user_traits',
-    },
-};
-var User = /** @class */ (function () {
-    function User(options, cookieOptions) {
-        if (options === void 0) { options = defaults; }
-        var _this = this;
-        var _a, _b, _c, _d;
-        this.options = {};
-        this.id = function (id) {
-            if (_this.options.disable) {
-                return null;
-            }
-            var prevId = _this.identityStore.getAndSync(_this.idKey);
-            if (id !== undefined) {
-                _this.identityStore.set(_this.idKey, id);
-                var changingIdentity = id !== prevId && prevId !== null && id !== null;
-                if (changingIdentity) {
-                    _this.anonymousId(null);
-                }
-            }
-            var retId = _this.identityStore.getAndSync(_this.idKey);
-            if (retId)
-                return retId;
-            var retLeg = _this.legacyUserStore.get(defaults.cookie.oldKey);
-            return retLeg ? (typeof retLeg === 'object' ? retLeg.id : retLeg) : null;
-        };
-        // private legacySIO(): [string, string] | null {
-        //   const val = this.legacyUserStore.get('_sio') as string
-        //   if (!val) {
-        //     return null
-        //   }
-        //   const [anon, user] = val.split('----')
-        //   return [anon, user]
-        // }
-        this.anonymousId = function (id) {
-            if (_this.options.disable) {
-                return null;
-            }
-            if (id === undefined) {
-                // const val =
-                //   this.identityStore.getAndSync(this.anonKey) ?? this.legacySIO()?.[0]
-                var val = _this.identityStore.getAndSync(_this.anonKey);
-                if (val) {
-                    return val;
-                }
-            }
-            if (id === null) {
-                _this.identityStore.set(_this.anonKey, null);
-                return _this.identityStore.getAndSync(_this.anonKey);
-            }
-            _this.identityStore.set(_this.anonKey, id !== null && id !== void 0 ? id : v4());
-            return _this.identityStore.getAndSync(_this.anonKey);
-        };
-        this.traits = function (traits) {
-            var _a;
-            if (_this.options.disable) {
-                return;
-            }
-            if (traits === null) {
-                traits = {};
-            }
-            if (traits) {
-                _this.traitsStore.set(_this.traitsKey, traits !== null && traits !== void 0 ? traits : {});
-            }
-            return (_a = _this.traitsStore.get(_this.traitsKey)) !== null && _a !== void 0 ? _a : {};
-        };
-        this.options = __assign(__assign({}, defaults), options);
-        this.cookieOptions = cookieOptions;
-        this.idKey = (_b = (_a = options.cookie) === null || _a === void 0 ? void 0 : _a.key) !== null && _b !== void 0 ? _b : defaults.cookie.key;
-        this.traitsKey = (_d = (_c = options.localStorage) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : defaults.localStorage.key;
-        this.anonKey = 'ajs_anonymous_id';
-        this.identityStore = this.createStorage(this.options, cookieOptions);
-        // using only cookies for legacy user store
-        this.legacyUserStore = this.createStorage(this.options, cookieOptions, function (s) { return s === StoreType.Cookie; });
-        // using only localStorage / memory for traits store
-        this.traitsStore = this.createStorage(this.options, cookieOptions, function (s) { return s !== StoreType.Cookie; });
-        var legacyUser = this.legacyUserStore.get(defaults.cookie.oldKey);
-        if (legacyUser && typeof legacyUser === 'object') {
-            legacyUser.id && this.id(legacyUser.id);
-            legacyUser.traits && this.traits(legacyUser.traits);
-        }
-        bindAll(this);
-    }
-    User.prototype.identify = function (id, traits) {
-        if (this.options.disable) {
-            return;
-        }
-        traits = traits !== null && traits !== void 0 ? traits : {};
-        var currentId = this.id();
-        if (currentId === null || currentId === id) {
-            traits = __assign(__assign({}, this.traits()), traits);
-        }
-        if (id) {
-            this.id(id);
-        }
-        this.traits(traits);
-    };
-    User.prototype.logout = function () {
-        this.anonymousId(null);
-        this.id(null);
-        this.traits({});
-    };
-    User.prototype.reset = function () {
-        this.logout();
-        this.identityStore.clear(this.idKey);
-        this.identityStore.clear(this.anonKey);
-        this.traitsStore.clear(this.traitsKey);
-    };
-    User.prototype.load = function () {
-        return new User(this.options, this.cookieOptions);
-    };
-    User.prototype.save = function () {
-        return true;
-    };
-    /**
-     * Creates the right storage system applying all the user options, cookie options and particular filters
-     * @param options UserOptions
-     * @param cookieOpts CookieOptions
-     * @param filterStores filter function to apply to any StoreTypes (skipped if options specify using a custom storage)
-     * @returns a Storage object
-     */
-    User.prototype.createStorage = function (options, cookieOpts, filterStores) {
-        var stores = [
-            StoreType.LocalStorage,
-            StoreType.Cookie,
-            StoreType.Memory,
-        ];
-        // If disabled we won't have any storage functionality
-        if (options.disable) {
-            return new UniversalStorage([]);
-        }
-        // If persistance is disabled we will always fallback to Memory Storage
-        if (!options.persist) {
-            return new UniversalStorage([new MemoryStorage()]);
-        }
-        if (options.storage !== undefined && options.storage !== null) {
-            if (isArrayOfStoreType(options.storage)) {
-                // If the user only specified order of stores we will still apply filters and transformations e.g. not using localStorage if localStorageFallbackDisabled
-                stores = options.storage.stores;
-            }
-        }
-        // Disable LocalStorage
-        if (options.localStorageFallbackDisabled) {
-            stores = stores.filter(function (s) { return s !== StoreType.LocalStorage; });
-        }
-        // Apply Additional filters
-        if (filterStores) {
-            stores = stores.filter(filterStores);
-        }
-        return new UniversalStorage(initializeStorages(applyCookieOptions(stores, cookieOpts)));
-    };
-    User.defaults = defaults;
-    return User;
-}());
-
-var groupDefaults = {
-    persist: true,
-    cookie: {
-        key: 'ajs_group_id',
-    },
-    localStorage: {
-        key: 'ajs_group_properties',
-    },
-};
-var Group = /** @class */ (function (_super) {
-    __extends(Group, _super);
-    function Group(options, cookie) {
-        if (options === void 0) { options = groupDefaults; }
-        var _this = _super.call(this, __assign(__assign({}, groupDefaults), options), cookie) || this;
-        _this.anonymousId = function (_id) {
-            return undefined;
-        };
-        bindAll(_this);
-        return _this;
-    }
-    return Group;
-}(User));
-
-
-;// CONCATENATED MODULE: ./src/lib/is-thenable.ts
-/**
- *  Check if  thenable
- *  (instanceof Promise doesn't respect realms)
- */
-var is_thenable_isThenable = function (value) {
-    return typeof value === 'object' &&
-        value !== null &&
-        'then' in value &&
-        typeof value.then === 'function';
-};
-
-;// CONCATENATED MODULE: ./src/core/buffer/index.ts
-
-
-
-
-
-var flushSyncAnalyticsCalls = function (name, analytics, buffer) {
-    buffer.getCalls(name).forEach(function (c) {
-        // While the underlying methods are synchronous, the callAnalyticsMethod returns a promise,
-        // which normalizes success and error states between async and non-async methods, with no perf penalty.
-        callAnalyticsMethod(analytics, c).catch(console.error);
-    });
-};
-var flushAddSourceMiddleware = function (analytics, buffer) { return tslib_es6_awaiter(void 0, void 0, void 0, function () {
-    var _i, _a, c;
-    return tslib_es6_generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _i = 0, _a = buffer.getCalls('addSourceMiddleware');
-                _b.label = 1;
-            case 1:
-                if (!(_i < _a.length)) return [3 /*break*/, 4];
-                c = _a[_i];
-                return [4 /*yield*/, callAnalyticsMethod(analytics, c).catch(console.error)];
-            case 2:
-                _b.sent();
-                _b.label = 3;
-            case 3:
-                _i++;
-                return [3 /*break*/, 1];
-            case 4: return [2 /*return*/];
-        }
-    });
-}); };
-var flushOn = flushSyncAnalyticsCalls.bind(undefined, 'on');
-var flushSetAnonymousID = flushSyncAnalyticsCalls.bind(undefined, 'setAnonymousId');
-var flushAnalyticsCallsInNewTask = function (analytics, buffer) {
-    buffer.toArray().forEach(function (m) {
-        setTimeout(function () {
-            callAnalyticsMethod(analytics, m).catch(console.error);
-        }, 0);
-    });
-};
-var popPageContext = function (args) {
-    if (hasBufferedPageContextAsLastArg(args)) {
-        var ctx = args.pop();
-        return createPageContext(ctx);
-    }
-};
-var hasBufferedPageContextAsLastArg = function (args) {
-    var lastArg = args[args.length - 1];
-    return isBufferedPageContext(lastArg);
-};
-/**
- *  Represents a buffered method call that occurred before initialization.
- */
-var PreInitMethodCall = /** @class */ (function () {
-    function PreInitMethodCall(method, args, resolve, reject) {
-        if (resolve === void 0) { resolve = function () { }; }
-        if (reject === void 0) { reject = console.error; }
-        this.method = method;
-        this.resolve = resolve;
-        this.reject = reject;
-        this.called = false;
-        this.args = args;
-    }
-    return PreInitMethodCall;
-}());
-
-/**
- *  Represents any and all the buffered method calls that occurred before initialization.
- */
-var PreInitMethodCallBuffer = /** @class */ (function () {
-    function PreInitMethodCallBuffer() {
-        var calls = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            calls[_i] = arguments[_i];
-        }
-        this._callMap = {};
-        this.push.apply(this, calls);
-    }
-    Object.defineProperty(PreInitMethodCallBuffer.prototype, "calls", {
-        /**
-         * Pull any buffered method calls from the window object, and use them to hydrate the instance buffer.
-         */
-        get: function () {
-            this._pushSnippetWindowBuffer();
-            return this._callMap;
-        },
-        set: function (calls) {
-            this._callMap = calls;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    PreInitMethodCallBuffer.prototype.getCalls = function (methodName) {
-        var _a;
-        return ((_a = this.calls[methodName]) !== null && _a !== void 0 ? _a : []);
-    };
-    PreInitMethodCallBuffer.prototype.push = function () {
-        var _this = this;
-        var calls = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            calls[_i] = arguments[_i];
-        }
-        calls.forEach(function (call) {
-            var eventsExpectingPageContext = [
-                'track',
-                // 'screen',
-                // 'alias',
-                // 'group',
-                'page',
-                // 'identify',
-            ];
-            if (eventsExpectingPageContext.includes(call.method) &&
-                !hasBufferedPageContextAsLastArg(call.args)) {
-                call.args = __spreadArray(__spreadArray([], call.args, true), [getDefaultBufferedPageContext()], false);
-            }
-            if (_this.calls[call.method]) {
-                _this.calls[call.method].push(call);
-            }
-            else {
-                _this.calls[call.method] = [call];
-            }
-        });
-    };
-    PreInitMethodCallBuffer.prototype.clear = function () {
-        // clear calls in the global snippet buffered array.
-        this._pushSnippetWindowBuffer();
-        // clear calls in this instance
-        this.calls = {};
-    };
-    PreInitMethodCallBuffer.prototype.toArray = function () {
-        var _a;
-        return (_a = []).concat.apply(_a, Object.values(this.calls));
-    };
-    /**
-     * Fetch the buffered method calls from the window object,
-     * normalize them, and use them to hydrate the buffer.
-     * This removes existing buffered calls from the window object.
-     */
-    PreInitMethodCallBuffer.prototype._pushSnippetWindowBuffer = function () {
-        var wa = getGlobalAnalytics();
-        if (!Array.isArray(wa))
-            return undefined;
-        var buffered = wa.splice(0, wa.length);
-        var calls = buffered.map(function (_a) {
-            var methodName = _a[0], args = _a.slice(1);
-            return new PreInitMethodCall(methodName, args);
-        });
-        this.push.apply(this, calls);
-    };
-    return PreInitMethodCallBuffer;
-}());
-
-/**
- *  Call method and mark as "called"
- *  This function should never throw an error
- */
-function callAnalyticsMethod(analytics, call) {
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var result, err_1;
-        return tslib_es6_generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    if (call.called) {
-                        return [2 /*return*/, undefined];
-                    }
-                    call.called = true;
-                    result = analytics[call.method].apply(analytics, call.args);
-                    if (!is_thenable_isThenable(result)) return [3 /*break*/, 2];
-                    // do not defer for non-async methods
-                    return [4 /*yield*/, result];
-                case 1:
-                    // do not defer for non-async methods
-                    _a.sent();
-                    _a.label = 2;
-                case 2:
-                    call.resolve(result);
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    call.reject(err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
-}
-var AnalyticsBuffered = /** @class */ (function () {
-    function AnalyticsBuffered(loader) {
-        var _this = this;
-        // trackSubmit = this._createMethod('trackSubmit')
-        // trackClick = this._createMethod('trackClick')
-        // trackLink = this._createMethod('trackLink')
-        // pageView = this._createMethod('pageview')
-        // identify = this._createMethod('identify')
-        // reset = this._createMethod('reset')
-        // group = this._createMethod('group') as AnalyticsBrowserCore['group']
-        this.track = this._createMethod('track');
-        // ready = this._createMethod('ready')
-        // alias = this._createMethod('alias')
-        // debug = this._createChainableMethod('debug')
-        this.page = this._createMethod('page');
-        // once = this._createChainableMethod('once')
-        // off = this._createChainableMethod('off')
-        // on = this._createChainableMethod('on')
-        // addSourceMiddleware = this._createMethod('addSourceMiddleware')
-        // setAnonymousId = this._createMethod('setAnonymousId')
-        // addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
-        // screen = this._createMethod('screen')
-        this.register = this._createMethod('register');
-        // deregister = this._createMethod('deregister')
-        // user = this._createMethod('user')
-        this.VERSION = version;
-        this._preInitBuffer = new PreInitMethodCallBuffer();
-        this._promise = loader(this._preInitBuffer);
-        this._promise
-            .then(function (_a) {
-            var ajs = _a[0], ctx = _a[1];
-            _this.instance = ajs;
-            _this.ctx = ctx;
-        })
-            .catch(function () {
-            // intentionally do nothing...
-            // this result of this promise will be caught by the 'catch' block on this class.
-        });
-    }
-    AnalyticsBuffered.prototype.then = function () {
-        var _a;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (_a = this._promise).then.apply(_a, args);
-    };
-    AnalyticsBuffered.prototype.catch = function () {
-        var _a;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (_a = this._promise).catch.apply(_a, args);
-    };
-    AnalyticsBuffered.prototype.finally = function () {
-        var _a;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (_a = this._promise).finally.apply(_a, args);
-    };
-    AnalyticsBuffered.prototype._createMethod = function (methodName) {
-        var _this = this;
-        return function () {
-            var _a;
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (_this.instance) {
-                var result = (_a = _this.instance)[methodName].apply(_a, args);
-                return Promise.resolve(result);
-            }
-            return new Promise(function (resolve, reject) {
-                _this._preInitBuffer.push(new PreInitMethodCall(methodName, args, resolve, reject));
-            });
-        };
-    };
-    return AnalyticsBuffered;
-}());
-
-
-;// CONCATENATED MODULE: ./src/core/analytics/index.ts
-
-
-// import type { FormArgs, LinkArgs } from '../auto-track'
-
-
-
-
-
-
-
-
-
-// import { version } from '../../generated/version'
-
-
-// import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
-
-var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Analytics JS';
-// // reference any pre-existing "analytics" object so a user can restore the reference
-// const global: any = getGlobal()
-// const _analytics = global?.analytics
-function createDefaultQueue(name, retryQueue, disablePersistance) {
-    if (retryQueue === void 0) { retryQueue = false; }
-    if (disablePersistance === void 0) { disablePersistance = false; }
-    var maxAttempts = retryQueue ? 10 : 1;
-    var priorityQueue = disablePersistance
-        ? new PriorityQueue(maxAttempts, [])
-        : new PersistedPriorityQueue(maxAttempts, name);
-    return new EventQueue(priorityQueue);
-}
-/**
- * The public settings that are set on the analytics instance
- */
-var AnalyticsInstanceSettings = /** @class */ (function () {
-    function AnalyticsInstanceSettings(settings) {
-        var _a;
-        /**
-         * Auto-track specific timeout setting   for legacy purposes.
-         */
-        this.timeout = 300;
-        this.writeKey = settings.writeKey;
-        this.cdnSettings = (_a = settings.cdnSettings) !== null && _a !== void 0 ? _a : { integrations: {} };
-    }
-    return AnalyticsInstanceSettings;
-}());
-
-// /* analytics-classic stubs */
-// function _stub(this: never) {
-//   console.warn(deprecationWarning)
-// }
-var Analytics = /** @class */ (function (_super) {
-    __extends(Analytics, _super);
-    function Analytics(settings, options) {
-        var _this = this;
-        var _a, _b;
-        _this = _super.call(this) || this;
-        _this._debug = false;
-        _this.initialized = false;
-        _this.user = function () {
-            return _this._user;
-        };
-        var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
-        var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
-        _this.settings = new AnalyticsInstanceSettings(settings);
-        _this.queue =
-            // queue ??
-            createDefaultQueue("".concat(settings.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
-        var storageSetting = options === null || options === void 0 ? void 0 : options.storage;
-        _this._universalStorage = _this.createStore(disablePersistance, storageSetting, cookieOptions);
-        _this._user =
-            // user ??
-            new User(__assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.user), cookieOptions).load();
-        // this._group =
-        //   group ??
-        //   new Group(
-        //     {
-        //       persist: !disablePersistance,
-        //       storage: options?.storage,
-        //       // Any group specific options override everything else
-        //       ...options?.group,
-        //     },
-        //     cookieOptions
-        //   ).load()
-        _this.eventFactory = new EventFactory(_this._user);
-        _this.integrations = (_b = options === null || options === void 0 ? void 0 : options.integrations) !== null && _b !== void 0 ? _b : {};
-        _this.options = options !== null && options !== void 0 ? options : {};
-        bindAll(_this);
-        return _this;
-    }
-    /**
-     * Creates the storage system based on the settings received
-     * @returns Storage
-     */
-    Analytics.prototype.createStore = function (disablePersistance, storageSetting, cookieOptions) {
-        // DisablePersistance option overrides all, no storage will be used outside of memory even if specified
-        if (disablePersistance) {
-            return new UniversalStorage([new MemoryStorage()]);
-        }
-        else {
-            if (storageSetting) {
-                if (isArrayOfStoreType(storageSetting)) {
-                    // We will create the store with the priority for customer settings
-                    return new UniversalStorage(initializeStorages(applyCookieOptions(storageSetting.stores, cookieOptions)));
-                }
-            }
-        }
-        // We default to our multi storage with priority
-        return new UniversalStorage(initializeStorages([
-            StoreType.LocalStorage,
-            {
-                name: StoreType.Cookie,
-                settings: cookieOptions,
-            },
-            StoreType.Memory,
-        ]));
-    };
-    Object.defineProperty(Analytics.prototype, "storage", {
-        get: function () {
-            return this._universalStorage;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Analytics.prototype.track = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, name, data, opts, cb, segmentEvent;
-            var _this = this;
-            return tslib_es6_generator(this, function (_b) {
-                pageCtx = popPageContext(args);
-                _a = resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
-                segmentEvent = this.eventFactory.track(name, data, opts, this.integrations, pageCtx);
-                return [2 /*return*/, this._dispatch(segmentEvent, cb).then(function (ctx) {
-                        _this.emit('track', name, ctx.event.properties, ctx.event.options);
-                        return ctx;
-                    })];
-            });
-        });
-    };
-    Analytics.prototype.page = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, category, page, properties, options, callback, segmentEvent;
-            var _this = this;
-            return tslib_es6_generator(this, function (_b) {
-                pageCtx = popPageContext(args);
-                _a = resolvePageArguments.apply(void 0, args), category = _a[0], page = _a[1], properties = _a[2], options = _a[3], callback = _a[4];
-                segmentEvent = this.eventFactory.page(category, page, properties, options, this.integrations, pageCtx);
-                return [2 /*return*/, this._dispatch(segmentEvent, callback).then(function (ctx) {
-                        _this.emit('page', category, page, ctx.event.properties, ctx.event.options);
-                        return ctx;
-                    })];
-            });
-        });
-    };
-    // async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
-    //   const pageCtx = popPageContext(args)
-    //   const [id, _traits, options, callback] = resolveUserArguments(this._user)(
-    //     ...args
-    //   )
-    //   this._user.identify(id, _traits)
-    //   const segmentEvent = this.eventFactory.identify(
-    //     this._user.id(),
-    //     this._user.traits(),
-    //     options,
-    //     this.integrations,
-    //     pageCtx
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit(
-    //       'identify',
-    //       ctx.event.userId,
-    //       ctx.event.traits,
-    //       ctx.event.options
-    //     )
-    //     return ctx
-    //   })
-    // }
-    // group(): Group
-    // group(...args: GroupParams): Promise<DispatchedEvent>
-    // group(...args: GroupParams): Promise<DispatchedEvent> | Group {
-    //   const pageCtx = popPageContext(args)
-    //   if (args.length === 0) {
-    //     return this._group
-    //   }
-    //   const [id, _traits, options, callback] = resolveUserArguments(this._group)(
-    //     ...args
-    //   )
-    //   this._group.identify(id, _traits)
-    //   const groupId = this._group.id()
-    //   const groupTraits = this._group.traits()
-    //   const segmentEvent = this.eventFactory.group(
-    //     groupId,
-    //     groupTraits,
-    //     options,
-    //     this.integrations,
-    //     pageCtx
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
-    //     return ctx
-    //   })
-    // }
-    // async alias(...args: AliasParams): Promise<DispatchedEvent> {
-    //   const pageCtx = popPageContext(args)
-    //   const [to, from, options, callback] = resolveAliasArguments(...args)
-    //   const segmentEvent = this.eventFactory.alias(
-    //     to,
-    //     from,
-    //     options,
-    //     this.integrations,
-    //     pageCtx
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit('alias', to, from, ctx.event.options)
-    //     return ctx
-    //   })
-    // }
-    // async screen(...args: PageParams): Promise<DispatchedEvent> {
-    //   const pageCtx = popPageContext(args)
-    //   const [category, page, properties, options, callback] =
-    //     resolvePageArguments(...args)
-    //   const segmentEvent = this.eventFactory.screen(
-    //     category,
-    //     page,
-    //     properties,
-    //     options,
-    //     this.integrations,
-    //     pageCtx
-    //   )
-    //   return this._dispatch(segmentEvent, callback).then((ctx) => {
-    //     this.emit(
-    //       'screen',
-    //       category,
-    //       page,
-    //       ctx.event.properties,
-    //       ctx.event.options
-    //     )
-    //     return ctx
-    //   })
-    // }
-    // async trackClick(...args: LinkArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.link.call(this, ...args)
-    // }
-    // async trackLink(...args: LinkArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.link.call(this, ...args)
-    // }
-    // async trackSubmit(...args: FormArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.form.call(this, ...args)
-    // }
-    // async trackForm(...args: FormArgs): Promise<Analytics> {
-    //   const autotrack = await import(
-    //     /* webpackChunkName: "auto-track" */ '../auto-track'
-    //   )
-    //   return autotrack.form.call(this, ...args)
-    // }
-    Analytics.prototype.register = function () {
-        var plugins = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            plugins[_i] = arguments[_i];
-        }
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var ctx, registrations;
-            var _this = this;
-            return tslib_es6_generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        ctx = Context.system();
-                        registrations = plugins.map(function (xt) {
-                            return _this.queue.register(ctx, xt, _this);
-                        });
-                        return [4 /*yield*/, Promise.all(registrations)];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, ctx];
-                }
-            });
-        });
-    };
-    // async deregister(...plugins: string[]): Promise<Context> {
-    //   const ctx = Context.system()
-    //   const deregistrations = plugins.map((pl) => {
-    //     const plugin = this.queue.plugins.find((p) => p.name === pl)
-    //     if (plugin) {
-    //       return this.queue.deregister(ctx, plugin, this)
-    //     } else {
-    //       ctx.log('warn', `plugin ${pl} not found`)
-    //     }
-    //   })
-    //   await Promise.all(deregistrations)
-    //   return ctx
-    // }
-    Analytics.prototype.debug = function (toggle) {
-        // Make sure legacy ajs debug gets turned off if it was enabled before upgrading.
-        if (toggle === false && localStorage.getItem('debug')) {
-            localStorage.removeItem('debug');
-        }
-        this._debug = toggle;
-        return this;
-    };
-    // reset(): void {
-    //   this._user.reset()
-    //   this._group.reset()
-    //   this.emit('reset')
-    // }
-    Analytics.prototype.timeout = function (timeout) {
-        this.settings.timeout = timeout;
-    };
-    Analytics.prototype._dispatch = function (event, callback) {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var ctx;
-            return tslib_es6_generator(this, function (_a) {
-                ctx = new Context(event);
-                if (isOffline() && !this.options.retryQueue) {
-                    return [2 /*return*/, ctx];
-                }
-                return [2 /*return*/, dispatch(ctx, this.queue, this, {
-                        callback: callback,
-                        debug: this._debug,
-                        timeout: this.settings.timeout,
-                    })];
-            });
-        });
-    };
-    Analytics.prototype.addSourceMiddleware = function (fn) {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            return tslib_es6_generator(this, function (_a) {
-                console.debug(fn);
-                // await this.queue.criticalTasks.run(async () => {
-                //   const { sourceMiddlewarePlugin } = await import(
-                //     /* webpackChunkName: "middleware" */ '../../plugins/middleware'
-                //   )
-                //   const integrations: Record<string, boolean> = {}
-                //   this.queue.plugins.forEach((plugin) => {
-                //     if (plugin.type === 'destination') {
-                //       return (integrations[plugin.name] = true)
-                //     }
-                //   })
-                //   const plugin = sourceMiddlewarePlugin(fn, integrations)
-                //   await this.register(plugin)
-                // })
-                return [2 /*return*/, this];
-            });
-        });
-    };
-    //   /* TODO: This does not have to return a promise? */
-    //   addDestinationMiddleware(
-    //     integrationName: string,
-    //     ...middlewares: DestinationMiddlewareFunction[]
-    //   ): Promise<Analytics> {
-    //     this.queue.plugins
-    //       .filter(isDestinationPluginWithAddMiddleware)
-    //       .forEach((p) => {
-    //         if (
-    //           integrationName === '*' ||
-    //           p.name.toLowerCase() === integrationName.toLowerCase()
-    //         ) {
-    //           p.addMiddleware(...middlewares)
-    //         }
-    //       })
-    //     return Promise.resolve(this)
-    //   }
-    Analytics.prototype.setAnonymousId = function (id) {
-        return this._user.anonymousId(id);
-    };
-    //   async queryString(query: string): Promise<Context[]> {
-    //     if (this.options.useQueryString === false) {
-    //       return []
-    //     }
-    //
-    //     const { queryString } = await import(
-    //       /* webpackChunkName: "queryString" */ '../query-string'
-    //     )
-    //     return queryString(this, query)
-    //   }
-    //   /**
-    //    * @deprecated This function does not register a destination plugin.
-    //    *
-    //    * Instantiates a legacy Analytics.js destination.
-    //    *
-    //    * This function does not register the destination as an Analytics.JS plugin,
-    //    * all the it does it to invoke the factory function back.
-    //    */
-    //   use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
-    //     legacyPluginFactory(this)
-    //     return this
-    //   }
-    Analytics.prototype.ready = function (callback) {
-        if (callback === void 0) { callback = function (res) { return res; }; }
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            return tslib_es6_generator(this, function (_a) {
-                return [2 /*return*/, Promise.all(this.queue.plugins.map(function (i) { return (i.ready ? i.ready() : Promise.resolve()); })).then(function (res) {
-                        callback(res);
-                        return res;
-                    })];
-            });
-        });
-    };
-    // analytics-classic api
-    // noConflict(): Analytics {
-    //   console.warn(deprecationWarning)
-    //   setGlobalAnalytics(_analytics ?? this)
-    //   return this
-    // }
-    // normalize(msg: SegmentEvent): SegmentEvent {
-    //   console.warn(deprecationWarning)
-    //   return this.eventFactory['normalize'](msg)
-    // }
-    //   get failedInitializations(): string[] {
-    //     console.warn(deprecationWarning)
-    //     return this.queue.failedInitializations
-    //   }
-    //   get VERSION(): string {
-    //     return version
-    //   }
-    /* @deprecated - noop */
-    Analytics.prototype.initialize = function (_settings, _options) {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            return tslib_es6_generator(this, function (_a) {
-                console.warn(deprecationWarning);
-                return [2 /*return*/, Promise.resolve(this)];
-            });
-        });
-    };
-    return Analytics;
-}(Emitter));
-
-/**
- * @returns a no-op analytics instance that does not create cookies or localstorage, or send any events to segment.
- */
-// export class NullAnalytics extends Analytics {
-//   constructor() {
-//     super({ writeKey: '' }, { disableClientPersistence: true })
-//     this.initialized = true
-//   }
-// }
-
-;// CONCATENATED MODULE: ./src/lib/merged-options.ts
-
-/**
- * Merge legacy settings and initialized Integration option overrides.
- *
- * This will merge any options that were passed from initialization into
- * overrides for settings that are returned by the Segment CDN.
- *
- * i.e. this allows for passing options directly into destinations from
- * the Analytics constructor.
- */
-function mergedOptions(cdnSettings, options) {
-    var _a;
-    var optionOverrides = Object.entries((_a = options.integrations) !== null && _a !== void 0 ? _a : {}).reduce(function (overrides, _a) {
-        var _b, _c;
-        var integration = _a[0], options = _a[1];
-        if (typeof options === 'object') {
-            return __assign(__assign({}, overrides), (_b = {}, _b[integration] = options, _b));
-        }
-        return __assign(__assign({}, overrides), (_c = {}, _c[integration] = {}, _c));
-    }, {});
-    return Object.entries(cdnSettings.integrations).reduce(function (integrationSettings, _a) {
-        var _b;
-        var integration = _a[0], settings = _a[1];
-        return __assign(__assign({}, integrationSettings), (_b = {}, _b[integration] = __assign(__assign({}, settings), optionOverrides[integration]), _b));
-    }, {});
-}
-
-;// CONCATENATED MODULE: ../generic-utils/dist/esm/create-deferred/create-deferred.js
-/**
- * Return a promise that can be externally resolved
- */
-var createDeferred = function () {
-    var resolve;
-    var reject;
-    var settled = false;
-    var promise = new Promise(function (_resolve, _reject) {
-        resolve = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            settled = true;
-            _resolve.apply(void 0, args);
-        };
-        reject = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            settled = true;
-            _reject.apply(void 0, args);
-        };
-    });
-    return {
-        resolve: resolve,
-        reject: reject,
-        promise: promise,
-        isSettled: function () { return settled; },
-    };
-};
-//# sourceMappingURL=create-deferred.js.map
 ;// CONCATENATED MODULE: ./src/core/query-string/gracefulDecodeURIComponent.ts
 /**
  * Tries to gets the unencoded version of an encoded component of a
@@ -4952,22 +4643,78 @@ function gracefulDecodeURIComponent(encodedURIComponent) {
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/client-hints/index.ts
+;// CONCATENATED MODULE: ./src/core/storage/cookieStorage.ts
 
-function clientHints(hints) {
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var userAgentData;
-        return tslib_es6_generator(this, function (_a) {
-            userAgentData = navigator.userAgentData;
-            if (!userAgentData)
-                return [2 /*return*/, undefined];
-            if (!hints)
-                return [2 /*return*/, userAgentData.toJSON()];
-            return [2 /*return*/, userAgentData
-                    .getHighEntropyValues(hints)
-                    .catch(function () { return userAgentData.toJSON(); })];
-        });
-    });
+
+const ONE_YEAR = 365;
+/**
+ * Data storage using browser cookies
+ */
+class CookieStorage {
+    static get defaults() {
+        return {
+            maxage: ONE_YEAR,
+            domain: tld(window.location.href),
+            path: '/',
+            sameSite: 'Lax',
+        };
+    }
+    constructor(options = CookieStorage.defaults) {
+        this.options = Object.assign(Object.assign({}, CookieStorage.defaults), options);
+    }
+    opts() {
+        return {
+            sameSite: this.options.sameSite,
+            expires: this.options.maxage,
+            domain: this.options.domain,
+            path: this.options.path,
+            secure: this.options.secure,
+        };
+    }
+    get(key) {
+        var _a;
+        try {
+            const value = js_cookie.get(key);
+            if (value === undefined || value === null) {
+                return null;
+            }
+            try {
+                return (_a = JSON.parse(value)) !== null && _a !== void 0 ? _a : null;
+            }
+            catch (e) {
+                return (value !== null && value !== void 0 ? value : null);
+            }
+        }
+        catch (e) {
+            return null;
+        }
+    }
+    set(key, value) {
+        if (typeof value === 'string') {
+            js_cookie.set(key, value, this.opts());
+        }
+        else if (value === null) {
+            js_cookie.remove(key, this.opts());
+        }
+        else {
+            js_cookie.set(key, JSON.stringify(value), this.opts());
+        }
+    }
+    remove(key) {
+        return js_cookie.remove(key, this.opts());
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/client-hints/index.ts
+async function clientHints(hints) {
+    const userAgentData = navigator.userAgentData;
+    if (!userAgentData)
+        return undefined;
+    if (!hints)
+        return userAgentData.toJSON();
+    return userAgentData
+        .getHighEntropyValues(hints)
+        .catch(() => userAgentData.toJSON());
 }
 
 ;// CONCATENATED MODULE: ./src/plugins/env-enrichment/index.ts
@@ -4978,13 +4725,12 @@ function clientHints(hints) {
 
 
 
-
-var cookieOptions;
+let cookieOptions;
 function getCookieOptions() {
     if (cookieOptions) {
         return cookieOptions;
     }
-    var domain = tld(window.location.href);
+    const domain = tld(window.location.href);
     cookieOptions = {
         expires: 31536000000,
         secure: false,
@@ -4996,7 +4742,7 @@ function getCookieOptions() {
     return cookieOptions;
 }
 function ads(query) {
-    var queryIds = {
+    const queryIds = {
         btid: 'dataxu',
         urid: 'millennial-media',
     };
@@ -5004,10 +4750,9 @@ function ads(query) {
         query = query.substring(1);
     }
     query = query.replace(/\?/g, '&');
-    var parts = query.split('&');
-    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
-        var part = parts_1[_i];
-        var _a = part.split('='), k = _a[0], v = _a[1];
+    const parts = query.split('&');
+    for (const part of parts) {
+        const [k, v] = part.split('=');
         if (queryIds[k]) {
             return {
                 id: v,
@@ -5021,10 +4766,10 @@ function utm(query) {
         query = query.substring(1);
     }
     query = query.replace(/\?/g, '&');
-    return query.split('&').reduce(function (acc, str) {
-        var _a = str.split('='), k = _a[0], _b = _a[1], v = _b === void 0 ? '' : _b;
+    return query.split('&').reduce((acc, str) => {
+        const [k, v = ''] = str.split('=');
         if (k.includes('utm_') && k.length > 4) {
-            var utmParam = k.slice(4);
+            let utmParam = k.slice(4);
             if (utmParam === 'campaign') {
                 utmParam = 'name';
             }
@@ -5034,21 +4779,21 @@ function utm(query) {
     }, {});
 }
 function ampId() {
-    var ampId = js_cookie.get('_ga');
+    const ampId = js_cookie.get('_ga');
     if (ampId && ampId.startsWith('amp')) {
         return ampId;
     }
 }
 function referrerId(query, ctx, disablePersistance) {
     var _a;
-    var storage = new UniversalStorage(disablePersistance ? [] : [new CookieStorage(getCookieOptions())]);
-    var stored = storage.get('s:context.referrer');
-    var ad = (_a = ads(query)) !== null && _a !== void 0 ? _a : stored;
+    const storage = new UniversalStorage(disablePersistance ? [] : [new CookieStorage(getCookieOptions())]);
+    const stored = storage.get('s:context.referrer');
+    const ad = (_a = ads(query)) !== null && _a !== void 0 ? _a : stored;
     if (!ad) {
         return;
     }
     if (ctx) {
-        ctx.referrer = __assign(__assign({}, ctx.referrer), ad);
+        ctx.referrer = Object.assign(Object.assign({}, ctx.referrer), ad);
     }
     storage.set('s:context.referrer', ad);
 }
@@ -5057,77 +4802,64 @@ function referrerId(query, ctx, disablePersistance) {
  * @param obj e.g. { foo: 'b', bar: 'd', baz: ['123', '456']}
  * @returns e.g. 'foo=b&bar=d&baz=123&baz=456'
  */
-var objectToQueryString = function (obj) {
+const objectToQueryString = (obj) => {
     try {
-        var searchParams_1 = new URLSearchParams();
-        Object.entries(obj).forEach(function (_a) {
-            var k = _a[0], v = _a[1];
+        const searchParams = new URLSearchParams();
+        Object.entries(obj).forEach(([k, v]) => {
             if (Array.isArray(v)) {
-                v.forEach(function (value) { return searchParams_1.append(k, value); });
+                v.forEach((value) => searchParams.append(k, value));
             }
             else {
-                searchParams_1.append(k, v);
+                searchParams.append(k, v);
             }
         });
-        return searchParams_1.toString();
+        return searchParams.toString();
     }
     catch (_a) {
         return '';
     }
 };
-var EnvironmentEnrichmentPlugin = /** @class */ (function () {
-    function EnvironmentEnrichmentPlugin() {
-        var _this = this;
+class EnvironmentEnrichmentPlugin {
+    constructor() {
         this.name = 'Page Enrichment';
         this.type = 'before';
         this.version = '0.1.0';
-        this.isLoaded = function () { return true; };
-        this.load = function (_ctx, instance) { return tslib_es6_awaiter(_this, void 0, void 0, function () {
-            var _a, _1;
-            return tslib_es6_generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        this.instance = instance;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        _a = this;
-                        return [4 /*yield*/, clientHints(this.instance.options.highEntropyValuesClientHints)];
-                    case 2:
-                        _a.userAgentData = _b.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        _1 = _b.sent();
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/, Promise.resolve()];
-                }
-            });
-        }); };
-        this.enrich = function (ctx) {
+        this.isLoaded = () => true;
+        this.load = async (_ctx, instance) => {
+            this.instance = instance;
+            try {
+                this.userAgentData = await clientHints(this.instance.options.highEntropyValuesClientHints);
+            }
+            catch (_) {
+                // if client hints API doesn't return anything leave undefined
+            }
+            return Promise.resolve();
+        };
+        this.enrich = (ctx) => {
             var _a, _b;
             // Note: Types are off - context should never be undefined here, since it is set as part of event creation.
-            var evtCtx = ctx.event.context;
-            var search = evtCtx.page.search || '';
-            var query = typeof search === 'object' ? objectToQueryString(search) : search;
+            const evtCtx = ctx.event.context;
+            const search = evtCtx.page.search || '';
+            const query = typeof search === 'object' ? objectToQueryString(search) : search;
             evtCtx.userAgent = navigator.userAgent;
-            evtCtx.userAgentData = _this.userAgentData;
+            evtCtx.userAgentData = this.userAgentData;
             // @ts-ignore
-            var locale = navigator.userLanguage || navigator.language;
+            const locale = navigator.userLanguage || navigator.language;
             if (typeof evtCtx.locale === 'undefined' && typeof locale !== 'undefined') {
                 evtCtx.locale = locale;
             }
             (_a = evtCtx.library) !== null && _a !== void 0 ? _a : (evtCtx.library = {
                 name: 'analytics.js',
-                version: "".concat(getVersionType() === 'web' ? 'next' : 'npm:next', "-").concat(version),
+                version: `${getVersionType() === 'web' ? 'next' : 'npm:next'}-${version}`,
             });
             if (query && !evtCtx.campaign) {
                 evtCtx.campaign = utm(query);
             }
-            var amp = ampId();
+            const amp = ampId();
             if (amp) {
                 evtCtx.amp = { id: amp };
             }
-            referrerId(query, evtCtx, (_b = _this.instance.options.disableClientPersistence) !== null && _b !== void 0 ? _b : false);
+            referrerId(query, evtCtx, (_b = this.instance.options.disableClientPersistence) !== null && _b !== void 0 ? _b : false);
             try {
                 evtCtx.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             }
@@ -5143,56 +4875,54 @@ var EnvironmentEnrichmentPlugin = /** @class */ (function () {
         this.alias = this.enrich;
         this.screen = this.enrich;
     }
-    return EnvironmentEnrichmentPlugin;
-}());
-var envEnrichment = new EnvironmentEnrichmentPlugin();
+}
+const envEnrichment = new EnvironmentEnrichmentPlugin();
 
 ;// CONCATENATED MODULE: ./src/lib/load-script.ts
 function findScript(src) {
-    var scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
-    return scripts.find(function (s) { return s.src === src; });
+    const scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
+    return scripts.find((s) => s.src === src);
 }
 function loadScript(src, attributes) {
-    var found = findScript(src);
+    const found = findScript(src);
     if (found !== undefined) {
-        var status = found === null || found === void 0 ? void 0 : found.getAttribute('status');
+        const status = found === null || found === void 0 ? void 0 : found.getAttribute('status');
         if (status === 'loaded') {
             return Promise.resolve(found);
         }
         if (status === 'loading') {
-            return new Promise(function (resolve, reject) {
-                found.addEventListener('load', function () { return resolve(found); });
-                found.addEventListener('error', function (err) { return reject(err); });
+            return new Promise((resolve, reject) => {
+                found.addEventListener('load', () => resolve(found));
+                found.addEventListener('error', (err) => reject(err));
             });
         }
     }
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         var _a;
-        var script = window.document.createElement('script');
+        const script = window.document.createElement('script');
         script.type = 'text/javascript';
         script.src = src;
         script.async = true;
         script.setAttribute('status', 'loading');
-        for (var _i = 0, _b = Object.entries(attributes !== null && attributes !== void 0 ? attributes : {}); _i < _b.length; _i++) {
-            var _c = _b[_i], k = _c[0], v = _c[1];
+        for (const [k, v] of Object.entries(attributes !== null && attributes !== void 0 ? attributes : {})) {
             script.setAttribute(k, v);
         }
-        script.onload = function () {
+        script.onload = () => {
             script.onerror = script.onload = null;
             script.setAttribute('status', 'loaded');
             resolve(script);
         };
-        script.onerror = function () {
+        script.onerror = () => {
             script.onerror = script.onload = null;
             script.setAttribute('status', 'error');
-            reject(new Error("Failed to load ".concat(src)));
+            reject(new Error(`Failed to load ${src}`));
         };
-        var tag = window.document.getElementsByTagName('script')[0];
+        const tag = window.document.getElementsByTagName('script')[0];
         (_a = tag.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, tag);
     });
 }
 function unloadScript(src) {
-    var found = findScript(src);
+    const found = findScript(src);
     if (found !== undefined) {
         found.remove();
     }
@@ -5204,7 +4934,7 @@ var dist = __webpack_require__(445);
 ;// CONCATENATED MODULE: ./src/lib/to-facade.ts
 
 function to_facade_toFacade(evt, options) {
-    var fcd = new dist.Facade(evt, options);
+    let fcd = new dist.Facade(evt, options);
     if (evt.type === 'track') {
         fcd = new dist.Track(evt, options);
     }
@@ -5233,115 +4963,77 @@ function to_facade_toFacade(evt, options) {
 ;// CONCATENATED MODULE: ./src/plugins/middleware/index.ts
 
 
-
-function applyDestinationMiddleware(destination, evt, middleware) {
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        function applyMiddleware(event, fn) {
-            return tslib_es6_awaiter(this, void 0, Promise, function () {
-                var nextCalled, returnedEvent;
-                var _a;
-                return tslib_es6_generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            nextCalled = false;
-                            returnedEvent = null;
-                            return [4 /*yield*/, fn({
-                                    payload: to_facade_toFacade(event, {
-                                        clone: true,
-                                        traverse: false,
-                                    }),
-                                    integration: destination,
-                                    next: function (evt) {
-                                        nextCalled = true;
-                                        if (evt === null) {
-                                            returnedEvent = null;
-                                        }
-                                        if (evt) {
-                                            returnedEvent = evt.obj;
-                                        }
-                                    },
-                                })];
-                        case 1:
-                            _b.sent();
-                            if (!nextCalled && returnedEvent !== null) {
-                                returnedEvent = returnedEvent;
-                                returnedEvent.integrations = __assign(__assign({}, event.integrations), (_a = {}, _a[destination] = false, _a));
-                            }
-                            return [2 /*return*/, returnedEvent];
-                    }
-                });
-            });
-        }
-        var modifiedEvent, _i, middleware_1, md, result;
-        return tslib_es6_generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    modifiedEvent = to_facade_toFacade(evt, {
-                        clone: true,
-                        traverse: false,
-                    }).rawEvent();
-                    _i = 0, middleware_1 = middleware;
-                    _a.label = 1;
-                case 1:
-                    if (!(_i < middleware_1.length)) return [3 /*break*/, 4];
-                    md = middleware_1[_i];
-                    return [4 /*yield*/, applyMiddleware(modifiedEvent, md)];
-                case 2:
-                    result = _a.sent();
-                    if (result === null) {
-                        return [2 /*return*/, null];
-                    }
-                    modifiedEvent = result;
-                    _a.label = 3;
-                case 3:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 4: return [2 /*return*/, modifiedEvent];
-            }
+async function applyDestinationMiddleware(destination, evt, middleware) {
+    // Clone the event so mutations are localized to a single destination.
+    let modifiedEvent = to_facade_toFacade(evt, {
+        clone: true,
+        traverse: false,
+    }).rawEvent();
+    async function applyMiddleware(event, fn) {
+        let nextCalled = false;
+        let returnedEvent = null;
+        await fn({
+            payload: to_facade_toFacade(event, {
+                clone: true,
+                traverse: false,
+            }),
+            integration: destination,
+            next(evt) {
+                nextCalled = true;
+                if (evt === null) {
+                    returnedEvent = null;
+                }
+                if (evt) {
+                    returnedEvent = evt.obj;
+                }
+            },
         });
-    });
+        if (!nextCalled && returnedEvent !== null) {
+            returnedEvent = returnedEvent;
+            returnedEvent.integrations = Object.assign(Object.assign({}, event.integrations), { [destination]: false });
+        }
+        return returnedEvent;
+    }
+    for (const md of middleware) {
+        const result = await applyMiddleware(modifiedEvent, md);
+        if (result === null) {
+            return null;
+        }
+        modifiedEvent = result;
+    }
+    return modifiedEvent;
 }
 function sourceMiddlewarePlugin(fn, integrations) {
-    function apply(ctx) {
-        return __awaiter(this, void 0, Promise, function () {
-            var nextCalled;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        nextCalled = false;
-                        return [4 /*yield*/, fn({
-                                payload: toFacade(ctx.event, {
-                                    clone: true,
-                                    traverse: false,
-                                }),
-                                integrations: integrations !== null && integrations !== void 0 ? integrations : {},
-                                next: function (evt) {
-                                    nextCalled = true;
-                                    if (evt) {
-                                        ctx.event = evt.obj;
-                                    }
-                                },
-                            })];
-                    case 1:
-                        _a.sent();
-                        if (!nextCalled) {
-                            throw new ContextCancelation({
-                                retry: false,
-                                type: 'middleware_cancellation',
-                                reason: 'Middleware `next` function skipped',
-                            });
-                        }
-                        return [2 /*return*/, ctx];
+    async function apply(ctx) {
+        let nextCalled = false;
+        await fn({
+            payload: toFacade(ctx.event, {
+                clone: true,
+                traverse: false,
+            }),
+            integrations: integrations !== null && integrations !== void 0 ? integrations : {},
+            next(evt) {
+                nextCalled = true;
+                if (evt) {
+                    ctx.event = evt.obj;
                 }
-            });
+            },
         });
+        if (!nextCalled) {
+            throw new ContextCancelation({
+                retry: false,
+                type: 'middleware_cancellation',
+                reason: 'Middleware `next` function skipped',
+            });
+        }
+        return ctx;
     }
     return {
-        name: "Source Middleware ".concat(fn.name),
+        name: `Source Middleware ${fn.name}`,
         type: 'before',
         version: '0.1.0',
-        isLoaded: function () { return true; },
-        load: function (ctx) { return Promise.resolve(ctx); },
+        isLoaded: () => true,
+        load: (ctx) => Promise.resolve(ctx),
         track: apply,
         page: apply,
         identify: apply,
@@ -5356,9 +5048,8 @@ function sourceMiddlewarePlugin(fn, integrations) {
 
 
 
-
-var ActionDestination = /** @class */ (function () {
-    function ActionDestination(name, action) {
+class ActionDestination {
+    constructor(name, action) {
         this.version = '1.0.0';
         this.alternativeNames = [];
         this.loadPromise = createDeferred();
@@ -5374,159 +5065,107 @@ var ActionDestination = /** @class */ (function () {
         this.type = action.type;
         this.alternativeNames.push(action.name);
     }
-    ActionDestination.prototype.addMiddleware = function () {
-        var _a;
-        var fn = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            fn[_i] = arguments[_i];
-        }
+    addMiddleware(...fn) {
         /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
         if (this.type === 'destination') {
-            (_a = this.middleware).push.apply(_a, fn);
+            this.middleware.push(...fn);
         }
-    };
-    ActionDestination.prototype.transform = function (ctx) {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var modifiedEvent;
-            return tslib_es6_generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, applyDestinationMiddleware(this.name, ctx.event, this.middleware)];
-                    case 1:
-                        modifiedEvent = _a.sent();
-                        if (modifiedEvent === null) {
-                            ctx.cancel(new context_ContextCancelation({
-                                retry: false,
-                                reason: 'dropped by destination middleware',
-                            }));
-                        }
-                        return [2 /*return*/, new Context(modifiedEvent)];
+    }
+    async transform(ctx) {
+        const modifiedEvent = await applyDestinationMiddleware(this.name, ctx.event, this.middleware);
+        if (modifiedEvent === null) {
+            ctx.cancel(new context_ContextCancelation({
+                retry: false,
+                reason: 'dropped by destination middleware',
+            }));
+        }
+        return new Context(modifiedEvent);
+    }
+    _createMethod(methodName) {
+        return async (ctx) => {
+            if (!this.action[methodName])
+                return ctx;
+            let transformedContext = ctx;
+            // Transformations only allowed for destination plugins. Other plugin types support mutating events.
+            if (this.type === 'destination') {
+                transformedContext = await this.transform(ctx);
+            }
+            try {
+                if (!(await this.ready())) {
+                    throw new Error('Something prevented the destination from getting ready');
                 }
-            });
-        });
-    };
-    ActionDestination.prototype._createMethod = function (methodName) {
-        var _this = this;
-        return function (ctx) { return tslib_es6_awaiter(_this, void 0, Promise, function () {
-            var transformedContext, error_1;
-            return tslib_es6_generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.action[methodName])
-                            return [2 /*return*/, ctx];
-                        transformedContext = ctx;
-                        if (!(this.type === 'destination')) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.transform(ctx)];
-                    case 1:
-                        transformedContext = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 5, , 6]);
-                        return [4 /*yield*/, this.ready()];
-                    case 3:
-                        if (!(_a.sent())) {
-                            throw new Error('Something prevented the destination from getting ready');
-                        }
-                        // recordIntegrationMetric(ctx, {
-                        //   integrationName: this.action.name,
-                        //   methodName,
-                        //   type: 'action',
-                        // })
-                        return [4 /*yield*/, this.action[methodName](transformedContext)];
-                    case 4:
-                        // recordIntegrationMetric(ctx, {
-                        //   integrationName: this.action.name,
-                        //   methodName,
-                        //   type: 'action',
-                        // })
-                        _a.sent();
-                        return [3 /*break*/, 6];
-                    case 5:
-                        error_1 = _a.sent();
-                        // recordIntegrationMetric(ctx, {
-                        //   integrationName: this.action.name,
-                        //   methodName,
-                        //   type: 'action',
-                        //   didError: true,
-                        // })
-                        throw error_1;
-                    case 6: return [2 /*return*/, ctx];
-                }
-            });
-        }); };
-    };
+                // recordIntegrationMetric(ctx, {
+                //   integrationName: this.action.name,
+                //   methodName,
+                //   type: 'action',
+                // })
+                await this.action[methodName](transformedContext);
+            }
+            catch (error) {
+                // recordIntegrationMetric(ctx, {
+                //   integrationName: this.action.name,
+                //   methodName,
+                //   type: 'action',
+                //   didError: true,
+                // })
+                throw error;
+            }
+            return ctx;
+        };
+    }
     /* --- PASSTHROUGH METHODS --- */
-    ActionDestination.prototype.isLoaded = function () {
+    isLoaded() {
         return this.action.isLoaded();
-    };
-    ActionDestination.prototype.ready = function () {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var _a;
-            return tslib_es6_generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.loadPromise.promise];
-                    case 1:
-                        _b.sent();
-                        return [2 /*return*/, true];
-                    case 2:
-                        _a = _b.sent();
-                        return [2 /*return*/, false];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ActionDestination.prototype.load = function (ctx, analytics) {
-        return tslib_es6_awaiter(this, void 0, Promise, function () {
-            var loadP, _a, _b, error_2;
-            return tslib_es6_generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        if (this.loadPromise.isSettled()) {
-                            return [2 /*return*/, this.loadPromise.promise];
-                        }
-                        _c.label = 1;
-                    case 1:
-                        _c.trys.push([1, 3, , 4]);
-                        loadP = this.action.load(ctx, analytics);
-                        _b = (_a = this.loadPromise).resolve;
-                        return [4 /*yield*/, loadP];
-                    case 2:
-                        _b.apply(_a, [_c.sent()]);
-                        return [2 /*return*/, loadP];
-                    case 3:
-                        error_2 = _c.sent();
-                        // recordIntegrationMetric(ctx, {
-                        //   integrationName: this.action.name,
-                        //   methodName: 'load',
-                        //   type: 'action',
-                        //   didError: true,
-                        // })
-                        this.loadPromise.reject(error_2);
-                        throw error_2;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ActionDestination.prototype.unload = function (ctx, analytics) {
+    }
+    async ready() {
+        try {
+            await this.loadPromise.promise;
+            return true;
+        }
+        catch (_a) {
+            return false;
+        }
+    }
+    async load(ctx, analytics) {
+        if (this.loadPromise.isSettled()) {
+            return this.loadPromise.promise;
+        }
+        try {
+            // recordIntegrationMetric(ctx, {
+            //   integrationName: this.action.name,
+            //   methodName: 'load',
+            //   type: 'action',
+            // })
+            const loadP = this.action.load(ctx, analytics);
+            this.loadPromise.resolve(await loadP);
+            return loadP;
+        }
+        catch (error) {
+            // recordIntegrationMetric(ctx, {
+            //   integrationName: this.action.name,
+            //   methodName: 'load',
+            //   type: 'action',
+            //   didError: true,
+            // })
+            this.loadPromise.reject(error);
+            throw error;
+        }
+    }
+    unload(ctx, analytics) {
         var _a, _b;
         return (_b = (_a = this.action).unload) === null || _b === void 0 ? void 0 : _b.call(_a, ctx, analytics);
-    };
-    return ActionDestination;
-}());
-
+    }
+}
 function validate(pluginLike) {
     if (!Array.isArray(pluginLike)) {
         throw new Error('Not a valid list of plugins');
     }
-    var required = ['load', 'isLoaded', 'name', 'version', 'type'];
-    pluginLike.forEach(function (plugin) {
-        required.forEach(function (method) {
+    const required = ['load', 'isLoaded', 'name', 'version', 'type'];
+    pluginLike.forEach((plugin) => {
+        required.forEach((method) => {
             var _a;
             if (plugin[method] === undefined) {
-                throw new Error("Plugin: ".concat((_a = plugin.name) !== null && _a !== void 0 ? _a : 'unknown', " missing required function ").concat(method));
+                throw new Error(`Plugin: ${(_a = plugin.name) !== null && _a !== void 0 ? _a : 'unknown'} missing required function ${method}`);
             }
         });
     });
@@ -5552,151 +5191,94 @@ function validate(pluginLike) {
 //   }
 //   return false
 // }
-function loadPluginFactory(remotePlugin) {
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var defaultCdn, cdn;
-        return tslib_es6_generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    defaultCdn = new RegExp('https://cdn.segment.(com|build)');
-                    cdn = getCDN();
-                    // if (obfuscate) {
-                    //   const urlSplit = remotePlugin.url.split('/')
-                    //   const name = urlSplit[urlSplit.length - 2]
-                    //   const obfuscatedURL = remotePlugin.url.replace(
-                    //     name,
-                    //     btoa(name).replace(/=/g, '')
-                    //   )
-                    //   try {
-                    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
-                    //   } catch (error) {
-                    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
-                    //     // We should use the unobfuscated version as a fallback.
-                    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-                    //   }
-                    // } else {
-                    return [4 /*yield*/, loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-                        // }
-                        // @ts-expect-error
-                    ];
-                case 1:
-                    // if (obfuscate) {
-                    //   const urlSplit = remotePlugin.url.split('/')
-                    //   const name = urlSplit[urlSplit.length - 2]
-                    //   const obfuscatedURL = remotePlugin.url.replace(
-                    //     name,
-                    //     btoa(name).replace(/=/g, '')
-                    //   )
-                    //   try {
-                    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
-                    //   } catch (error) {
-                    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
-                    //     // We should use the unobfuscated version as a fallback.
-                    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-                    //   }
-                    // } else {
-                    _a.sent();
-                    // }
-                    // @ts-expect-error
-                    if (typeof window[remotePlugin.libraryName] === 'function') {
-                        // @ts-expect-error
-                        return [2 /*return*/, window[remotePlugin.libraryName]];
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    });
+async function loadPluginFactory(remotePlugin) {
+    const defaultCdn = new RegExp('https://cdn.segment.(com|build)');
+    const cdn = getCDN();
+    // if (obfuscate) {
+    //   const urlSplit = remotePlugin.url.split('/')
+    //   const name = urlSplit[urlSplit.length - 2]
+    //   const obfuscatedURL = remotePlugin.url.replace(
+    //     name,
+    //     btoa(name).replace(/=/g, '')
+    //   )
+    //   try {
+    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
+    //   } catch (error) {
+    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
+    //     // We should use the unobfuscated version as a fallback.
+    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
+    //   }
+    // } else {
+    await loadScript(remotePlugin.url.replace(defaultCdn, cdn));
+    // }
+    // @ts-expect-error
+    if (typeof window[remotePlugin.libraryName] === 'function') {
+        // @ts-expect-error
+        return window[remotePlugin.libraryName];
+    }
 }
-function remoteLoader(loadSettings, settings, 
+async function remoteLoader(loadSettings, settings, 
 // userIntegrations: Integrations,
 // @ts-ignore
 mergedIntegrations, 
 // options?: InitOptions,
 routingMiddleware) {
     var _a, _b, _c;
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var allPlugins, cdn, routingRules, pluginPromises;
-        var _this = this;
-        return tslib_es6_generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    allPlugins = [];
-                    cdn = getCDN();
-                    routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
-                    pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(function (remotePlugin) { return tslib_es6_awaiter(_this, void 0, void 0, function () {
-                        var pluginFactory, plugin, plugins, routing_1, error_3;
-                        return tslib_es6_generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    // if (isPluginDisabled(userIntegrations, remotePlugin)) return
-                                    if (!remotePlugin.creationName) {
-                                        remotePlugin.creationName = "AnalyticsPlugin".concat(remotePlugin.name);
-                                    }
-                                    if (!remotePlugin.libraryName) {
-                                        remotePlugin.libraryName = "AnalyticsPlugin".concat(remotePlugin.name);
-                                    }
-                                    if (!remotePlugin.url) {
-                                        remotePlugin.url = "".concat(cdn, "analytics-plugin-").concat(remotePlugin.name.toLocaleLowerCase(), ".js");
-                                    }
-                                    _a.label = 1;
-                                case 1:
-                                    _a.trys.push([1, 5, , 6]);
-                                    // pluginSources?.find(
-                                    //   ({ pluginName }) => pluginName === remotePlugin.name
-                                    // ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
-                                    return [4 /*yield*/, loadPluginFactory(remotePlugin)];
-                                case 2:
-                                    pluginFactory = 
-                                    // pluginSources?.find(
-                                    //   ({ pluginName }) => pluginName === remotePlugin.name
-                                    // ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
-                                    _a.sent();
-                                    if (!pluginFactory) return [3 /*break*/, 4];
-                                    return [4 /*yield*/, pluginFactory(__assign(__assign({ app: loadSettings.app || {}, rum: loadSettings.rum || {} }, remotePlugin.settings), mergedIntegrations[remotePlugin.name]))];
-                                case 3:
-                                    plugin = _a.sent();
-                                    plugins = Array.isArray(plugin) ? plugin : [plugin];
-                                    validate(plugins);
-                                    routing_1 = routingRules.filter(function (rule) { return rule.destinationName === remotePlugin.creationName; });
-                                    plugins.forEach(function (plugin) {
-                                        var wrapper = new ActionDestination(remotePlugin.creationName, plugin);
-                                        if (routing_1.length && routingMiddleware) {
-                                            wrapper.addMiddleware(routingMiddleware);
-                                        }
-                                        allPlugins.push(wrapper);
-                                    });
-                                    _a.label = 4;
-                                case 4: return [3 /*break*/, 6];
-                                case 5:
-                                    error_3 = _a.sent();
-                                    console.warn('Failed to load Remote Plugin', error_3);
-                                    return [3 /*break*/, 6];
-                                case 6: return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                    return [4 /*yield*/, Promise.all(pluginPromises)];
-                case 1:
-                    _d.sent();
-                    return [2 /*return*/, allPlugins.filter(Boolean)];
+    const allPlugins = [];
+    const cdn = getCDN();
+    const routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
+    const pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(async (remotePlugin) => {
+        // if (isPluginDisabled(userIntegrations, remotePlugin)) return
+        if (!remotePlugin.creationName) {
+            remotePlugin.creationName = `AnalyticsPlugin${remotePlugin.name}`;
+        }
+        if (!remotePlugin.libraryName) {
+            remotePlugin.libraryName = `AnalyticsPlugin${remotePlugin.name}`;
+        }
+        if (!remotePlugin.url) {
+            remotePlugin.url = `${cdn}analytics-plugin-${remotePlugin.name.toLocaleLowerCase()}.js`;
+        }
+        try {
+            const pluginFactory = 
+            // pluginSources?.find(
+            //   ({ pluginName }) => pluginName === remotePlugin.name
+            // ) || (await loadPluginFactory(remotePlugin, options?.obfuscate))
+            await loadPluginFactory(remotePlugin);
+            if (pluginFactory) {
+                // console.log(pluginFactory);
+                const plugin = await pluginFactory(Object.assign(Object.assign({ app: loadSettings.app || {}, rum: loadSettings.rum || {} }, remotePlugin.settings), mergedIntegrations[remotePlugin.name]));
+                const plugins = Array.isArray(plugin) ? plugin : [plugin];
+                validate(plugins);
+                const routing = routingRules.filter((rule) => rule.destinationName === remotePlugin.creationName);
+                plugins.forEach((plugin) => {
+                    const wrapper = new ActionDestination(remotePlugin.creationName, plugin);
+                    if (routing.length && routingMiddleware) {
+                        wrapper.addMiddleware(routingMiddleware);
+                    }
+                    allPlugins.push(wrapper);
+                });
             }
-        });
+        }
+        catch (error) {
+            console.warn('Failed to load Remote Plugin', error);
+        }
     });
+    await Promise.all(pluginPromises);
+    return allPlugins.filter(Boolean);
 }
 
 ;// CONCATENATED MODULE: ./src/core/inspector/index.ts
 var _a;
 var _b;
 
-var env = getGlobal();
+const env = getGlobal();
 // The code below assumes the inspector extension will use Object.assign
 // to add the inspect interface on to this object reference (unless the
 // extension code ran first and has already set up the variable)
-var inspectorHost = ((_a = (_b = env)['__SEGMENT_INSPECTOR__']) !== null && _a !== void 0 ? _a : (_b['__SEGMENT_INSPECTOR__'] = {}));
-var attachInspector = function (analytics) { var _a; return (_a = inspectorHost.attach) === null || _a === void 0 ? void 0 : _a.call(inspectorHost, analytics); };
+const inspectorHost = ((_a = (_b = env)['__SEGMENT_INSPECTOR__']) !== null && _a !== void 0 ? _a : (_b['__SEGMENT_INSPECTOR__'] = {}));
+const attachInspector = (analytics) => { var _a; return (_a = inspectorHost.attach) === null || _a === void 0 ? void 0 : _a.call(inspectorHost, analytics); };
 
 ;// CONCATENATED MODULE: ./src/browser/index.ts
-
 // import { getProcessEnv } from '../lib/get-process-env'
 
 // import { fetch } from '../lib/fetch'
@@ -5759,133 +5341,161 @@ function flushPreBuffer(analytics, buffer) {
 /**
  * Finish flushing buffer and cleanup.
  */
-function flushFinalBuffer(analytics, buffer) {
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        return tslib_es6_generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: 
-                // Call popSnippetWindowBuffer before each flush task since there may be
-                // analytics calls during async function calls.
-                return [4 /*yield*/, flushAddSourceMiddleware(analytics, buffer)];
-                case 1:
-                    // Call popSnippetWindowBuffer before each flush task since there may be
-                    // analytics calls during async function calls.
-                    _a.sent();
-                    flushAnalyticsCallsInNewTask(analytics, buffer);
-                    // Clear buffer, just in case analytics is loaded twice; we don't want to fire events off again.
-                    buffer.clear();
-                    return [2 /*return*/];
-            }
-        });
-    });
+async function flushFinalBuffer(analytics, buffer) {
+    // Call popSnippetWindowBuffer before each flush task since there may be
+    // analytics calls during async function calls.
+    await flushAddSourceMiddleware(analytics, buffer);
+    flushAnalyticsCallsInNewTask(analytics, buffer);
+    // Clear buffer, just in case analytics is loaded twice; we don't want to fire events off again.
+    buffer.clear();
 }
-function registerPlugins(loadSettings, cdnSettings, analytics, options, pluginLikes) {
-    if (pluginLikes === void 0) { pluginLikes = []; }
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var plugins, mergedSettings, remotePlugins, toRegister, ctx;
-        return tslib_es6_generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    plugins = pluginLikes === null || pluginLikes === void 0 ? void 0 : pluginLikes.filter(function (pluginLike) { return typeof pluginLike === 'object'; });
-                    mergedSettings = mergedOptions(cdnSettings, options);
-                    return [4 /*yield*/, remoteLoader(loadSettings, cdnSettings, 
-                        // analytics.integrations,
-                        mergedSettings).catch(function () { return []; })];
-                case 1:
-                    remotePlugins = _a.sent();
-                    toRegister = __spreadArray(__spreadArray([
-                        envEnrichment
-                    ], plugins, true), remotePlugins, true);
-                    return [4 /*yield*/, analytics.register.apply(analytics, toRegister)];
-                case 2:
-                    ctx = _a.sent();
-                    // if (
-                    //   Object.entries(cdnSettings.enabledMiddleware ?? {}).some(
-                    //     ([, enabled]) => enabled
-                    //   )
-                    // ) {
-                    //   await import(
-                    //     /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
-                    //   ).then(async ({ remoteMiddlewares }) => {
-                    //     const middleware = await remoteMiddlewares(
-                    //       ctx,
-                    //       cdnSettings,
-                    //       options.obfuscate
-                    //     )
-                    //     const promises = middleware.map((mdw) =>
-                    //       analytics.addSourceMiddleware(mdw)
-                    //     )
-                    //     return Promise.all(promises)
-                    //   })
-                    // }
-                    return [2 /*return*/, ctx];
-            }
-        });
-    });
+async function registerPlugins(loadSettings, cdnSettings, analytics, options, pluginLikes = []) {
+    const plugins = pluginLikes === null || pluginLikes === void 0 ? void 0 : pluginLikes.filter((pluginLike) => typeof pluginLike === 'object');
+    // const pluginSources = pluginLikes?.filter(
+    //   (pluginLike) =>
+    //     typeof pluginLike === 'function' &&
+    //     typeof pluginLike.pluginName === 'string'
+    // ) as PluginFactory[]
+    // const tsubMiddleware = hasTsubMiddleware(cdnSettings)
+    //   ? await import(
+    //       /* webpackChunkName: "tsub-middleware" */ '../plugins/routing-middleware'
+    //     ).then((mod) => {
+    //       return mod.tsubMiddleware(cdnSettings.middlewareSettings!.routingRules)
+    //     })
+    //   : undefined
+    // const legacyDestinations =
+    //   hasLegacyDestinations(cdnSettings) || legacyIntegrationSources.length > 0
+    //     ? await import(
+    //         /* webpackChunkName: "ajs-destination" */ '../plugins/ajs-destination'
+    //       ).then((mod) => {
+    //         return mod.ajsDestinations(
+    //           writeKey,
+    //           cdnSettings,
+    //           analytics.integrations,
+    //           options,
+    //           tsubMiddleware,
+    //           legacyIntegrationSources
+    //         )
+    //       })
+    //     : []
+    // if (cdnSettings.legacyVideoPluginsEnabled) {
+    //   await import(
+    //     /* webpackChunkName: "legacyVideos" */ '../plugins/legacy-video-plugins'
+    //   ).then((mod) => {
+    //     return mod.loadLegacyVideoPlugins(analytics)
+    //   })
+    // }
+    // const schemaFilter = options.plan?.track
+    //   ? await import(
+    //       /* webpackChunkName: "schemaFilter" */ '../plugins/schema-filter'
+    //     ).then((mod) => {
+    //       return mod.schemaFilter(options.plan?.track, cdnSettings)
+    //     })
+    //   : undefined
+    const mergedSettings = mergedOptions(cdnSettings, options);
+    const remotePlugins = await remoteLoader(loadSettings, cdnSettings, 
+    // analytics.integrations,
+    mergedSettings).catch(() => []);
+    const toRegister = [
+        envEnrichment,
+        ...plugins,
+        // ...legacyDestinations,
+        ...remotePlugins,
+    ];
+    // if (schemaFilter) {
+    //   toRegister.push(schemaFilter)
+    // }
+    // const shouldIgnoreSegmentio =
+    //   (options.integrations?.All === false &&
+    //     !options.integrations['Segment.io']) ||
+    //   (options.integrations && options.integrations['Segment.io'] === false)
+    // if (!shouldIgnoreSegmentio) {
+    //   toRegister.push(
+    //     await segmentio(
+    //       analytics,
+    //       mergedSettings['Segment.io'] as SegmentioSettings,
+    //       cdnSettings.integrations
+    //     )
+    //   )
+    // }
+    const ctx = await analytics.register(...toRegister);
+    // if (
+    //   Object.entries(cdnSettings.enabledMiddleware ?? {}).some(
+    //     ([, enabled]) => enabled
+    //   )
+    // ) {
+    //   await import(
+    //     /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
+    //   ).then(async ({ remoteMiddlewares }) => {
+    //     const middleware = await remoteMiddlewares(
+    //       ctx,
+    //       cdnSettings,
+    //       options.obfuscate
+    //     )
+    //     const promises = middleware.map((mdw) =>
+    //       analytics.addSourceMiddleware(mdw)
+    //     )
+    //     return Promise.all(promises)
+    //   })
+    // }
+    return ctx;
 }
-function loadAnalytics(settings, options, preInitBuffer) {
+async function loadAnalytics(settings, options = {}, preInitBuffer) {
+    // return no-op analytics instance if disabled
+    // if (options.disable === true) {
+    //   return [new NullAnalytics(), Context.system()]
+    // }
     var _a, _b, _c;
-    if (options === void 0) { options = {}; }
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var cdnSettings, retryQueue, analytics, plugins, ctx;
-        return tslib_es6_generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    // return no-op analytics instance if disabled
-                    // if (options.disable === true) {
-                    //   return [new NullAnalytics(), Context.system()]
-                    // }
-                    if (options.globalAnalyticsKey)
-                        setGlobalAnalyticsKey(options.globalAnalyticsKey);
-                    // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
-                    if (settings.cdnURL)
-                        setGlobalCDNUrl(settings.cdnURL);
-                    if (options.initialPageview) {
-                        // capture the page context early, so it's always up-to-date
-                        preInitBuffer.push(new PreInitMethodCall('page', []));
-                    }
-                    cdnSettings = settings.cdnSettings;
-                    retryQueue = (_b = (_a = cdnSettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
-                    options = __assign({ retryQueue: retryQueue }, options);
-                    analytics = new Analytics(__assign(__assign({}, settings), { cdnSettings: cdnSettings }), options);
-                    attachInspector(analytics);
-                    plugins = (_c = settings.plugins) !== null && _c !== void 0 ? _c : [];
-                    // const classicIntegrations = settings.classicIntegrations ?? []
-                    // const segmentLoadOptions = options.integrations?.['Segment.io'] as
-                    //   | SegmentioSettings
-                    //   | undefined
-                    // Stats.initRemoteMetrics({
-                    //   ...cdnSettings.metrics,
-                    //   host: segmentLoadOptions?.apiHost ?? cdnSettings.metrics?.host,
-                    //   protocol: segmentLoadOptions?.protocol,
-                    // })
-                    // needs to be flushed before plugins are registered
-                    flushPreBuffer(analytics, preInitBuffer);
-                    return [4 /*yield*/, registerPlugins(settings, cdnSettings, analytics, options, plugins)
-                        // const search = window.location.search ?? ''
-                        // const hash = window.location.hash ?? ''
-                        // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
-                        // if (term.includes('ajs_')) {
-                        //   await analytics.queryString(term).catch(console.error)
-                        // }
-                    ];
-                case 1:
-                    ctx = _d.sent();
-                    // const search = window.location.search ?? ''
-                    // const hash = window.location.hash ?? ''
-                    // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
-                    // if (term.includes('ajs_')) {
-                    //   await analytics.queryString(term).catch(console.error)
-                    // }
-                    analytics.initialized = true;
-                    analytics.emit('initialize', settings, options);
-                    return [4 /*yield*/, flushFinalBuffer(analytics, preInitBuffer)];
-                case 2:
-                    _d.sent();
-                    return [2 /*return*/, [analytics, ctx]];
-            }
-        });
-    });
+    if (options.globalAnalyticsKey)
+        setGlobalAnalyticsKey(options.globalAnalyticsKey);
+    // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
+    if (settings.cdnURL)
+        setGlobalCDNUrl(settings.cdnURL);
+    if (options.initialPageview) {
+        // capture the page context early, so it's always up-to-date
+        preInitBuffer.push(new PreInitMethodCall('page', []));
+    }
+    // let cdnSettings =
+    //   settings.cdnSettings ??
+    //   (await loadCDNSettings(settings.writeKey, settings.cdnURL))
+    let cdnSettings = settings.cdnSettings;
+    // if (options.updateCDNSettings) {
+    //   cdnSettings = options.updateCDNSettings(cdnSettings)
+    // }
+    // if options.disable is a function, we allow user to disable analytics based on CDN Settings
+    // if (typeof options.disable === 'function') {
+    //   const disabled = await options.disable(cdnSettings)
+    //   if (disabled) {
+    //     return [new NullAnalytics(), Context.system()]
+    //   }
+    // }
+    const retryQueue = (_b = (_a = cdnSettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
+    options = Object.assign({ retryQueue }, options);
+    const analytics = new Analytics(Object.assign(Object.assign({}, settings), { cdnSettings }), options);
+    attachInspector(analytics);
+    const plugins = (_c = settings.plugins) !== null && _c !== void 0 ? _c : [];
+    // const classicIntegrations = settings.classicIntegrations ?? []
+    // const segmentLoadOptions = options.integrations?.['Segment.io'] as
+    //   | SegmentioSettings
+    //   | undefined
+    // Stats.initRemoteMetrics({
+    //   ...cdnSettings.metrics,
+    //   host: segmentLoadOptions?.apiHost ?? cdnSettings.metrics?.host,
+    //   protocol: segmentLoadOptions?.protocol,
+    // })
+    // needs to be flushed before plugins are registered
+    flushPreBuffer(analytics, preInitBuffer);
+    const ctx = await registerPlugins(settings, cdnSettings, analytics, options, plugins);
+    // const search = window.location.search ?? ''
+    // const hash = window.location.hash ?? ''
+    // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
+    // if (term.includes('ajs_')) {
+    //   await analytics.queryString(term).catch(console.error)
+    // }
+    analytics.initialized = true;
+    analytics.emit('initialize', settings, options);
+    await flushFinalBuffer(analytics, preInitBuffer);
+    return [analytics, ctx];
 }
 /**
  * The public browser interface for Segment Analytics
@@ -5897,21 +5507,11 @@ function loadAnalytics(settings, options, preInitBuffer) {
  * ```
  * @link https://github.com/segmentio/analytics-next/#readme
  */
-var AnalyticsBrowser = /** @class */ (function (_super) {
-    __extends(AnalyticsBrowser, _super);
-    function AnalyticsBrowser() {
-        var _this = this;
-        var _a = createDeferred(), loadStart = _a.promise, resolveLoadStart = _a.resolve;
-        _this = _super.call(this, function (buffer) {
-            return loadStart.then(function (_a) {
-                var settings = _a[0], options = _a[1];
-                return loadAnalytics(settings, options, buffer);
-            });
-        }) || this;
-        _this._resolveLoadStart = function (settings, options) {
-            return resolveLoadStart([settings, options]);
-        };
-        return _this;
+class AnalyticsBrowser extends AnalyticsBuffered {
+    constructor() {
+        const { promise: loadStart, resolve: resolveLoadStart } = createDeferred();
+        super((buffer) => loadStart.then(([settings, options]) => loadAnalytics(settings, options, buffer)));
+        this._resolveLoadStart = (settings, options) => resolveLoadStart([settings, options]);
     }
     /**
      * Fully initialize an analytics instance, including:
@@ -5929,11 +5529,10 @@ var AnalyticsBrowser = /** @class */ (function (_super) {
      * analytics.load({ writeKey: 'foo' })
      * ```
      */
-    AnalyticsBrowser.prototype.load = function (settings, options) {
-        if (options === void 0) { options = {}; }
+    load(settings, options = {}) {
         this._resolveLoadStart(settings, options);
         return this;
-    };
+    }
     /**
      * Instantiates an object exposing Analytics methods.
      *
@@ -5945,19 +5544,15 @@ var AnalyticsBrowser = /** @class */ (function (_super) {
      * ...
      * ```
      */
-    AnalyticsBrowser.load = function (settings, options) {
-        if (options === void 0) { options = {}; }
+    static load(settings, options = {}) {
         return new AnalyticsBrowser().load(settings, options);
-    };
-    AnalyticsBrowser.standalone = function (settings, options) {
-        return AnalyticsBrowser.load(settings, options).then(function (res) { return res[0]; });
-    };
-    return AnalyticsBrowser;
-}(AnalyticsBuffered));
-
+    }
+    static standalone(settings, options) {
+        return AnalyticsBrowser.load(settings, options).then((res) => res[0]);
+    }
+}
 
 ;// CONCATENATED MODULE: ./src/browser/standalone-analytics.ts
-
 
 
 // function getWriteKey(): string | undefined {
@@ -5991,35 +5586,18 @@ var AnalyticsBrowser = /** @class */ (function (_super) {
 //   }
 //   return writeKey
 // }
-function install() {
+async function install() {
     var _a, _b, _c, _d;
-    return tslib_es6_awaiter(this, void 0, Promise, function () {
-        var settings, options, _e;
-        return tslib_es6_generator(this, function (_f) {
-            switch (_f.label) {
-                case 0:
-                    settings = (_b = (_a = getGlobalAnalytics()) === null || _a === void 0 ? void 0 : _a._loadSettings) !== null && _b !== void 0 ? _b : { writeKey: 'REQUIRED' };
-                    options = (_d = (_c = getGlobalAnalytics()) === null || _c === void 0 ? void 0 : _c._loadOptions) !== null && _d !== void 0 ? _d : {};
-                    // if (!writeKey) {
-                    //   console.error(
-                    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
-                    //   )
-                    //   return
-                    // }
-                    _e = setGlobalAnalytics;
-                    return [4 /*yield*/, AnalyticsBrowser.standalone(settings, options)];
-                case 1:
-                    // if (!writeKey) {
-                    //   console.error(
-                    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
-                    //   )
-                    //   return
-                    // }
-                    _e.apply(void 0, [(_f.sent())]);
-                    return [2 /*return*/];
-            }
-        });
-    });
+    // const writeKey = getWriteKey()
+    const settings = (_b = (_a = getGlobalAnalytics()) === null || _a === void 0 ? void 0 : _a._loadSettings) !== null && _b !== void 0 ? _b : { writeKey: 'REQUIRED' };
+    const options = (_d = (_c = getGlobalAnalytics()) === null || _c === void 0 ? void 0 : _c._loadOptions) !== null && _d !== void 0 ? _d : {};
+    // if (!writeKey) {
+    //   console.error(
+    //     'Failed to load Write Key. Make sure to use the latest version of the Segment snippet, which can be found in your source settings.'
+    //   )
+    //   return
+    // }
+    setGlobalAnalytics((await AnalyticsBrowser.standalone(settings, options)));
 }
 
 ;// CONCATENATED MODULE: ./src/browser/standalone.ts
