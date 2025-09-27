@@ -1,5 +1,5 @@
 // import { getProcessEnv } from '../lib/get-process-env'
-import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
+import { /* getCDN */ setGlobalCDNUrl } from '../lib/parse-cdn'
 
 // import { fetch } from '../lib/fetch'
 import { Analytics, AnalyticsSettings, /* NullAnalytics, */ InitOptions } from '../core/analytics'
@@ -146,24 +146,24 @@ export interface AnalyticsBrowserSettings {
   // classicIntegrations?: ClassicIntegrationSource[]
 }
 
-export function loadCDNSettings(
-  writeKey: string,
-  baseUrl: string
-): Promise<CDNSettings> {
-  return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
-    .then((res) => {
-      if (!res.ok) {
-        return res.text().then((errorResponseMessage) => {
-          throw new Error(errorResponseMessage)
-        })
-      }
-      return res.json()
-    })
-    .catch((err) => {
-      console.error(err.message)
-      throw err
-    })
-}
+// export function loadCDNSettings(
+//   writeKey: string,
+//   baseUrl: string
+// ): Promise<CDNSettings> {
+//   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
+//     .then((res) => {
+//       if (!res.ok) {
+//         return res.text().then((errorResponseMessage) => {
+//           throw new Error(errorResponseMessage)
+//         })
+//       }
+//       return res.json()
+//     })
+//     .catch((err) => {
+//       console.error(err.message)
+//       throw err
+//     })
+// }
 
 // function hasLegacyDestinations(settings: CDNSettings): boolean {
 //   return (
@@ -210,8 +210,7 @@ async function flushFinalBuffer(
 }
 
 async function registerPlugins(
-  // @ts-ignore
-  writeKey: string,
+  loadSettings: AnalyticsSettings,
   cdnSettings: CDNSettings,
   analytics: Analytics,
   options: InitOptions,
@@ -272,6 +271,7 @@ async function registerPlugins(
 
   const mergedSettings = mergedOptions(cdnSettings, options)
   const remotePlugins = await remoteLoader(
+    loadSettings,
     cdnSettings,
     // analytics.integrations,
     mergedSettings,
@@ -290,20 +290,25 @@ async function registerPlugins(
   //   basePlugins.push(schemaFilter)
   // }
 
-  const shouldIgnoreSegmentio =
-    (options.integrations?.All === false &&
-      !options.integrations['Segment.io']) ||
-    (options.integrations && options.integrations['Segment.io'] === false)
+  // const shouldIgnoreSegmentio =
+  //   (options.integrations?.All === false &&
+  //     !options.integrations['Segment.io']) ||
+  //   (options.integrations && options.integrations['Segment.io'] === false)
 
-  if (!shouldIgnoreSegmentio) {
-    basePlugins.push(
-      await segmentio(
-        analytics,
-        mergedSettings['Segment.io'] as SegmentioSettings,
-        cdnSettings.integrations
-      )
-    )
-  }
+  // const shouldIgnoreSegmentio =
+  //   (options.integrations?.All === false &&
+  //     !options.integrations['Segment.io']) ||
+  //   (options.integrations && options.integrations['Segment.io'] === false)
+
+  // if (!shouldIgnoreSegmentio) {
+  //   basePlugins.push(
+  //     await segmentio(
+  //       analytics,
+  //       mergedSettings['Segment.io'] as SegmentioSettings,
+  //       cdnSettings.integrations
+  //     )
+  //   )
+  // }
 
   // order is important here, (for example, if there are multiple enrichment plugins, the last registered plugin will have access to the last context.)
   const ctx = await analytics.register(
@@ -358,13 +363,14 @@ async function loadAnalytics(
     preInitBuffer.add(new PreInitMethodCall('page', []))
   }
 
-  const cdnURL = settings.cdnURL ?? getCDN()
-  let cdnSettings =
-    settings.cdnSettings ?? (await loadCDNSettings(settings.writeKey, cdnURL))
+  let cdnSettings = settings.cdnSettings!;
+  // const cdnURL = settings.cdnURL ?? getCDN()
+  // let cdnSettings =
+  //   settings.cdnSettings ?? (await loadCDNSettings(settings.writeKey, cdnURL))
 
-  if (options.updateCDNSettings) {
-    cdnSettings = options.updateCDNSettings(cdnSettings)
-  }
+  // if (options.updateCDNSettings) {
+  //   cdnSettings = options.updateCDNSettings(cdnSettings)
+  // }
 
   // if options.disable is a function, we allow user to disable analytics based on CDN Settings
   // if (typeof options.disable === 'function') {
@@ -382,7 +388,7 @@ async function loadAnalytics(
     ...options,
   }
 
-  const analytics = new Analytics({ ...settings, cdnSettings, cdnURL }, options)
+  const analytics = new Analytics({ ...settings, cdnSettings, cdnURL: settings.cdnURL }, options)
 
   attachInspector(analytics)
 
@@ -401,7 +407,7 @@ async function loadAnalytics(
   // })
 
   const ctx = await registerPlugins(
-    settings.writeKey,
+    settings,
     cdnSettings,
     analytics,
     options,
@@ -500,9 +506,9 @@ export class AnalyticsBrowser extends AnalyticsBuffered {
   }
 
   static standalone(
-    writeKey: string,
+    settings: AnalyticsSettings,
     options?: InitOptions
   ): Promise<Analytics> {
-    return AnalyticsBrowser.load({ writeKey }, options).then((res) => res[0])
+    return AnalyticsBrowser.load(settings, options).then((res) => res[0])
   }
 }
