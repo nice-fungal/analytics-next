@@ -1434,7 +1434,7 @@ function dset(obj, keys, val) {
 	keys.split && (keys=keys.split('.'));
 	var i=0, l=keys.length, t=obj, x, k;
 	while (i < l) {
-		k = keys[i++];
+		k = ''+keys[i++];
 		if (k === '__proto__' || k === 'constructor' || k === 'prototype') break;
 		t = t[k] = (i === l) ? val : (typeof(x=t[k])===typeof(keys)) ? x : (keys[i]*0 !== 0 || !!~(''+keys[i]).indexOf('.')) ? {} : [];
 	}
@@ -1961,7 +1961,7 @@ const fetch = (...args) => {
 
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
-const version = '1.70.0';
+const version = '1.73.0';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
 const SEGMENT_API_HOST = 'api.segment.io/v1';
@@ -2738,9 +2738,11 @@ var PriorityQueue = /** @class */ (function (_super) {
         this.queue = this.queue.sort(function (a, b) { return _this.getAttempts(a) - _this.getAttempts(b); });
         return accepted;
     };
-    PriorityQueue.prototype.pushWithBackoff = function (item) {
+    PriorityQueue.prototype.pushWithBackoff = function (item, minTimeout) {
         var _this = this;
-        if (this.getAttempts(item) === 0) {
+        if (minTimeout === void 0) { minTimeout = 0; }
+        // One immediate retry unless we have a minimum timeout (e.g. for rate limiting)
+        if (minTimeout == 0 && this.getAttempts(item) === 0) {
             return this.push(item)[0];
         }
         var attempt = this.updateAttempts(item);
@@ -2748,6 +2750,9 @@ var PriorityQueue = /** @class */ (function (_super) {
             return false;
         }
         var timeout = backoff({ attempt: attempt - 1 });
+        if (minTimeout > 0 && timeout < minTimeout) {
+            timeout = minTimeout;
+        }
         setTimeout(function () {
             _this.queue.push(item);
             // remove from future list
@@ -3791,25 +3796,38 @@ const is_thenable_isThenable = (value) => typeof value === 'object' &&
 
 
 
+
 const flushSyncAnalyticsCalls = (name, analytics, buffer) => {
-    buffer.getCalls(name).forEach((c) => {
+    buffer.getAndRemove(name).forEach((c) => {
         // While the underlying methods are synchronous, the callAnalyticsMethod returns a promise,
         // which normalizes success and error states between async and non-async methods, with no perf penalty.
         callAnalyticsMethod(analytics, c).catch(console.error);
     });
 };
 const flushAddSourceMiddleware = async (analytics, buffer) => {
-    for (const c of buffer.getCalls('addSourceMiddleware')) {
+    for (const c of buffer.getAndRemove('addSourceMiddleware')) {
+        await callAnalyticsMethod(analytics, c).catch(console.error);
+    }
+};
+/**
+ *  Flush register plugin
+ */
+const flushRegister = async (analytics, buffer) => {
+    for (const c of buffer.getAndRemove('register')) {
         await callAnalyticsMethod(analytics, c).catch(console.error);
     }
 };
 const flushOn = flushSyncAnalyticsCalls.bind(undefined, 'on');
 const flushSetAnonymousID = flushSyncAnalyticsCalls.bind(undefined, 'setAnonymousId');
 const flushAnalyticsCallsInNewTask = (analytics, buffer) => {
-    buffer.toArray().forEach((m) => {
-        setTimeout(() => {
-            callAnalyticsMethod(analytics, m).catch(console.error);
-        }, 0);
+    ;
+    Object.keys(buffer.calls).forEach((m) => {
+        buffer.getAndRemove(m).forEach((c) => {
+            // No one remembers why this event loop optimization is/was neccessary. Lost to history.
+            setTimeout(() => {
+                callAnalyticsMethod(analytics, c).catch(console.error);
+            }, 0);
+        });
     });
 };
 const popPageContext = (args) => {
@@ -3840,7 +3858,7 @@ class PreInitMethodCall {
 class PreInitMethodCallBuffer {
     constructor(...calls) {
         this._callMap = {};
-        this.push(...calls);
+        this.add(...calls);
     }
     /**
      * Pull any buffered method calls from the window object, and use them to hydrate the instance buffer.
@@ -3852,11 +3870,19 @@ class PreInitMethodCallBuffer {
     set calls(calls) {
         this._callMap = calls;
     }
-    getCalls(methodName) {
+    get(methodName) {
         var _a;
         return ((_a = this.calls[methodName]) !== null && _a !== void 0 ? _a : []);
     }
-    push(...calls) {
+    /**
+     * Get all buffered method calls for a given method name, and clear them from the buffer.
+     */
+    getAndRemove(methodName) {
+        const calls = this.get(methodName);
+        this.calls[methodName] = [];
+        return calls;
+    }
+    add(...calls) {
         calls.forEach((call) => {
             const eventsExpectingPageContext = [
                 'track',
@@ -3893,12 +3919,17 @@ class PreInitMethodCallBuffer {
      * This removes existing buffered calls from the window object.
      */
     _pushSnippetWindowBuffer() {
+        // if this is the npm version, we don't want to read from the window object.
+        // This avoids namespace conflicts if there is a seperate analytics library on the page.
+        if (getVersionType() === 'npm') {
+            return undefined;
+        }
         const wa = getGlobalAnalytics();
         if (!Array.isArray(wa))
             return undefined;
         const buffered = wa.splice(0, wa.length);
         const calls = buffered.map(([methodName, ...args]) => new PreInitMethodCall(methodName, args));
-        this.push(...calls);
+        this.add(...calls);
     }
 }
 /**
@@ -3975,7 +4006,7 @@ class AnalyticsBuffered {
                 return Promise.resolve(result);
             }
             return new Promise((resolve, reject) => {
-                this._preInitBuffer.push(new PreInitMethodCall(methodName, args, resolve, reject));
+                this._preInitBuffer.add(new PreInitMethodCall(methodName, args, resolve, reject));
             });
         };
     }
@@ -4020,7 +4051,10 @@ class AnalyticsInstanceSettings {
          */
         this.timeout = 300;
         this.writeKey = settings.writeKey;
-        this.cdnSettings = (_a = settings.cdnSettings) !== null && _a !== void 0 ? _a : { integrations: {} };
+        this.cdnSettings = (_a = settings.cdnSettings) !== null && _a !== void 0 ? _a : {
+            integrations: {},
+            edgeFunction: {},
+        };
     }
 }
 // /* analytics-classic stubs */
@@ -4883,6 +4917,9 @@ function findScript(src) {
     const scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
     return scripts.find((s) => s.src === src);
 }
+/**
+ * Load a script from a URL and append it to the document.
+ */
 function loadScript(src, attributes) {
     const found = findScript(src);
     if (found !== undefined) {
@@ -4917,8 +4954,13 @@ function loadScript(src, attributes) {
             script.setAttribute('status', 'error');
             reject(new Error(`Failed to load ${src}`));
         };
-        const tag = window.document.getElementsByTagName('script')[0];
-        (_a = tag.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, tag);
+        const firstExistingScript = window.document.querySelector('script');
+        if (!firstExistingScript) {
+            window.document.head.appendChild(script);
+        }
+        else {
+            (_a = firstExistingScript.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, firstExistingScript);
+        }
     });
 }
 function unloadScript(src) {
@@ -5192,29 +5234,35 @@ function validate(pluginLike) {
 //   return false
 // }
 async function loadPluginFactory(remotePlugin) {
-    const defaultCdn = new RegExp('https://cdn.segment.(com|build)');
-    const cdn = getCDN();
-    // if (obfuscate) {
-    //   const urlSplit = remotePlugin.url.split('/')
-    //   const name = urlSplit[urlSplit.length - 2]
-    //   const obfuscatedURL = remotePlugin.url.replace(
-    //     name,
-    //     btoa(name).replace(/=/g, '')
-    //   )
-    //   try {
-    //     await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
-    //   } catch (error) {
-    //     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
-    //     // We should use the unobfuscated version as a fallback.
-    //     await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
-    //   }
-    // } else {
-    await loadScript(remotePlugin.url.replace(defaultCdn, cdn));
-    // }
-    // @ts-expect-error
-    if (typeof window[remotePlugin.libraryName] === 'function') {
+    try {
+        const defaultCdn = new RegExp('https://cdn.segment.(com|build)');
+        const cdn = getCDN();
+        //   if (obfuscate) {
+        //     const urlSplit = remotePlugin.url.split('/')
+        //     const name = urlSplit[urlSplit.length - 2]
+        //     const obfuscatedURL = remotePlugin.url.replace(
+        //       name,
+        //       btoa(name).replace(/=/g, '')
+        //     )
+        //     try {
+        //       await loadScript(obfuscatedURL.replace(defaultCdn, cdn))
+        //     } catch (error) {
+        //       // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
+        //       // We should use the unobfuscated version as a fallback.
+        //       await loadScript(remotePlugin.url.replace(defaultCdn, cdn))
+        //     }
+        //   } else {
+        await loadScript(remotePlugin.url.replace(defaultCdn, cdn));
+        //   }
         // @ts-expect-error
-        return window[remotePlugin.libraryName];
+        if (typeof window[remotePlugin.libraryName] === 'function') {
+            // @ts-expect-error
+            return window[remotePlugin.libraryName];
+        }
+    }
+    catch (err) {
+        console.error('Failed to create PluginFactory', remotePlugin);
+        throw err;
     }
 }
 async function remoteLoader(loadSettings, settings, 
@@ -5346,11 +5394,12 @@ async function flushFinalBuffer(analytics, buffer) {
     // analytics calls during async function calls.
     await flushAddSourceMiddleware(analytics, buffer);
     flushAnalyticsCallsInNewTask(analytics, buffer);
-    // Clear buffer, just in case analytics is loaded twice; we don't want to fire events off again.
-    buffer.clear();
 }
-async function registerPlugins(loadSettings, cdnSettings, analytics, options, pluginLikes = []) {
-    const plugins = pluginLikes === null || pluginLikes === void 0 ? void 0 : pluginLikes.filter((pluginLike) => typeof pluginLike === 'object');
+async function registerPlugins(loadSettings, cdnSettings, analytics, options, pluginLikes = [], 
+// legacyIntegrationSources: ClassicIntegrationSource[],
+preInitBuffer) {
+    flushPreBuffer(analytics, preInitBuffer);
+    const pluginsFromSettings = pluginLikes === null || pluginLikes === void 0 ? void 0 : pluginLikes.filter((pluginLike) => typeof pluginLike === 'object');
     // const pluginSources = pluginLikes?.filter(
     //   (pluginLike) =>
     //     typeof pluginLike === 'function' &&
@@ -5396,21 +5445,24 @@ async function registerPlugins(loadSettings, cdnSettings, analytics, options, pl
     const remotePlugins = await remoteLoader(loadSettings, cdnSettings, 
     // analytics.integrations,
     mergedSettings).catch(() => []);
-    const toRegister = [
+    const basePlugins = [
         envEnrichment,
-        ...plugins,
         // ...legacyDestinations,
         ...remotePlugins,
     ];
     // if (schemaFilter) {
-    //   toRegister.push(schemaFilter)
+    //   basePlugins.push(schemaFilter)
     // }
     // const shouldIgnoreSegmentio =
     //   (options.integrations?.All === false &&
     //     !options.integrations['Segment.io']) ||
     //   (options.integrations && options.integrations['Segment.io'] === false)
+    // const shouldIgnoreSegmentio =
+    //   (options.integrations?.All === false &&
+    //     !options.integrations['Segment.io']) ||
+    //   (options.integrations && options.integrations['Segment.io'] === false)
     // if (!shouldIgnoreSegmentio) {
-    //   toRegister.push(
+    //   basePlugins.push(
     //     await segmentio(
     //       analytics,
     //       mergedSettings['Segment.io'] as SegmentioSettings,
@@ -5418,7 +5470,14 @@ async function registerPlugins(loadSettings, cdnSettings, analytics, options, pl
     //     )
     //   )
     // }
-    const ctx = await analytics.register(...toRegister);
+    // order is important here, (for example, if there are multiple enrichment plugins, the last registered plugin will have access to the last context.)
+    const ctx = await analytics.register(
+    // register 'core' plugins and those via destinations
+    ...basePlugins, 
+    // register user-defined plugins passed into AnalyticsBrowser.load({ plugins: [plugin1, plugin2] }) -- relevant to npm-only
+    ...pluginsFromSettings);
+    // register user-defined plugins registered via analytics.register()
+    await flushRegister(analytics, preInitBuffer);
     // if (
     //   Object.entries(cdnSettings.enabledMiddleware ?? {}).some(
     //     ([, enabled]) => enabled
@@ -5453,7 +5512,7 @@ async function loadAnalytics(settings, options = {}, preInitBuffer) {
         setGlobalCDNUrl(settings.cdnURL);
     if (options.initialPageview) {
         // capture the page context early, so it's always up-to-date
-        preInitBuffer.push(new PreInitMethodCall('page', []));
+        preInitBuffer.add(new PreInitMethodCall('page', []));
     }
     // let cdnSettings =
     //   settings.cdnSettings ??
@@ -5483,9 +5542,9 @@ async function loadAnalytics(settings, options = {}, preInitBuffer) {
     //   host: segmentLoadOptions?.apiHost ?? cdnSettings.metrics?.host,
     //   protocol: segmentLoadOptions?.protocol,
     // })
-    // needs to be flushed before plugins are registered
-    flushPreBuffer(analytics, preInitBuffer);
-    const ctx = await registerPlugins(settings, cdnSettings, analytics, options, plugins);
+    const ctx = await registerPlugins(settings, cdnSettings, analytics, options, plugins, 
+    // classicIntegrations,
+    preInitBuffer);
     // const search = window.location.search ?? ''
     // const hash = window.location.hash ?? ''
     // const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
@@ -5604,13 +5663,14 @@ async function install() {
 /* eslint-disable @typescript-eslint/no-floating-promises */
 // import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
-// if (process.env.ASSET_PATH) {
-//   if (process.env.ASSET_PATH === '/dist/umd/') {
+// if (process.env.IS_WEBPACK_BUILD) {
+//   if (process.env.ASSET_PATH) {
 //     // @ts-ignore
-//     __webpack_public_path__ = '/dist/umd/'
+//     __webpack_public_path__ = process.env.ASSET_PATH
 //   } else {
 //     const cdn = getCDN()
 //     setGlobalCDNUrl(cdn)
+// 
 //     // @ts-ignore
 //     __webpack_public_path__ = cdn
 //       ? cdn + '/analytics-next/bundles/'
