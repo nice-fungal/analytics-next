@@ -1961,7 +1961,7 @@ const fetch = (...args) => {
 
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
-const version = '1.73.0';
+const version = '1.74.0';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
 const SEGMENT_API_HOST = 'api.segment.io/v1';
@@ -4047,7 +4047,7 @@ class AnalyticsInstanceSettings {
     constructor(settings) {
         var _a;
         /**
-         * Auto-track specific timeout setting   for legacy purposes.
+         * Auto-track specific timeout setting for legacy purposes.
          */
         this.timeout = 300;
         this.writeKey = settings.writeKey;
@@ -4055,6 +4055,7 @@ class AnalyticsInstanceSettings {
             integrations: {},
             edgeFunction: {},
         };
+        this.cdnURL = settings.cdnURL;
     }
 }
 // /* analytics-classic stubs */
@@ -5343,10 +5344,8 @@ const attachInspector = (analytics) => { var _a; return (_a = inspectorHost.atta
 
 // export function loadCDNSettings(
 //   writeKey: string,
-//   cdnURL?: string
+//   baseUrl: string
 // ): Promise<CDNSettings> {
-//   const baseUrl = cdnURL ?? getCDN()
-// 
 //   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
 //     .then((res) => {
 //       if (!res.ok) {
@@ -5514,10 +5513,10 @@ async function loadAnalytics(settings, options = {}, preInitBuffer) {
         // capture the page context early, so it's always up-to-date
         preInitBuffer.add(new PreInitMethodCall('page', []));
     }
-    // let cdnSettings =
-    //   settings.cdnSettings ??
-    //   (await loadCDNSettings(settings.writeKey, settings.cdnURL))
     let cdnSettings = settings.cdnSettings;
+    // const cdnURL = settings.cdnURL ?? getCDN()
+    // let cdnSettings =
+    //   settings.cdnSettings ?? (await loadCDNSettings(settings.writeKey, cdnURL))
     // if (options.updateCDNSettings) {
     //   cdnSettings = options.updateCDNSettings(cdnSettings)
     // }
@@ -5530,7 +5529,7 @@ async function loadAnalytics(settings, options = {}, preInitBuffer) {
     // }
     const retryQueue = (_b = (_a = cdnSettings.integrations['Segment.io']) === null || _a === void 0 ? void 0 : _a.retryQueue) !== null && _b !== void 0 ? _b : true;
     options = Object.assign({ retryQueue }, options);
-    const analytics = new Analytics(Object.assign(Object.assign({}, settings), { cdnSettings }), options);
+    const analytics = new Analytics(Object.assign(Object.assign({}, settings), { cdnSettings, cdnURL: settings.cdnURL }), options);
     attachInspector(analytics);
     const plugins = (_c = settings.plugins) !== null && _c !== void 0 ? _c : [];
     // const classicIntegrations = settings.classicIntegrations ?? []
