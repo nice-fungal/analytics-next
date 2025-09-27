@@ -9,8 +9,8 @@ import {
   DestinationMiddlewareFunction,
 } from '../middleware'
 import { Context, ContextCancelation } from '../../core/context'
-import { recordIntegrationMetric } from '../../core/stats/metric-helpers'
-import { Analytics, InitOptions } from '../../core/analytics'
+// import { recordIntegrationMetric } from '../../core/stats/metric-helpers'
+import { Analytics /*, InitOptions */ } from '../../core/analytics'
 import { createDeferred } from '@segment/analytics-generic-utils'
 
 export interface RemotePlugin {

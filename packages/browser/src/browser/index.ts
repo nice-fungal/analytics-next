@@ -1,8 +1,8 @@
 // import { getProcessEnv } from '../lib/get-process-env'
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
-import { fetch } from '../lib/fetch'
-import { Analytics, /* NullAnalytics, */ InitOptions } from '../core/analytics'
+// import { fetch } from '../lib/fetch'
+import { Analytics, AnalyticsSettings, /* NullAnalytics, */ InitOptions } from '../core/analytics'
 import { Context } from '../core/context'
 // import { Plan } from '../core/events'
 import { Plugin } from '../core/plugin'
@@ -210,6 +210,7 @@ async function flushFinalBuffer(
 }
 
 async function registerPlugins(
+  // @ts-ignore
   writeKey: string,
   cdnSettings: CDNSettings,
   analytics: Analytics,
