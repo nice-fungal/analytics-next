@@ -1440,6 +1440,606 @@ function dset(obj, keys, val) {
 	}
 }
 
+;// CONCATENATED MODULE: ../core/dist/esm/logger/index.js
+class CoreLogger {
+    constructor() {
+        this._logs = [];
+    }
+    log(level, message, extras) {
+        const time = new Date();
+        this._logs.push({
+            level,
+            message,
+            time,
+            extras,
+        });
+    }
+    get logs() {
+        return this._logs;
+    }
+    flush() {
+        if (this.logs.length > 1) {
+            const formatted = this._logs.reduce((logs, log) => {
+                var _a, _b;
+                const line = Object.assign(Object.assign({}, log), { json: JSON.stringify(log.extras, null, ' '), extras: log.extras });
+                delete line['time'];
+                let key = (_b = (_a = log.time) === null || _a === void 0 ? void 0 : _a.toISOString()) !== null && _b !== void 0 ? _b : '';
+                if (logs[key]) {
+                    key = `${key}-${Math.random()}`;
+                }
+                return Object.assign(Object.assign({}, logs), { [key]: line });
+            }, {});
+            // ie doesn't like console.table
+            if (console.table) {
+                console.table(formatted);
+            }
+            else {
+                console.log(formatted);
+            }
+        }
+        else {
+            this.logs.forEach((logEntry) => {
+                const { level, message, extras } = logEntry;
+                if (level === 'info' || level === 'debug') {
+                    console.log(message, extras !== null && extras !== void 0 ? extras : '');
+                }
+                else {
+                    console[level](message, extras !== null && extras !== void 0 ? extras : '');
+                }
+            });
+        }
+        this._logs = [];
+    }
+}
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/stats/index.js
+const compactMetricType = (type) => {
+    const enums = {
+        gauge: 'g',
+        counter: 'c',
+    };
+    return enums[type];
+};
+class CoreStats {
+    constructor() {
+        this.metrics = [];
+    }
+    increment(metric, by = 1, tags) {
+        this.metrics.push({
+            metric,
+            value: by,
+            tags: tags !== null && tags !== void 0 ? tags : [],
+            type: 'counter',
+            timestamp: Date.now(),
+        });
+    }
+    gauge(metric, value, tags) {
+        this.metrics.push({
+            metric,
+            value,
+            tags: tags !== null && tags !== void 0 ? tags : [],
+            type: 'gauge',
+            timestamp: Date.now(),
+        });
+    }
+    flush() {
+        const formatted = this.metrics.map((m) => (Object.assign(Object.assign({}, m), { tags: m.tags.join(',') })));
+        // ie doesn't like console.table
+        if (console.table) {
+            console.table(formatted);
+        }
+        else {
+            console.log(formatted);
+        }
+        this.metrics = [];
+    }
+    /**
+     * compact keys for smaller payload
+     */
+    serialize() {
+        return this.metrics.map((m) => {
+            return {
+                m: m.metric,
+                v: m.value,
+                t: m.tags,
+                k: compactMetricType(m.type),
+                e: m.timestamp,
+            };
+        });
+    }
+}
+class NullStats extends CoreStats {
+    gauge(..._args) { }
+    increment(..._args) { }
+    flush(..._args) { }
+    serialize(..._args) {
+        return [];
+    }
+}
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/context/index.js
+
+
+
+
+class context_ContextCancelation {
+    constructor(options) {
+        var _a, _b, _c;
+        this.retry = (_a = options.retry) !== null && _a !== void 0 ? _a : true;
+        this.type = (_b = options.type) !== null && _b !== void 0 ? _b : 'plugin Error';
+        this.reason = (_c = options.reason) !== null && _c !== void 0 ? _c : '';
+    }
+}
+class CoreContext {
+    constructor(event, id = v4(), stats = new NullStats(), logger = new CoreLogger()) {
+        this.attempts = 0;
+        this.event = event;
+        this._id = id;
+        this.logger = logger;
+        this.stats = stats;
+    }
+    static system() {
+        // This should be overridden by the subclass to return an instance of the subclass.
+    }
+    isSame(other) {
+        return other.id === this.id;
+    }
+    cancel(error) {
+        if (error) {
+            throw error;
+        }
+        throw new context_ContextCancelation({ reason: 'Context Cancel' });
+    }
+    log(level, message, extras) {
+        this.logger.log(level, message, extras);
+    }
+    get id() {
+        return this._id;
+    }
+    updateEvent(path, val) {
+        var _a;
+        // Don't allow integrations that are set to false to be overwritten with integration settings.
+        if (path.split('.')[0] === 'integrations') {
+            const integrationName = path.split('.')[1];
+            if (((_a = this.event.integrations) === null || _a === void 0 ? void 0 : _a[integrationName]) === false) {
+                return this.event;
+            }
+        }
+        dset(this.event, path, val);
+        return this.event;
+    }
+    failedDelivery() {
+        return this._failedDelivery;
+    }
+    setFailedDelivery(options) {
+        this._failedDelivery = options;
+    }
+    logs() {
+        return this.logger.logs;
+    }
+    flush() {
+        this.logger.flush();
+        this.stats.flush();
+    }
+    toJSON() {
+        return {
+            id: this._id,
+            event: this.event,
+            logs: this.logger.logs,
+            metrics: this.stats.metrics,
+        };
+    }
+}
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ./src/lib/get-global.ts
+// This an imperfect polyfill for globalThis
+const getGlobal = () => {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    return null;
+};
+
+;// CONCATENATED MODULE: ./src/lib/fetch.ts
+// import unfetch from 'unfetch'
+
+/**
+ * Wrapper around native `fetch` containing `unfetch` fallback.
+ */
+const fetch = (...args) => {
+    const global = getGlobal();
+    // @ts-ignore
+    return ((global && global.fetch))(...args);
+};
+
+;// CONCATENATED MODULE: ./src/generated/version.ts
+// This file is generated.
+const version = '1.74.0';
+
+;// CONCATENATED MODULE: ./src/core/constants/index.ts
+const SEGMENT_API_HOST = 'api.segment.io/v1';
+
+;// CONCATENATED MODULE: ./src/core/stats/remote-metrics.ts
+
+
+
+
+const createRemoteMetric = (metric, tags, versionType) => {
+    const formattedTags = tags.reduce((acc, t) => {
+        const [k, v] = t.split(':');
+        acc[k] = v;
+        return acc;
+    }, {});
+    return {
+        type: 'Counter',
+        metric,
+        value: 1,
+        tags: Object.assign(Object.assign({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? `next-${version}` : `npm:next-${version}` }),
+    };
+};
+function logError(err) {
+    console.error('Error sending segment performance metrics', err);
+}
+class RemoteMetrics {
+    constructor(options) {
+        var _a, _b, _c, _d, _e;
+        this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : SEGMENT_API_HOST;
+        this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
+        this.flushTimer = (_c = options === null || options === void 0 ? void 0 : options.flushTimer) !== null && _c !== void 0 ? _c : 30 * 1000; /* 30s */
+        this.maxQueueSize = (_d = options === null || options === void 0 ? void 0 : options.maxQueueSize) !== null && _d !== void 0 ? _d : 20;
+        this.protocol = (_e = options === null || options === void 0 ? void 0 : options.protocol) !== null && _e !== void 0 ? _e : 'https';
+        this.queue = [];
+        if (this.sampleRate > 0) {
+            let flushing = false;
+            const run = () => {
+                if (flushing) {
+                    return;
+                }
+                flushing = true;
+                this.flush().catch(logError);
+                flushing = false;
+                setTimeout(run, this.flushTimer);
+            };
+            run();
+        }
+    }
+    increment(metric, tags) {
+        // All metrics are part of an allow list in Tracking API
+        if (!metric.includes('analytics_js.')) {
+            return;
+        }
+        // /m doesn't like empty tags
+        if (tags.length === 0) {
+            return;
+        }
+        if (Math.random() > this.sampleRate) {
+            return;
+        }
+        if (this.queue.length >= this.maxQueueSize) {
+            return;
+        }
+        const remoteMetric = createRemoteMetric(metric, tags, getVersionType());
+        this.queue.push(remoteMetric);
+        if (metric.includes('error')) {
+            this.flush().catch(logError);
+        }
+    }
+    async flush() {
+        if (this.queue.length <= 0) {
+            return;
+        }
+        await this.send().catch((error) => {
+            logError(error);
+            this.sampleRate = 0;
+        });
+    }
+    async send() {
+        const payload = { series: this.queue };
+        this.queue = [];
+        const headers = { 'Content-Type': 'text/plain' };
+        const url = `${this.protocol}://${this.host}/m`;
+        return fetch(url, {
+            headers,
+            body: JSON.stringify(payload),
+            method: 'POST',
+        });
+    }
+}
+
+;// CONCATENATED MODULE: ./src/core/stats/index.ts
+
+
+let remoteMetrics;
+class Stats extends CoreStats {
+    static initRemoteMetrics(options) {
+        remoteMetrics = new RemoteMetrics(options);
+    }
+    increment(metric, by, tags) {
+        super.increment(metric, by, tags);
+        remoteMetrics === null || remoteMetrics === void 0 ? void 0 : remoteMetrics.increment(metric, tags !== null && tags !== void 0 ? tags : []);
+    }
+}
+
+;// CONCATENATED MODULE: ./src/core/context/index.ts
+
+
+class Context extends CoreContext {
+    static system() {
+        return new this({ type: 'track', event: 'system' });
+    }
+    constructor(event, id) {
+        super(event, id, new Stats());
+    }
+}
+
+
+;// CONCATENATED MODULE: ../core/dist/esm/callback/index.js
+function pTimeout(promise, timeout) {
+    return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+            reject(Error('Promise timed out'));
+        }, timeout);
+        promise
+            .then((val) => {
+            clearTimeout(timeoutId);
+            return resolve(val);
+        })
+            .catch(reject);
+    });
+}
+function sleep(timeoutInMs) {
+    return new Promise((resolve) => setTimeout(resolve, timeoutInMs));
+}
+/**
+ * @param ctx
+ * @param callback - the function to invoke
+ * @param delay - aka "timeout". The amount of time in ms to wait before invoking the callback.
+ */
+function invokeCallback(ctx, callback, delay) {
+    const cb = () => {
+        try {
+            return Promise.resolve(callback(ctx));
+        }
+        catch (err) {
+            return Promise.reject(err);
+        }
+    };
+    return (sleep(delay)
+        // pTimeout ensures that the callback can't cause the context to hang
+        .then(() => pTimeout(cb(), 1000))
+        .catch((err) => {
+        ctx === null || ctx === void 0 ? void 0 : ctx.log('warn', 'Callback Error', { error: err });
+        ctx === null || ctx === void 0 ? void 0 : ctx.stats.increment('callback_error');
+    })
+        .then(() => ctx));
+}
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ../core/dist/esm/analytics/dispatch.js
+
+/* The amount of time in ms to wait before invoking the callback. */
+const getDelay = (startTimeInEpochMS, timeoutInMS) => {
+    const elapsedTime = Date.now() - startTimeInEpochMS;
+    // increasing the timeout increases the delay by almost the same amount -- this is weird legacy behavior.
+    return Math.max((timeoutInMS !== null && timeoutInMS !== void 0 ? timeoutInMS : 300) - elapsedTime, 0);
+};
+/**
+ * Push an event into the dispatch queue and invoke any callbacks.
+ *
+ * @param event - Segment event to enqueue.
+ * @param queue - Queue to dispatch against.
+ * @param emitter - This is typically an instance of "Analytics" -- used for metrics / progress information.
+ * @param options
+ */
+async function dispatch(ctx, queue, emitter, options) {
+    emitter.emit('dispatch_start', ctx);
+    const startTime = Date.now();
+    let dispatched;
+    if (queue.isEmpty()) {
+        dispatched = await queue.dispatchSingle(ctx);
+    }
+    else {
+        dispatched = await queue.dispatch(ctx);
+    }
+    if (options === null || options === void 0 ? void 0 : options.callback) {
+        dispatched = await invokeCallback(dispatched, options.callback, getDelay(startTime, options.timeout));
+    }
+    if (options === null || options === void 0 ? void 0 : options.debug) {
+        dispatched.flush();
+    }
+    return dispatched;
+}
+//# sourceMappingURL=dispatch.js.map
+;// CONCATENATED MODULE: ../generic-utils/dist/esm/emitter/emitter.js
+/**
+ * Event Emitter that takes the expected contract as a generic
+ * @example
+ * ```ts
+ *  type Contract = {
+ *    delivery_success: [DeliverySuccessResponse, Metrics],
+ *    delivery_failure: [DeliveryError]
+ * }
+ *  new Emitter<Contract>()
+ *  .on('delivery_success', (res, metrics) => ...)
+ *  .on('delivery_failure', (err) => ...)
+ * ```
+ */
+class Emitter {
+    constructor(options) {
+        var _a;
+        this.callbacks = {};
+        this.warned = false;
+        this.maxListeners = (_a = options === null || options === void 0 ? void 0 : options.maxListeners) !== null && _a !== void 0 ? _a : 10;
+    }
+    warnIfPossibleMemoryLeak(event) {
+        if (this.warned) {
+            return;
+        }
+        if (this.maxListeners &&
+            this.callbacks[event].length > this.maxListeners) {
+            console.warn(`Event Emitter: Possible memory leak detected; ${String(event)} has exceeded ${this.maxListeners} listeners.`);
+            this.warned = true;
+        }
+    }
+    on(event, callback) {
+        if (!this.callbacks[event]) {
+            this.callbacks[event] = [callback];
+        }
+        else {
+            this.callbacks[event].push(callback);
+            this.warnIfPossibleMemoryLeak(event);
+        }
+        return this;
+    }
+    once(event, callback) {
+        const on = (...args) => {
+            this.off(event, on);
+            callback.apply(this, args);
+        };
+        this.on(event, on);
+        return this;
+    }
+    off(event, callback) {
+        var _a;
+        const fns = (_a = this.callbacks[event]) !== null && _a !== void 0 ? _a : [];
+        const without = fns.filter((fn) => fn !== callback);
+        this.callbacks[event] = without;
+        return this;
+    }
+    emit(event, ...args) {
+        var _a;
+        const callbacks = (_a = this.callbacks[event]) !== null && _a !== void 0 ? _a : [];
+        callbacks.forEach((callback) => {
+            callback.apply(this, args);
+        });
+        return this;
+    }
+}
+//# sourceMappingURL=emitter.js.map
+;// CONCATENATED MODULE: ./src/lib/pick.ts
+/**
+ * @example
+ * pick({ 'a': 1, 'b': '2', 'c': 3 }, ['a', 'c'])
+ * => { 'a': 1, 'c': 3 }
+ */
+function pick(object, keys) {
+    return Object.assign({}, ...keys.map((key) => {
+        if (object && Object.prototype.hasOwnProperty.call(object, key)) {
+            return { [key]: object[key] };
+        }
+    }));
+}
+
+;// CONCATENATED MODULE: ./src/core/page/get-page-context.ts
+
+const BufferedPageContextDiscriminant = 'bpc';
+/**
+ * `BufferedPageContext` object builder
+ */
+const createBufferedPageContext = (url, canonicalUrl, search, path, title, referrer) => ({
+    __t: BufferedPageContextDiscriminant,
+    c: canonicalUrl,
+    p: path,
+    u: url,
+    s: search,
+    t: title,
+    r: referrer,
+});
+// my clever/dubious way of making sure this type guard does not get out sync with the type definition
+const BUFFERED_PAGE_CONTEXT_KEYS = Object.keys(createBufferedPageContext('', '', '', '', '', ''));
+function isBufferedPageContext(bufferedPageCtx) {
+    if (!helpers_isPlainObject(bufferedPageCtx))
+        return false;
+    if (bufferedPageCtx.__t !== BufferedPageContextDiscriminant)
+        return false;
+    // ensure obj has all the keys we expect, and none we don't.
+    for (const k in bufferedPageCtx) {
+        if (!BUFFERED_PAGE_CONTEXT_KEYS.includes(k)) {
+            return false;
+        }
+    }
+    return true;
+}
+//  Legacy logic: we are we appending search parameters to the canonical URL -- I guess the canonical URL is  "not canonical enough" (lol)
+const createCanonicalURL = (canonicalUrl, searchParams) => {
+    return canonicalUrl.indexOf('?') > -1
+        ? canonicalUrl
+        : canonicalUrl + searchParams;
+};
+/**
+ * Strips hash from URL.
+ * http://www.segment.local#test -> http://www.segment.local
+ */
+const removeHash = (href) => {
+    const hashIdx = href.indexOf('#');
+    return hashIdx === -1 ? href : href.slice(0, hashIdx);
+};
+const parseCanonicalPath = (canonicalUrl) => {
+    try {
+        return new URL(canonicalUrl).pathname;
+    }
+    catch (_e) {
+        // this is classic behavior -- we assume that if the canonical URL is invalid, it's a raw path.
+        return canonicalUrl[0] === '/' ? canonicalUrl : '/' + canonicalUrl;
+    }
+};
+/**
+ * Create a `PageContext` from a `BufferedPageContext`.
+ * `BufferedPageContext` keys are minified to save bytes in the snippet.
+ */
+const createPageContext = ({ c: canonicalUrl, p: pathname, s: search, u: url, r: referrer, t: title, }) => {
+    const newPath = canonicalUrl ? parseCanonicalPath(canonicalUrl) : pathname;
+    const newUrl = canonicalUrl
+        ? createCanonicalURL(canonicalUrl, search)
+        : removeHash(url);
+    return {
+        path: newPath,
+        referrer,
+        search,
+        title,
+        url: newUrl,
+    };
+};
+/**
+ * Get page properties from the browser window/document.
+ */
+const getDefaultBufferedPageContext = () => {
+    const c = document.querySelector("link[rel='canonical']");
+    return createBufferedPageContext(location.href, (c && c.getAttribute('href')) || undefined, location.search, location.pathname, document.title, document.referrer);
+};
+/**
+ * Get page properties from the browser window/document.
+ */
+const getDefaultPageContext = () => createPageContext(getDefaultBufferedPageContext());
+
+;// CONCATENATED MODULE: ./src/core/page/add-page-context.ts
+
+
+/**
+ * Augments a segment event with information about the current page.
+ * Page information like URL changes frequently, so this is meant to be captured as close to the event call as possible.
+ * Things like `userAgent` do not change, so they can be added later in the flow.
+ * We prefer not to add this information to this function, as it increases the main bundle size.
+ */
+const addPageContext = (event, pageCtx = getDefaultPageContext()) => {
+    const evtCtx = event.context; // Context should be set earlier in the flow
+    let pageContextFromEventProps;
+    if (event.type === 'page') {
+        pageContextFromEventProps =
+            event.properties && pick(event.properties, Object.keys(pageCtx));
+        event.properties = Object.assign(Object.assign(Object.assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
+    }
+    evtCtx.page = Object.assign(Object.assign(Object.assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
+};
+
 ;// CONCATENATED MODULE: ../../node_modules/tslib/tslib.es6.js
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -1690,712 +2290,32 @@ function __classPrivateFieldIn(state, receiver) {
     return typeof state === "function" ? receiver === state : state.has(receiver);
 }
 
-;// CONCATENATED MODULE: ../core/dist/esm/logger/index.js
-
-var CoreLogger = /** @class */ (function () {
-    function CoreLogger() {
-        this._logs = [];
-    }
-    CoreLogger.prototype.log = function (level, message, extras) {
-        var time = new Date();
-        this._logs.push({
-            level: level,
-            message: message,
-            time: time,
-            extras: extras,
-        });
-    };
-    Object.defineProperty(CoreLogger.prototype, "logs", {
-        get: function () {
-            return this._logs;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    CoreLogger.prototype.flush = function () {
-        if (this.logs.length > 1) {
-            var formatted = this._logs.reduce(function (logs, log) {
-                var _a;
-                var _b, _c;
-                var line = __assign(__assign({}, log), { json: JSON.stringify(log.extras, null, ' '), extras: log.extras });
-                delete line['time'];
-                var key = (_c = (_b = log.time) === null || _b === void 0 ? void 0 : _b.toISOString()) !== null && _c !== void 0 ? _c : '';
-                if (logs[key]) {
-                    key = "".concat(key, "-").concat(Math.random());
-                }
-                return __assign(__assign({}, logs), (_a = {}, _a[key] = line, _a));
-            }, {});
-            // ie doesn't like console.table
-            if (console.table) {
-                console.table(formatted);
-            }
-            else {
-                console.log(formatted);
-            }
-        }
-        else {
-            this.logs.forEach(function (logEntry) {
-                var level = logEntry.level, message = logEntry.message, extras = logEntry.extras;
-                if (level === 'info' || level === 'debug') {
-                    console.log(message, extras !== null && extras !== void 0 ? extras : '');
-                }
-                else {
-                    console[level](message, extras !== null && extras !== void 0 ? extras : '');
-                }
-            });
-        }
-        this._logs = [];
-    };
-    return CoreLogger;
-}());
-
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ../core/dist/esm/stats/index.js
-
-var compactMetricType = function (type) {
-    var enums = {
-        gauge: 'g',
-        counter: 'c',
-    };
-    return enums[type];
-};
-var CoreStats = /** @class */ (function () {
-    function CoreStats() {
-        this.metrics = [];
-    }
-    CoreStats.prototype.increment = function (metric, by, tags) {
-        if (by === void 0) { by = 1; }
-        this.metrics.push({
-            metric: metric,
-            value: by,
-            tags: tags !== null && tags !== void 0 ? tags : [],
-            type: 'counter',
-            timestamp: Date.now(),
-        });
-    };
-    CoreStats.prototype.gauge = function (metric, value, tags) {
-        this.metrics.push({
-            metric: metric,
-            value: value,
-            tags: tags !== null && tags !== void 0 ? tags : [],
-            type: 'gauge',
-            timestamp: Date.now(),
-        });
-    };
-    CoreStats.prototype.flush = function () {
-        var formatted = this.metrics.map(function (m) { return (__assign(__assign({}, m), { tags: m.tags.join(',') })); });
-        // ie doesn't like console.table
-        if (console.table) {
-            console.table(formatted);
-        }
-        else {
-            console.log(formatted);
-        }
-        this.metrics = [];
-    };
-    /**
-     * compact keys for smaller payload
-     */
-    CoreStats.prototype.serialize = function () {
-        return this.metrics.map(function (m) {
-            return {
-                m: m.metric,
-                v: m.value,
-                t: m.tags,
-                k: compactMetricType(m.type),
-                e: m.timestamp,
-            };
-        });
-    };
-    return CoreStats;
-}());
-
-var NullStats = /** @class */ (function (_super) {
-    __extends(NullStats, _super);
-    function NullStats() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NullStats.prototype.gauge = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-    };
-    NullStats.prototype.increment = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-    };
-    NullStats.prototype.flush = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-    };
-    NullStats.prototype.serialize = function () {
-        var _args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _args[_i] = arguments[_i];
-        }
-        return [];
-    };
-    return NullStats;
-}(CoreStats));
-
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ../core/dist/esm/context/index.js
-
-
-
-
-var context_ContextCancelation = /** @class */ (function () {
-    function ContextCancelation(options) {
-        var _a, _b, _c;
-        this.retry = (_a = options.retry) !== null && _a !== void 0 ? _a : true;
-        this.type = (_b = options.type) !== null && _b !== void 0 ? _b : 'plugin Error';
-        this.reason = (_c = options.reason) !== null && _c !== void 0 ? _c : '';
-    }
-    return ContextCancelation;
-}());
-
-var CoreContext = /** @class */ (function () {
-    function CoreContext(event, id, stats, logger) {
-        if (id === void 0) { id = v4(); }
-        if (stats === void 0) { stats = new NullStats(); }
-        if (logger === void 0) { logger = new CoreLogger(); }
-        this.attempts = 0;
-        this.event = event;
-        this._id = id;
-        this.logger = logger;
-        this.stats = stats;
-    }
-    CoreContext.system = function () {
-        // This should be overridden by the subclass to return an instance of the subclass.
-    };
-    CoreContext.prototype.isSame = function (other) {
-        return other.id === this.id;
-    };
-    CoreContext.prototype.cancel = function (error) {
-        if (error) {
-            throw error;
-        }
-        throw new context_ContextCancelation({ reason: 'Context Cancel' });
-    };
-    CoreContext.prototype.log = function (level, message, extras) {
-        this.logger.log(level, message, extras);
-    };
-    Object.defineProperty(CoreContext.prototype, "id", {
-        get: function () {
-            return this._id;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    CoreContext.prototype.updateEvent = function (path, val) {
-        var _a;
-        // Don't allow integrations that are set to false to be overwritten with integration settings.
-        if (path.split('.')[0] === 'integrations') {
-            var integrationName = path.split('.')[1];
-            if (((_a = this.event.integrations) === null || _a === void 0 ? void 0 : _a[integrationName]) === false) {
-                return this.event;
-            }
-        }
-        dset(this.event, path, val);
-        return this.event;
-    };
-    CoreContext.prototype.failedDelivery = function () {
-        return this._failedDelivery;
-    };
-    CoreContext.prototype.setFailedDelivery = function (options) {
-        this._failedDelivery = options;
-    };
-    CoreContext.prototype.logs = function () {
-        return this.logger.logs;
-    };
-    CoreContext.prototype.flush = function () {
-        this.logger.flush();
-        this.stats.flush();
-    };
-    CoreContext.prototype.toJSON = function () {
-        return {
-            id: this._id,
-            event: this.event,
-            logs: this.logger.logs,
-            metrics: this.stats.metrics,
-        };
-    };
-    return CoreContext;
-}());
-
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ./src/lib/get-global.ts
-// This an imperfect polyfill for globalThis
-const getGlobal = () => {
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
-    }
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    return null;
-};
-
-;// CONCATENATED MODULE: ./src/lib/fetch.ts
-// import unfetch from 'unfetch'
-
-/**
- * Wrapper around native `fetch` containing `unfetch` fallback.
- */
-const fetch = (...args) => {
-    const global = getGlobal();
-    // @ts-ignore
-    return ((global && global.fetch))(...args);
-};
-
-;// CONCATENATED MODULE: ./src/generated/version.ts
-// This file is generated.
-const version = '1.74.0';
-
-;// CONCATENATED MODULE: ./src/core/constants/index.ts
-const SEGMENT_API_HOST = 'api.segment.io/v1';
-
-;// CONCATENATED MODULE: ./src/core/stats/remote-metrics.ts
-
-
-
-
-const createRemoteMetric = (metric, tags, versionType) => {
-    const formattedTags = tags.reduce((acc, t) => {
-        const [k, v] = t.split(':');
-        acc[k] = v;
-        return acc;
-    }, {});
-    return {
-        type: 'Counter',
-        metric,
-        value: 1,
-        tags: Object.assign(Object.assign({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? `next-${version}` : `npm:next-${version}` }),
-    };
-};
-function logError(err) {
-    console.error('Error sending segment performance metrics', err);
-}
-class RemoteMetrics {
-    constructor(options) {
-        var _a, _b, _c, _d, _e;
-        this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : SEGMENT_API_HOST;
-        this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
-        this.flushTimer = (_c = options === null || options === void 0 ? void 0 : options.flushTimer) !== null && _c !== void 0 ? _c : 30 * 1000; /* 30s */
-        this.maxQueueSize = (_d = options === null || options === void 0 ? void 0 : options.maxQueueSize) !== null && _d !== void 0 ? _d : 20;
-        this.protocol = (_e = options === null || options === void 0 ? void 0 : options.protocol) !== null && _e !== void 0 ? _e : 'https';
-        this.queue = [];
-        if (this.sampleRate > 0) {
-            let flushing = false;
-            const run = () => {
-                if (flushing) {
-                    return;
-                }
-                flushing = true;
-                this.flush().catch(logError);
-                flushing = false;
-                setTimeout(run, this.flushTimer);
-            };
-            run();
-        }
-    }
-    increment(metric, tags) {
-        // All metrics are part of an allow list in Tracking API
-        if (!metric.includes('analytics_js.')) {
-            return;
-        }
-        // /m doesn't like empty tags
-        if (tags.length === 0) {
-            return;
-        }
-        if (Math.random() > this.sampleRate) {
-            return;
-        }
-        if (this.queue.length >= this.maxQueueSize) {
-            return;
-        }
-        const remoteMetric = createRemoteMetric(metric, tags, getVersionType());
-        this.queue.push(remoteMetric);
-        if (metric.includes('error')) {
-            this.flush().catch(logError);
-        }
-    }
-    async flush() {
-        if (this.queue.length <= 0) {
-            return;
-        }
-        await this.send().catch((error) => {
-            logError(error);
-            this.sampleRate = 0;
-        });
-    }
-    async send() {
-        const payload = { series: this.queue };
-        this.queue = [];
-        const headers = { 'Content-Type': 'text/plain' };
-        const url = `${this.protocol}://${this.host}/m`;
-        return fetch(url, {
-            headers,
-            body: JSON.stringify(payload),
-            method: 'POST',
-        });
-    }
-}
-
-;// CONCATENATED MODULE: ./src/core/stats/index.ts
-
-
-let remoteMetrics;
-class Stats extends CoreStats {
-    static initRemoteMetrics(options) {
-        remoteMetrics = new RemoteMetrics(options);
-    }
-    increment(metric, by, tags) {
-        super.increment(metric, by, tags);
-        remoteMetrics === null || remoteMetrics === void 0 ? void 0 : remoteMetrics.increment(metric, tags !== null && tags !== void 0 ? tags : []);
-    }
-}
-
-;// CONCATENATED MODULE: ./src/core/context/index.ts
-
-
-class Context extends CoreContext {
-    static system() {
-        return new this({ type: 'track', event: 'system' });
-    }
-    constructor(event, id) {
-        super(event, id, new Stats());
-    }
-}
-
-
-;// CONCATENATED MODULE: ../core/dist/esm/callback/index.js
-function pTimeout(promise, timeout) {
-    return new Promise(function (resolve, reject) {
-        var timeoutId = setTimeout(function () {
-            reject(Error('Promise timed out'));
-        }, timeout);
-        promise
-            .then(function (val) {
-            clearTimeout(timeoutId);
-            return resolve(val);
-        })
-            .catch(reject);
-    });
-}
-function sleep(timeoutInMs) {
-    return new Promise(function (resolve) { return setTimeout(resolve, timeoutInMs); });
-}
-/**
- * @param ctx
- * @param callback - the function to invoke
- * @param delay - aka "timeout". The amount of time in ms to wait before invoking the callback.
- */
-function invokeCallback(ctx, callback, delay) {
-    var cb = function () {
-        try {
-            return Promise.resolve(callback(ctx));
-        }
-        catch (err) {
-            return Promise.reject(err);
-        }
-    };
-    return (sleep(delay)
-        // pTimeout ensures that the callback can't cause the context to hang
-        .then(function () { return pTimeout(cb(), 1000); })
-        .catch(function (err) {
-        ctx === null || ctx === void 0 ? void 0 : ctx.log('warn', 'Callback Error', { error: err });
-        ctx === null || ctx === void 0 ? void 0 : ctx.stats.increment('callback_error');
-    })
-        .then(function () { return ctx; }));
-}
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ../core/dist/esm/analytics/dispatch.js
-
-
-/* The amount of time in ms to wait before invoking the callback. */
-var getDelay = function (startTimeInEpochMS, timeoutInMS) {
-    var elapsedTime = Date.now() - startTimeInEpochMS;
-    // increasing the timeout increases the delay by almost the same amount -- this is weird legacy behavior.
-    return Math.max((timeoutInMS !== null && timeoutInMS !== void 0 ? timeoutInMS : 300) - elapsedTime, 0);
-};
-/**
- * Push an event into the dispatch queue and invoke any callbacks.
- *
- * @param event - Segment event to enqueue.
- * @param queue - Queue to dispatch against.
- * @param emitter - This is typically an instance of "Analytics" -- used for metrics / progress information.
- * @param options
- */
-function dispatch(ctx, queue, emitter, options) {
-    return __awaiter(this, void 0, void 0, function () {
-        var startTime, dispatched;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    emitter.emit('dispatch_start', ctx);
-                    startTime = Date.now();
-                    if (!queue.isEmpty()) return [3 /*break*/, 2];
-                    return [4 /*yield*/, queue.dispatchSingle(ctx)];
-                case 1:
-                    dispatched = _a.sent();
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, queue.dispatch(ctx)];
-                case 3:
-                    dispatched = _a.sent();
-                    _a.label = 4;
-                case 4:
-                    if (!(options === null || options === void 0 ? void 0 : options.callback)) return [3 /*break*/, 6];
-                    return [4 /*yield*/, invokeCallback(dispatched, options.callback, getDelay(startTime, options.timeout))];
-                case 5:
-                    dispatched = _a.sent();
-                    _a.label = 6;
-                case 6:
-                    if (options === null || options === void 0 ? void 0 : options.debug) {
-                        dispatched.flush();
-                    }
-                    return [2 /*return*/, dispatched];
-            }
-        });
-    });
-}
-//# sourceMappingURL=dispatch.js.map
-;// CONCATENATED MODULE: ../generic-utils/dist/esm/emitter/emitter.js
-/**
- * Event Emitter that takes the expected contract as a generic
- * @example
- * ```ts
- *  type Contract = {
- *    delivery_success: [DeliverySuccessResponse, Metrics],
- *    delivery_failure: [DeliveryError]
- * }
- *  new Emitter<Contract>()
- *  .on('delivery_success', (res, metrics) => ...)
- *  .on('delivery_failure', (err) => ...)
- * ```
- */
-var Emitter = /** @class */ (function () {
-    function Emitter(options) {
-        var _a;
-        this.callbacks = {};
-        this.warned = false;
-        this.maxListeners = (_a = options === null || options === void 0 ? void 0 : options.maxListeners) !== null && _a !== void 0 ? _a : 10;
-    }
-    Emitter.prototype.warnIfPossibleMemoryLeak = function (event) {
-        if (this.warned) {
-            return;
-        }
-        if (this.maxListeners &&
-            this.callbacks[event].length > this.maxListeners) {
-            console.warn("Event Emitter: Possible memory leak detected; ".concat(String(event), " has exceeded ").concat(this.maxListeners, " listeners."));
-            this.warned = true;
-        }
-    };
-    Emitter.prototype.on = function (event, callback) {
-        if (!this.callbacks[event]) {
-            this.callbacks[event] = [callback];
-        }
-        else {
-            this.callbacks[event].push(callback);
-            this.warnIfPossibleMemoryLeak(event);
-        }
-        return this;
-    };
-    Emitter.prototype.once = function (event, callback) {
-        var _this = this;
-        var on = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            _this.off(event, on);
-            callback.apply(_this, args);
-        };
-        this.on(event, on);
-        return this;
-    };
-    Emitter.prototype.off = function (event, callback) {
-        var _a;
-        var fns = (_a = this.callbacks[event]) !== null && _a !== void 0 ? _a : [];
-        var without = fns.filter(function (fn) { return fn !== callback; });
-        this.callbacks[event] = without;
-        return this;
-    };
-    Emitter.prototype.emit = function (event) {
-        var _this = this;
-        var _a;
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        var callbacks = (_a = this.callbacks[event]) !== null && _a !== void 0 ? _a : [];
-        callbacks.forEach(function (callback) {
-            callback.apply(_this, args);
-        });
-        return this;
-    };
-    return Emitter;
-}());
-
-//# sourceMappingURL=emitter.js.map
-;// CONCATENATED MODULE: ./src/lib/pick.ts
-/**
- * @example
- * pick({ 'a': 1, 'b': '2', 'c': 3 }, ['a', 'c'])
- * => { 'a': 1, 'c': 3 }
- */
-function pick(object, keys) {
-    return Object.assign({}, ...keys.map((key) => {
-        if (object && Object.prototype.hasOwnProperty.call(object, key)) {
-            return { [key]: object[key] };
-        }
-    }));
-}
-
-;// CONCATENATED MODULE: ./src/core/page/get-page-context.ts
-
-const BufferedPageContextDiscriminant = 'bpc';
-/**
- * `BufferedPageContext` object builder
- */
-const createBufferedPageContext = (url, canonicalUrl, search, path, title, referrer) => ({
-    __t: BufferedPageContextDiscriminant,
-    c: canonicalUrl,
-    p: path,
-    u: url,
-    s: search,
-    t: title,
-    r: referrer,
-});
-// my clever/dubious way of making sure this type guard does not get out sync with the type definition
-const BUFFERED_PAGE_CONTEXT_KEYS = Object.keys(createBufferedPageContext('', '', '', '', '', ''));
-function isBufferedPageContext(bufferedPageCtx) {
-    if (!helpers_isPlainObject(bufferedPageCtx))
-        return false;
-    if (bufferedPageCtx.__t !== BufferedPageContextDiscriminant)
-        return false;
-    // ensure obj has all the keys we expect, and none we don't.
-    for (const k in bufferedPageCtx) {
-        if (!BUFFERED_PAGE_CONTEXT_KEYS.includes(k)) {
-            return false;
-        }
-    }
-    return true;
-}
-//  Legacy logic: we are we appending search parameters to the canonical URL -- I guess the canonical URL is  "not canonical enough" (lol)
-const createCanonicalURL = (canonicalUrl, searchParams) => {
-    return canonicalUrl.indexOf('?') > -1
-        ? canonicalUrl
-        : canonicalUrl + searchParams;
-};
-/**
- * Strips hash from URL.
- * http://www.segment.local#test -> http://www.segment.local
- */
-const removeHash = (href) => {
-    const hashIdx = href.indexOf('#');
-    return hashIdx === -1 ? href : href.slice(0, hashIdx);
-};
-const parseCanonicalPath = (canonicalUrl) => {
-    try {
-        return new URL(canonicalUrl).pathname;
-    }
-    catch (_e) {
-        // this is classic behavior -- we assume that if the canonical URL is invalid, it's a raw path.
-        return canonicalUrl[0] === '/' ? canonicalUrl : '/' + canonicalUrl;
-    }
-};
-/**
- * Create a `PageContext` from a `BufferedPageContext`.
- * `BufferedPageContext` keys are minified to save bytes in the snippet.
- */
-const createPageContext = ({ c: canonicalUrl, p: pathname, s: search, u: url, r: referrer, t: title, }) => {
-    const newPath = canonicalUrl ? parseCanonicalPath(canonicalUrl) : pathname;
-    const newUrl = canonicalUrl
-        ? createCanonicalURL(canonicalUrl, search)
-        : removeHash(url);
-    return {
-        path: newPath,
-        referrer,
-        search,
-        title,
-        url: newUrl,
-    };
-};
-/**
- * Get page properties from the browser window/document.
- */
-const getDefaultBufferedPageContext = () => {
-    const c = document.querySelector("link[rel='canonical']");
-    return createBufferedPageContext(location.href, (c && c.getAttribute('href')) || undefined, location.search, location.pathname, document.title, document.referrer);
-};
-/**
- * Get page properties from the browser window/document.
- */
-const getDefaultPageContext = () => createPageContext(getDefaultBufferedPageContext());
-
-;// CONCATENATED MODULE: ./src/core/page/add-page-context.ts
-
-
-/**
- * Augments a segment event with information about the current page.
- * Page information like URL changes frequently, so this is meant to be captured as close to the event call as possible.
- * Things like `userAgent` do not change, so they can be added later in the flow.
- * We prefer not to add this information to this function, as it increases the main bundle size.
- */
-const addPageContext = (event, pageCtx = getDefaultPageContext()) => {
-    const evtCtx = event.context; // Context should be set earlier in the flow
-    let pageContextFromEventProps;
-    if (event.type === 'page') {
-        pageContextFromEventProps =
-            event.properties && pick(event.properties, Object.keys(pageCtx));
-        event.properties = Object.assign(Object.assign(Object.assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
-    }
-    evtCtx.page = Object.assign(Object.assign(Object.assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
-};
-
 ;// CONCATENATED MODULE: ../core/dist/esm/utils/pick.js
-var pickBy = function (obj, fn) {
+const pickBy = (obj, fn) => {
     return Object.keys(obj)
-        .filter(function (k) { return fn(k, obj[k]); })
-        .reduce(function (acc, key) { return ((acc[key] = obj[key]), acc); }, {});
+        .filter((k) => fn(k, obj[k]))
+        .reduce((acc, key) => ((acc[key] = obj[key]), acc), {});
 };
 //# sourceMappingURL=pick.js.map
 ;// CONCATENATED MODULE: ../core/dist/esm/validation/errors.js
-
-var errors_ValidationError = /** @class */ (function (_super) {
-    __extends(ValidationError, _super);
-    function ValidationError(field, message) {
-        var _this = _super.call(this, "".concat(field, " ").concat(message)) || this;
-        _this.field = field;
-        return _this;
+class errors_ValidationError extends Error {
+    constructor(field, message) {
+        super(`${field} ${message}`);
+        this.field = field;
     }
-    return ValidationError;
-}(Error));
-
+}
 //# sourceMappingURL=errors.js.map
 ;// CONCATENATED MODULE: ../core/dist/esm/validation/assertions.js
 
 
-var stringError = 'is not a string';
-var objError = 'is not an object';
-var nilError = 'is nil';
+const stringError = 'is not a string';
+const objError = 'is not an object';
+const nilError = 'is nil';
 // user identity check could hypothetically could be used in the browser event factory, but not 100% sure -- so this is node only for now
 function assertUserIdentity(event) {
-    var USER_FIELD_NAME = '.userId/anonymousId/previousId/groupId';
-    var getAnyUserId = function (event) { var _a, _b, _c; return (_c = (_b = (_a = event.userId) !== null && _a !== void 0 ? _a : event.anonymousId) !== null && _b !== void 0 ? _b : event.groupId) !== null && _c !== void 0 ? _c : event.previousId; };
-    var id = getAnyUserId(event);
+    const USER_FIELD_NAME = '.userId/anonymousId/previousId/groupId';
+    const getAnyUserId = (event) => { var _a, _b, _c; return (_c = (_b = (_a = event.userId) !== null && _a !== void 0 ? _a : event.anonymousId) !== null && _b !== void 0 ? _b : event.groupId) !== null && _c !== void 0 ? _c : event.previousId; };
+    const id = getAnyUserId(event);
     if (!exists(id)) {
         throw new ValidationError(USER_FIELD_NAME, nilError);
     }
@@ -2458,32 +2378,31 @@ function validateEvent(event) {
 /**
  * Internal settings object that is used internally by the factory
  */
-var InternalEventFactorySettings = /** @class */ (function () {
-    function InternalEventFactorySettings(settings) {
+class InternalEventFactorySettings {
+    constructor(settings) {
         var _a, _b;
         this.settings = settings;
         this.createMessageId = settings.createMessageId;
-        this.onEventMethodCall = (_a = settings.onEventMethodCall) !== null && _a !== void 0 ? _a : (function () { });
-        this.onFinishedEvent = (_b = settings.onFinishedEvent) !== null && _b !== void 0 ? _b : (function () { });
+        this.onEventMethodCall = (_a = settings.onEventMethodCall) !== null && _a !== void 0 ? _a : (() => { });
+        this.onFinishedEvent = (_b = settings.onFinishedEvent) !== null && _b !== void 0 ? _b : (() => { });
     }
-    return InternalEventFactorySettings;
-}());
-var CoreEventFactory = /** @class */ (function () {
-    function CoreEventFactory(settings) {
+}
+class CoreEventFactory {
+    constructor(settings) {
         this.settings = new InternalEventFactorySettings(settings);
     }
-    CoreEventFactory.prototype.track = function (event, properties, options, globalIntegrations) {
-        this.settings.onEventMethodCall({ type: 'track', options: options });
-        return this.normalize(__assign(__assign({}, this.baseEvent()), { event: event, type: 'track', properties: properties !== null && properties !== void 0 ? properties : {}, options: __assign({}, options), integrations: __assign({}, globalIntegrations) }));
-    };
-    CoreEventFactory.prototype.page = function (category, page, properties, options, globalIntegrations) {
+    track(event, properties, options, globalIntegrations) {
+        this.settings.onEventMethodCall({ type: 'track', options });
+        return this.normalize(Object.assign(Object.assign({}, this.baseEvent()), { event, type: 'track', properties: properties !== null && properties !== void 0 ? properties : {}, options: Object.assign({}, options), integrations: Object.assign({}, globalIntegrations) }));
+    }
+    page(category, page, properties, options, globalIntegrations) {
         var _a;
-        this.settings.onEventMethodCall({ type: 'page', options: options });
-        var event = {
+        this.settings.onEventMethodCall({ type: 'page', options });
+        const event = {
             type: 'page',
-            properties: __assign({}, properties),
-            options: __assign({}, options),
-            integrations: __assign({}, globalIntegrations),
+            properties: Object.assign({}, properties),
+            options: Object.assign({}, options),
+            integrations: Object.assign({}, globalIntegrations),
         };
         if (category !== null) {
             event.category = category;
@@ -2493,8 +2412,8 @@ var CoreEventFactory = /** @class */ (function () {
         if (page !== null) {
             event.name = page;
         }
-        return this.normalize(__assign(__assign({}, this.baseEvent()), event));
-    };
+        return this.normalize(Object.assign(Object.assign({}, this.baseEvent()), event));
+    }
     // screen(
     //   category: string | null,
     //   screen: string | null,
@@ -2579,33 +2498,33 @@ var CoreEventFactory = /** @class */ (function () {
     //     ...base,
     //   })
     // }
-    CoreEventFactory.prototype.baseEvent = function () {
+    baseEvent() {
         return {
             integrations: {},
             options: {},
         };
-    };
+    }
     /**
      * Builds the context part of an event based on "foreign" keys that
      * are provided in the `Options` parameter for an Event
      */
-    CoreEventFactory.prototype.context = function (options) {
+    context(options) {
         var _a;
         /**
          * If the event options are known keys from this list, we move them to the top level of the event.
          * Any other options are moved to context.
          */
-        var eventOverrideKeys = [
+        const eventOverrideKeys = [
             'userId',
             'anonymousId',
             'timestamp',
             'messageId',
         ];
         delete options['integrations'];
-        var providedOptionsKeys = Object.keys(options);
-        var context = (_a = options.context) !== null && _a !== void 0 ? _a : {};
-        var eventOverrides = {};
-        providedOptionsKeys.forEach(function (key) {
+        const providedOptionsKeys = Object.keys(options);
+        const context = (_a = options.context) !== null && _a !== void 0 ? _a : {};
+        const eventOverrides = {};
+        providedOptionsKeys.forEach((key) => {
             if (key === 'context') {
                 return;
             }
@@ -2617,35 +2536,32 @@ var CoreEventFactory = /** @class */ (function () {
             }
         });
         return [context, eventOverrides];
-    };
-    CoreEventFactory.prototype.normalize = function (event) {
+    }
+    normalize(event) {
         var _a, _b;
-        var integrationBooleans = Object.keys((_a = event.integrations) !== null && _a !== void 0 ? _a : {}).reduce(function (integrationNames, name) {
+        const integrationBooleans = Object.keys((_a = event.integrations) !== null && _a !== void 0 ? _a : {}).reduce((integrationNames, name) => {
             var _a;
-            var _b;
-            return __assign(__assign({}, integrationNames), (_a = {}, _a[name] = Boolean((_b = event.integrations) === null || _b === void 0 ? void 0 : _b[name]), _a));
+            return Object.assign(Object.assign({}, integrationNames), { [name]: Boolean((_a = event.integrations) === null || _a === void 0 ? void 0 : _a[name]) });
         }, {});
         // filter out any undefined options
-        event.options = pickBy(event.options || {}, function (_, value) {
+        event.options = pickBy(event.options || {}, (_, value) => {
             return value !== undefined;
         });
         // This is pretty trippy, but here's what's going on:
         // - a) We don't pass initial integration options as part of the event, only if they're true or false
         // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
         // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-        var allIntegrations = __assign(__assign({}, integrationBooleans), (_b = event.options) === null || _b === void 0 ? void 0 : _b.integrations);
-        var _c = event.options
+        const allIntegrations = Object.assign(Object.assign({}, integrationBooleans), (_b = event.options) === null || _b === void 0 ? void 0 : _b.integrations);
+        const [context, overrides] = event.options
             ? this.context(event.options)
-            : [], context = _c[0], overrides = _c[1];
-        var options = event.options, rest = __rest(event, ["options"]);
-        var evt = __assign(__assign(__assign(__assign({ timestamp: new Date() }, rest), { context: context, integrations: allIntegrations }), overrides), { messageId: options.messageId || this.settings.createMessageId() });
+            : [];
+        const { options } = event, rest = __rest(event, ["options"]);
+        const evt = Object.assign(Object.assign(Object.assign(Object.assign({ timestamp: new Date() }, rest), { context, integrations: allIntegrations }), overrides), { messageId: options.messageId || this.settings.createMessageId() });
         this.settings.onFinishedEvent(evt);
         validateEvent(evt);
         return evt;
-    };
-    return CoreEventFactory;
-}());
-
+    }
+}
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./src/core/events/index.ts
 
@@ -2698,105 +2614,85 @@ class EventFactory extends CoreEventFactory {
 
 ;// CONCATENATED MODULE: ../core/dist/esm/priority-queue/backoff.js
 function backoff(params) {
-    var random = Math.random() + 1;
-    var _a = params.minTimeout, minTimeout = _a === void 0 ? 500 : _a, _b = params.factor, factor = _b === void 0 ? 2 : _b, attempt = params.attempt, _c = params.maxTimeout, maxTimeout = _c === void 0 ? Infinity : _c;
+    const random = Math.random() + 1;
+    const { minTimeout = 500, factor = 2, attempt, maxTimeout = Infinity, } = params;
     return Math.min(random * minTimeout * Math.pow(factor, attempt), maxTimeout);
 }
 //# sourceMappingURL=backoff.js.map
 ;// CONCATENATED MODULE: ../core/dist/esm/priority-queue/index.js
 
 
-
 /**
  * @internal
  */
-var ON_REMOVE_FROM_FUTURE = 'onRemoveFromFuture';
-var PriorityQueue = /** @class */ (function (_super) {
-    __extends(PriorityQueue, _super);
-    function PriorityQueue(maxAttempts, queue, seen) {
-        var _this = _super.call(this) || this;
-        _this.future = [];
-        _this.maxAttempts = maxAttempts;
-        _this.queue = queue;
-        _this.seen = seen !== null && seen !== void 0 ? seen : {};
-        return _this;
+const ON_REMOVE_FROM_FUTURE = 'onRemoveFromFuture';
+class PriorityQueue extends Emitter {
+    constructor(maxAttempts, queue, seen) {
+        super();
+        this.future = [];
+        this.maxAttempts = maxAttempts;
+        this.queue = queue;
+        this.seen = seen !== null && seen !== void 0 ? seen : {};
     }
-    PriorityQueue.prototype.push = function () {
-        var _this = this;
-        var items = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            items[_i] = arguments[_i];
-        }
-        var accepted = items.map(function (operation) {
-            var attempts = _this.updateAttempts(operation);
-            if (attempts > _this.maxAttempts || _this.includes(operation)) {
+    push(...items) {
+        const accepted = items.map((operation) => {
+            const attempts = this.updateAttempts(operation);
+            if (attempts > this.maxAttempts || this.includes(operation)) {
                 return false;
             }
-            _this.queue.push(operation);
+            this.queue.push(operation);
             return true;
         });
-        this.queue = this.queue.sort(function (a, b) { return _this.getAttempts(a) - _this.getAttempts(b); });
+        this.queue = this.queue.sort((a, b) => this.getAttempts(a) - this.getAttempts(b));
         return accepted;
-    };
-    PriorityQueue.prototype.pushWithBackoff = function (item, minTimeout) {
-        var _this = this;
-        if (minTimeout === void 0) { minTimeout = 0; }
+    }
+    pushWithBackoff(item, minTimeout = 0) {
         // One immediate retry unless we have a minimum timeout (e.g. for rate limiting)
         if (minTimeout == 0 && this.getAttempts(item) === 0) {
             return this.push(item)[0];
         }
-        var attempt = this.updateAttempts(item);
+        const attempt = this.updateAttempts(item);
         if (attempt > this.maxAttempts || this.includes(item)) {
             return false;
         }
-        var timeout = backoff({ attempt: attempt - 1 });
+        let timeout = backoff({ attempt: attempt - 1 });
         if (minTimeout > 0 && timeout < minTimeout) {
             timeout = minTimeout;
         }
-        setTimeout(function () {
-            _this.queue.push(item);
+        setTimeout(() => {
+            this.queue.push(item);
             // remove from future list
-            _this.future = _this.future.filter(function (f) { return f.id !== item.id; });
+            this.future = this.future.filter((f) => f.id !== item.id);
             // Lets listeners know that a 'future' message is now available in the queue
-            _this.emit(ON_REMOVE_FROM_FUTURE);
+            this.emit(ON_REMOVE_FROM_FUTURE);
         }, timeout);
         this.future.push(item);
         return true;
-    };
-    PriorityQueue.prototype.getAttempts = function (item) {
+    }
+    getAttempts(item) {
         var _a;
         return (_a = this.seen[item.id]) !== null && _a !== void 0 ? _a : 0;
-    };
-    PriorityQueue.prototype.updateAttempts = function (item) {
+    }
+    updateAttempts(item) {
         this.seen[item.id] = this.getAttempts(item) + 1;
         return this.getAttempts(item);
-    };
-    PriorityQueue.prototype.includes = function (item) {
+    }
+    includes(item) {
         return (this.queue.includes(item) ||
             this.future.includes(item) ||
-            Boolean(this.queue.find(function (i) { return i.id === item.id; })) ||
-            Boolean(this.future.find(function (i) { return i.id === item.id; })));
-    };
-    PriorityQueue.prototype.pop = function () {
+            Boolean(this.queue.find((i) => i.id === item.id)) ||
+            Boolean(this.future.find((i) => i.id === item.id)));
+    }
+    pop() {
         return this.queue.shift();
-    };
-    Object.defineProperty(PriorityQueue.prototype, "length", {
-        get: function () {
-            return this.queue.length;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(PriorityQueue.prototype, "todo", {
-        get: function () {
-            return this.queue.length + this.future.length;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return PriorityQueue;
-}(Emitter));
-
+    }
+    get length() {
+        return this.queue.length;
+    }
+    get todo() {
+        return this.queue.length + this.future.length;
+    }
+}
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./src/lib/priority-queue/persisted.ts
 
@@ -2898,14 +2794,13 @@ class PersistedPriorityQueue extends PriorityQueue {
 }
 
 ;// CONCATENATED MODULE: ../core/dist/esm/utils/group-by.js
-
 function groupBy(collection, grouper) {
-    var results = {};
-    collection.forEach(function (item) {
+    const results = {};
+    collection.forEach((item) => {
         var _a;
-        var key = undefined;
+        let key = undefined;
         if (typeof grouper === 'string') {
-            var suggestedKey = item[grouper];
+            const suggestedKey = item[grouper];
             key =
                 typeof suggestedKey !== 'string'
                     ? JSON.stringify(suggestedKey)
@@ -2917,7 +2812,7 @@ function groupBy(collection, grouper) {
         if (key === undefined) {
             return;
         }
-        results[key] = __spreadArray(__spreadArray([], ((_a = results[key]) !== null && _a !== void 0 ? _a : []), true), [item], false);
+        results[key] = [...((_a = results[key]) !== null && _a !== void 0 ? _a : []), item];
     });
     return results;
 }
@@ -2927,28 +2822,26 @@ function groupBy(collection, grouper) {
  *  Check if  thenable
  *  (instanceof Promise doesn't respect realms)
  */
-var isThenable = function (value) {
-    return typeof value === 'object' &&
-        value !== null &&
-        'then' in value &&
-        typeof value.then === 'function';
-};
+const isThenable = (value) => typeof value === 'object' &&
+    value !== null &&
+    'then' in value &&
+    typeof value.then === 'function';
 //# sourceMappingURL=is-thenable.js.map
 ;// CONCATENATED MODULE: ../core/dist/esm/task/task-group.js
 
-var createTaskGroup = function () {
-    var taskCompletionPromise;
-    var resolvePromise;
-    var count = 0;
+const createTaskGroup = () => {
+    let taskCompletionPromise;
+    let resolvePromise;
+    let count = 0;
     return {
-        done: function () { return taskCompletionPromise; },
-        run: function (op) {
-            var returnValue = op();
+        done: () => taskCompletionPromise,
+        run: (op) => {
+            const returnValue = op();
             if (isThenable(returnValue)) {
                 if (++count === 1) {
-                    taskCompletionPromise = new Promise(function (res) { return (resolvePromise = res); });
+                    taskCompletionPromise = new Promise((res) => (resolvePromise = res));
                 }
-                returnValue.finally(function () { return --count === 0 && resolvePromise(); });
+                returnValue.finally(() => --count === 0 && resolvePromise());
             }
             return returnValue;
         },
@@ -2957,38 +2850,28 @@ var createTaskGroup = function () {
 //# sourceMappingURL=task-group.js.map
 ;// CONCATENATED MODULE: ../core/dist/esm/queue/delivery.js
 
-
-function tryAsync(fn) {
-    return __awaiter(this, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, fn()];
-                case 1: return [2 /*return*/, _a.sent()];
-                case 2:
-                    err_1 = _a.sent();
-                    return [2 /*return*/, Promise.reject(err_1)];
-                case 3: return [2 /*return*/];
-            }
-        });
-    });
+async function tryAsync(fn) {
+    try {
+        return await fn();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
 }
 function attempt(ctx, plugin) {
     ctx.log('debug', 'plugin', { plugin: plugin.name });
-    var start = new Date().getTime();
-    var hook = plugin[ctx.event.type];
+    const start = new Date().getTime();
+    const hook = plugin[ctx.event.type];
     if (hook === undefined) {
         return Promise.resolve(ctx);
     }
-    var newCtx = tryAsync(function () { return hook.apply(plugin, [ctx]); })
-        .then(function (ctx) {
-        var done = new Date().getTime() - start;
-        ctx.stats.gauge('plugin_time', done, ["plugin:".concat(plugin.name)]);
+    const newCtx = tryAsync(() => hook.apply(plugin, [ctx]))
+        .then((ctx) => {
+        const done = new Date().getTime() - start;
+        ctx.stats.gauge('plugin_time', done, [`plugin:${plugin.name}`]);
         return ctx;
     })
-        .catch(function (err) {
+        .catch((err) => {
         if (err instanceof context_ContextCancelation &&
             err.type === 'middleware_cancellation') {
             throw err;
@@ -3004,13 +2887,13 @@ function attempt(ctx, plugin) {
             plugin: plugin.name,
             error: err,
         });
-        ctx.stats.increment('plugin_error', 1, ["plugin:".concat(plugin.name)]);
+        ctx.stats.increment('plugin_error', 1, [`plugin:${plugin.name}`]);
         return err;
     });
     return newCtx;
 }
 function ensure(ctx, plugin) {
-    return attempt(ctx, plugin).then(function (newContext) {
+    return attempt(ctx, plugin).then((newContext) => {
         if (newContext instanceof CoreContext) {
             return newContext;
         }
@@ -3027,11 +2910,9 @@ function ensure(ctx, plugin) {
 
 
 
-
-var CoreEventQueue = /** @class */ (function (_super) {
-    __extends(CoreEventQueue, _super);
-    function CoreEventQueue(priorityQueue) {
-        var _this = _super.call(this) || this;
+class CoreEventQueue extends Emitter {
+    constructor(priorityQueue) {
+        super();
         /**
          * All event deliveries get suspended until all the tasks in this task group are complete.
          * For example: a middleware that augments the event object should be loaded safely as a
@@ -3039,243 +2920,178 @@ var CoreEventQueue = /** @class */ (function (_super) {
          *
          * This applies to all the events already in the queue, and the upcoming ones
          */
-        _this.criticalTasks = createTaskGroup();
-        _this.plugins = [];
-        _this.failedInitializations = [];
-        _this.flushing = false;
-        _this.queue = priorityQueue;
-        _this.queue.on(ON_REMOVE_FROM_FUTURE, function () {
-            _this.scheduleFlush(0);
+        this.criticalTasks = createTaskGroup();
+        this.plugins = [];
+        this.failedInitializations = [];
+        this.flushing = false;
+        this.queue = priorityQueue;
+        this.queue.on(ON_REMOVE_FROM_FUTURE, () => {
+            this.scheduleFlush(0);
         });
-        return _this;
     }
-    CoreEventQueue.prototype.register = function (ctx, plugin, instance) {
-        return __awaiter(this, void 0, void 0, function () {
-            var handleLoadError, err_1;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.plugins.push(plugin);
-                        handleLoadError = function (err) {
-                            _this.failedInitializations.push(plugin.name);
-                            _this.emit('initialization_failure', plugin);
-                            console.warn(plugin.name, err);
-                            ctx.log('warn', 'Failed to load destination', {
-                                plugin: plugin.name,
-                                error: err,
-                            });
-                            // Filter out the failed plugin by excluding it from the list
-                            _this.plugins = _this.plugins.filter(function (p) { return p !== plugin; });
-                        };
-                        if (!(plugin.type === 'destination' && plugin.name !== 'Segment.io')) return [3 /*break*/, 1];
-                        plugin.load(ctx, instance).catch(handleLoadError);
-                        return [3 /*break*/, 4];
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, plugin.load(ctx, instance)];
-                    case 2:
-                        _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        err_1 = _a.sent();
-                        handleLoadError(err_1);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+    async register(ctx, plugin, instance) {
+        this.plugins.push(plugin);
+        const handleLoadError = (err) => {
+            this.failedInitializations.push(plugin.name);
+            this.emit('initialization_failure', plugin);
+            console.warn(plugin.name, err);
+            ctx.log('warn', 'Failed to load destination', {
+                plugin: plugin.name,
+                error: err,
+            });
+            // Filter out the failed plugin by excluding it from the list
+            this.plugins = this.plugins.filter((p) => p !== plugin);
+        };
+        if (plugin.type === 'destination' && plugin.name !== 'Segment.io') {
+            plugin.load(ctx, instance).catch(handleLoadError);
+        }
+        else {
+            // for non-destinations plugins, we do need to wait for them to load
+            // reminder: action destinations can require plugins that are not of type "destination".
+            // For example, GA4 loads a type 'before' plugins and addition to a type 'destination' plugin
+            try {
+                await plugin.load(ctx, instance);
+            }
+            catch (err) {
+                handleLoadError(err);
+            }
+        }
+    }
+    async deregister(ctx, plugin, instance) {
+        try {
+            if (plugin.unload) {
+                await Promise.resolve(plugin.unload(ctx, instance));
+            }
+            this.plugins = this.plugins.filter((p) => p.name !== plugin.name);
+        }
+        catch (e) {
+            ctx.log('warn', 'Failed to unload destination', {
+                plugin: plugin.name,
+                error: e,
+            });
+        }
+    }
+    async dispatch(ctx) {
+        ctx.log('debug', 'Dispatching');
+        ctx.stats.increment('message_dispatched');
+        this.queue.push(ctx);
+        const willDeliver = this.subscribeToDelivery(ctx);
+        this.scheduleFlush(0);
+        return willDeliver;
+    }
+    async subscribeToDelivery(ctx) {
+        return new Promise((resolve) => {
+            const onDeliver = (flushed, delivered) => {
+                if (flushed.isSame(ctx)) {
+                    this.off('flush', onDeliver);
+                    if (delivered) {
+                        resolve(flushed);
+                    }
+                    else {
+                        resolve(flushed);
+                    }
                 }
-            });
+            };
+            this.on('flush', onDeliver);
         });
-    };
-    CoreEventQueue.prototype.deregister = function (ctx, plugin, instance) {
-        return __awaiter(this, void 0, void 0, function () {
-            var e_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        if (!plugin.unload) return [3 /*break*/, 2];
-                        return [4 /*yield*/, Promise.resolve(plugin.unload(ctx, instance))];
-                    case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        this.plugins = this.plugins.filter(function (p) { return p.name !== plugin.name; });
-                        return [3 /*break*/, 4];
-                    case 3:
-                        e_1 = _a.sent();
-                        ctx.log('warn', 'Failed to unload destination', {
-                            plugin: plugin.name,
-                            error: e_1,
-                        });
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
-                }
-            });
+    }
+    async dispatchSingle(ctx) {
+        ctx.log('debug', 'Dispatching');
+        ctx.stats.increment('message_dispatched');
+        this.queue.updateAttempts(ctx);
+        ctx.attempts = 1;
+        return this.deliver(ctx).catch((err) => {
+            const accepted = this.enqueuRetry(err, ctx);
+            if (!accepted) {
+                ctx.setFailedDelivery({ reason: err });
+                return ctx;
+            }
+            return this.subscribeToDelivery(ctx);
         });
-    };
-    CoreEventQueue.prototype.dispatch = function (ctx) {
-        return __awaiter(this, void 0, void 0, function () {
-            var willDeliver;
-            return __generator(this, function (_a) {
-                ctx.log('debug', 'Dispatching');
-                ctx.stats.increment('message_dispatched');
-                this.queue.push(ctx);
-                willDeliver = this.subscribeToDelivery(ctx);
-                this.scheduleFlush(0);
-                return [2 /*return*/, willDeliver];
-            });
-        });
-    };
-    CoreEventQueue.prototype.subscribeToDelivery = function (ctx) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve) {
-                        var onDeliver = function (flushed, delivered) {
-                            if (flushed.isSame(ctx)) {
-                                _this.off('flush', onDeliver);
-                                if (delivered) {
-                                    resolve(flushed);
-                                }
-                                else {
-                                    resolve(flushed);
-                                }
-                            }
-                        };
-                        _this.on('flush', onDeliver);
-                    })];
-            });
-        });
-    };
-    CoreEventQueue.prototype.dispatchSingle = function (ctx) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                ctx.log('debug', 'Dispatching');
-                ctx.stats.increment('message_dispatched');
-                this.queue.updateAttempts(ctx);
-                ctx.attempts = 1;
-                return [2 /*return*/, this.deliver(ctx).catch(function (err) {
-                        var accepted = _this.enqueuRetry(err, ctx);
-                        if (!accepted) {
-                            ctx.setFailedDelivery({ reason: err });
-                            return ctx;
-                        }
-                        return _this.subscribeToDelivery(ctx);
-                    })];
-            });
-        });
-    };
-    CoreEventQueue.prototype.isEmpty = function () {
+    }
+    isEmpty() {
         return this.queue.length === 0;
-    };
-    CoreEventQueue.prototype.scheduleFlush = function (timeout) {
-        var _this = this;
-        if (timeout === void 0) { timeout = 500; }
+    }
+    scheduleFlush(timeout = 500) {
         if (this.flushing) {
             return;
         }
         this.flushing = true;
-        setTimeout(function () {
+        setTimeout(() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            _this.flush().then(function () {
-                setTimeout(function () {
-                    _this.flushing = false;
-                    if (_this.queue.length) {
-                        _this.scheduleFlush(0);
+            this.flush().then(() => {
+                setTimeout(() => {
+                    this.flushing = false;
+                    if (this.queue.length) {
+                        this.scheduleFlush(0);
                     }
                 }, 0);
             });
         }, timeout);
-    };
-    CoreEventQueue.prototype.deliver = function (ctx) {
-        return __awaiter(this, void 0, void 0, function () {
-            var start, done, err_2, error;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.criticalTasks.done()];
-                    case 1:
-                        _a.sent();
-                        start = Date.now();
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 4, , 5]);
-                        return [4 /*yield*/, this.flushOne(ctx)];
-                    case 3:
-                        ctx = _a.sent();
-                        done = Date.now() - start;
-                        this.emit('delivery_success', ctx);
-                        ctx.stats.gauge('delivered', done);
-                        ctx.log('debug', 'Delivered', ctx.event);
-                        return [2 /*return*/, ctx];
-                    case 4:
-                        err_2 = _a.sent();
-                        error = err_2;
-                        ctx.log('error', 'Failed to deliver', error);
-                        this.emit('delivery_failure', ctx, error);
-                        ctx.stats.increment('delivery_failed');
-                        throw err_2;
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CoreEventQueue.prototype.enqueuRetry = function (err, ctx) {
-        var retriable = !(err instanceof context_ContextCancelation) || err.retry;
+    }
+    async deliver(ctx) {
+        await this.criticalTasks.done();
+        const start = Date.now();
+        try {
+            ctx = await this.flushOne(ctx);
+            const done = Date.now() - start;
+            this.emit('delivery_success', ctx);
+            ctx.stats.gauge('delivered', done);
+            ctx.log('debug', 'Delivered', ctx.event);
+            return ctx;
+        }
+        catch (err) {
+            const error = err;
+            ctx.log('error', 'Failed to deliver', error);
+            this.emit('delivery_failure', ctx, error);
+            ctx.stats.increment('delivery_failed');
+            throw err;
+        }
+    }
+    enqueuRetry(err, ctx) {
+        const retriable = !(err instanceof context_ContextCancelation) || err.retry;
         if (!retriable) {
             return false;
         }
         return this.queue.pushWithBackoff(ctx);
-    };
-    CoreEventQueue.prototype.flush = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var ctx, err_3, accepted;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.queue.length === 0) {
-                            return [2 /*return*/, []];
-                        }
-                        ctx = this.queue.pop();
-                        if (!ctx) {
-                            return [2 /*return*/, []];
-                        }
-                        ctx.attempts = this.queue.getAttempts(ctx);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, this.deliver(ctx)];
-                    case 2:
-                        ctx = _a.sent();
-                        this.emit('flush', ctx, true);
-                        return [3 /*break*/, 4];
-                    case 3:
-                        err_3 = _a.sent();
-                        accepted = this.enqueuRetry(err_3, ctx);
-                        if (!accepted) {
-                            ctx.setFailedDelivery({ reason: err_3 });
-                            this.emit('flush', ctx, false);
-                        }
-                        return [2 /*return*/, []];
-                    case 4: return [2 /*return*/, [ctx]];
-                }
-            });
-        });
-    };
-    CoreEventQueue.prototype.isReady = function () {
+    }
+    async flush() {
+        if (this.queue.length === 0) {
+            return [];
+        }
+        let ctx = this.queue.pop();
+        if (!ctx) {
+            return [];
+        }
+        ctx.attempts = this.queue.getAttempts(ctx);
+        try {
+            ctx = await this.deliver(ctx);
+            this.emit('flush', ctx, true);
+        }
+        catch (err) {
+            const accepted = this.enqueuRetry(err, ctx);
+            if (!accepted) {
+                ctx.setFailedDelivery({ reason: err });
+                this.emit('flush', ctx, false);
+            }
+            return [];
+        }
+        return [ctx];
+    }
+    isReady() {
         // return this.plugins.every((p) => p.isLoaded())
         // should we wait for every plugin to load?
         return true;
-    };
-    CoreEventQueue.prototype.availableExtensions = function (denyList) {
-        var available = this.plugins.filter(function (p) {
+    }
+    availableExtensions(denyList) {
+        const available = this.plugins.filter((p) => {
             var _a, _b, _c;
             // Only filter out destination plugins or the Segment.io plugin
             if (p.type !== 'destination' && p.name !== 'Segment.io') {
                 return true;
             }
-            var alternativeNameMatch = undefined;
-            (_a = p.alternativeNames) === null || _a === void 0 ? void 0 : _a.forEach(function (name) {
+            let alternativeNameMatch = undefined;
+            (_a = p.alternativeNames) === null || _a === void 0 ? void 0 : _a.forEach((name) => {
                 if (denyList[name] !== undefined) {
                     alternativeNameMatch = denyList[name];
                 }
@@ -3283,87 +3099,53 @@ var CoreEventQueue = /** @class */ (function (_super) {
             // Explicit integration option takes precedence, `All: false` does not apply to Segment.io
             return ((_c = (_b = denyList[p.name]) !== null && _b !== void 0 ? _b : alternativeNameMatch) !== null && _c !== void 0 ? _c : (p.name === 'Segment.io' ? true : denyList.All) !== false);
         });
-        var _a = groupBy(available, 'type'), _b = _a.before, before = _b === void 0 ? [] : _b, _c = _a.enrichment, enrichment = _c === void 0 ? [] : _c, _d = _a.destination, destination = _d === void 0 ? [] : _d, _e = _a.after, after = _e === void 0 ? [] : _e;
+        const { before = [], enrichment = [], destination = [], after = [], } = groupBy(available, 'type');
         return {
-            before: before,
-            enrichment: enrichment,
+            before,
+            enrichment,
             destinations: destination,
-            after: after,
+            after,
         };
-    };
-    CoreEventQueue.prototype.flushOne = function (ctx) {
+    }
+    async flushOne(ctx) {
         var _a, _b;
-        return __awaiter(this, void 0, void 0, function () {
-            var _c, before, enrichment, _i, before_1, beforeWare, temp, _d, enrichment_1, enrichmentWare, temp, _e, destinations, after, afterCalls;
-            return __generator(this, function (_f) {
-                switch (_f.label) {
-                    case 0:
-                        if (!this.isReady()) {
-                            throw new Error('Not ready');
-                        }
-                        if (ctx.attempts > 1) {
-                            this.emit('delivery_retry', ctx);
-                        }
-                        _c = this.availableExtensions((_a = ctx.event.integrations) !== null && _a !== void 0 ? _a : {}), before = _c.before, enrichment = _c.enrichment;
-                        _i = 0, before_1 = before;
-                        _f.label = 1;
-                    case 1:
-                        if (!(_i < before_1.length)) return [3 /*break*/, 4];
-                        beforeWare = before_1[_i];
-                        return [4 /*yield*/, ensure(ctx, beforeWare)];
-                    case 2:
-                        temp = _f.sent();
-                        if (temp instanceof CoreContext) {
-                            ctx = temp;
-                        }
-                        this.emit('message_enriched', ctx, beforeWare);
-                        _f.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4:
-                        _d = 0, enrichment_1 = enrichment;
-                        _f.label = 5;
-                    case 5:
-                        if (!(_d < enrichment_1.length)) return [3 /*break*/, 8];
-                        enrichmentWare = enrichment_1[_d];
-                        return [4 /*yield*/, attempt(ctx, enrichmentWare)];
-                    case 6:
-                        temp = _f.sent();
-                        if (temp instanceof CoreContext) {
-                            ctx = temp;
-                        }
-                        this.emit('message_enriched', ctx, enrichmentWare);
-                        _f.label = 7;
-                    case 7:
-                        _d++;
-                        return [3 /*break*/, 5];
-                    case 8:
-                        _e = this.availableExtensions((_b = ctx.event.integrations) !== null && _b !== void 0 ? _b : {}), destinations = _e.destinations, after = _e.after;
-                        return [4 /*yield*/, new Promise(function (resolve, reject) {
-                                setTimeout(function () {
-                                    var attempts = destinations.map(function (destination) {
-                                        return attempt(ctx, destination);
-                                    });
-                                    Promise.all(attempts).then(resolve).catch(reject);
-                                }, 0);
-                            })];
-                    case 9:
-                        _f.sent();
-                        ctx.stats.increment('message_delivered');
-                        this.emit('message_delivered', ctx);
-                        afterCalls = after.map(function (after) { return attempt(ctx, after); });
-                        return [4 /*yield*/, Promise.all(afterCalls)];
-                    case 10:
-                        _f.sent();
-                        return [2 /*return*/, ctx];
-                }
-            });
+        if (!this.isReady()) {
+            throw new Error('Not ready');
+        }
+        if (ctx.attempts > 1) {
+            this.emit('delivery_retry', ctx);
+        }
+        const { before, enrichment } = this.availableExtensions((_a = ctx.event.integrations) !== null && _a !== void 0 ? _a : {});
+        for (const beforeWare of before) {
+            const temp = await ensure(ctx, beforeWare);
+            if (temp instanceof CoreContext) {
+                ctx = temp;
+            }
+            this.emit('message_enriched', ctx, beforeWare);
+        }
+        for (const enrichmentWare of enrichment) {
+            const temp = await attempt(ctx, enrichmentWare);
+            if (temp instanceof CoreContext) {
+                ctx = temp;
+            }
+            this.emit('message_enriched', ctx, enrichmentWare);
+        }
+        // Enrichment and before plugins can re-arrange the deny list dynamically
+        // so we need to pluck them at the end
+        const { destinations, after } = this.availableExtensions((_b = ctx.event.integrations) !== null && _b !== void 0 ? _b : {});
+        await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const attempts = destinations.map((destination) => attempt(ctx, destination));
+                Promise.all(attempts).then(resolve).catch(reject);
+            }, 0);
         });
-    };
-    return CoreEventQueue;
-}(Emitter));
-
+        ctx.stats.increment('message_delivered');
+        this.emit('message_delivered', ctx);
+        const afterCalls = after.map((after) => attempt(ctx, after));
+        await Promise.all(afterCalls);
+        return ctx;
+    }
+}
 //# sourceMappingURL=event-queue.js.map
 ;// CONCATENATED MODULE: ./src/core/queue/event-queue.ts
 
@@ -4435,33 +4217,25 @@ function mergedOptions(cdnSettings, options) {
 /**
  * Return a promise that can be externally resolved
  */
-var createDeferred = function () {
-    var resolve;
-    var reject;
-    var settled = false;
-    var promise = new Promise(function (_resolve, _reject) {
-        resolve = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
+const createDeferred = () => {
+    let resolve;
+    let reject;
+    let settled = false;
+    const promise = new Promise((_resolve, _reject) => {
+        resolve = (...args) => {
             settled = true;
-            _resolve.apply(void 0, args);
+            _resolve(...args);
         };
-        reject = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
+        reject = (...args) => {
             settled = true;
-            _reject.apply(void 0, args);
+            _reject(...args);
         };
     });
     return {
-        resolve: resolve,
-        reject: reject,
-        promise: promise,
-        isSettled: function () { return settled; },
+        resolve,
+        reject,
+        promise,
+        isSettled: () => settled,
     };
 };
 //# sourceMappingURL=create-deferred.js.map
