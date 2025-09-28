@@ -3,7 +3,7 @@
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "module": "esnext",
-    "target": "ES5",
+    "target": "ES2017",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "lib": ["es2020"]
