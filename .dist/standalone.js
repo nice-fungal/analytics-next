@@ -1,619 +1,6 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 559:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.clone = void 0;
-function clone(properties) {
-    if (Object.prototype.toString.call(properties) === '[object Object]') {
-        var temp = {};
-        for (var key in properties) {
-            temp[key] = clone(properties[key]);
-        }
-        return temp;
-    }
-    else if (Array.isArray(properties)) {
-        return properties.map(clone);
-    }
-    else {
-        return properties;
-    }
-}
-exports.clone = clone;
-//# sourceMappingURL=clone.js.map
-
-/***/ }),
-
-/***/ 717:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Delete = void 0;
-var inherits_1 = __importDefault(__webpack_require__(285));
-var facade_1 = __webpack_require__(526);
-function Delete(dictionary, opts) {
-    facade_1.Facade.call(this, dictionary, opts);
-}
-exports.Delete = Delete;
-inherits_1.default(Delete, facade_1.Facade);
-Delete.prototype.type = function () {
-    return "delete";
-};
-//# sourceMappingURL=delete.js.map
-
-/***/ }),
-
-/***/ 526:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Facade = void 0;
-var clone_1 = __webpack_require__(559);
-var is_enabled_1 = __importDefault(__webpack_require__(243));
-var new_date_1 = __importDefault(__webpack_require__(870));
-var analytics_js_obj_case_1 = __importDefault(__webpack_require__(174));
-var analytics_js_isodate_traverse_1 = __importDefault(__webpack_require__(564));
-function Facade(obj, opts) {
-    opts = opts || {};
-    this.raw = clone_1.clone(obj);
-    if (!("clone" in opts))
-        opts.clone = true;
-    if (opts.clone)
-        obj = clone_1.clone(obj);
-    if (!("traverse" in opts))
-        opts.traverse = true;
-    if (!("timestamp" in obj))
-        obj.timestamp = new Date();
-    else
-        obj.timestamp = new_date_1.default(obj.timestamp);
-    if (opts.traverse)
-        analytics_js_isodate_traverse_1.default(obj);
-    this.opts = opts;
-    this.obj = obj;
-}
-exports.Facade = Facade;
-var f = Facade.prototype;
-f.proxy = function (field) {
-    var fields = field.split(".");
-    field = fields.shift();
-    var obj = this[field] || this.field(field);
-    if (!obj)
-        return obj;
-    if (typeof obj === "function")
-        obj = obj.call(this) || {};
-    if (fields.length === 0)
-        return this.opts.clone ? transform(obj) : obj;
-    obj = analytics_js_obj_case_1.default(obj, fields.join("."));
-    return this.opts.clone ? transform(obj) : obj;
-};
-f.field = function (field) {
-    var obj = this.obj[field];
-    return this.opts.clone ? transform(obj) : obj;
-};
-Facade.proxy = function (field) {
-    return function () {
-        return this.proxy(field);
-    };
-};
-Facade.field = function (field) {
-    return function () {
-        return this.field(field);
-    };
-};
-Facade.multi = function (path) {
-    return function () {
-        var multi = this.proxy(path + "s");
-        if (Array.isArray(multi))
-            return multi;
-        var one = this.proxy(path);
-        if (one)
-            one = [this.opts.clone ? clone_1.clone(one) : one];
-        return one || [];
-    };
-};
-Facade.one = function (path) {
-    return function () {
-        var one = this.proxy(path);
-        if (one)
-            return one;
-        var multi = this.proxy(path + "s");
-        if (Array.isArray(multi))
-            return multi[0];
-    };
-};
-f.json = function () {
-    var ret = this.opts.clone ? clone_1.clone(this.obj) : this.obj;
-    if (this.type)
-        ret.type = this.type();
-    return ret;
-};
-f.rawEvent = function () {
-    return this.raw;
-};
-f.options = function (integration) {
-    var obj = this.obj.options || this.obj.context || {};
-    var options = this.opts.clone ? clone_1.clone(obj) : obj;
-    if (!integration)
-        return options;
-    if (!this.enabled(integration))
-        return;
-    var integrations = this.integrations();
-    var value = integrations[integration] || analytics_js_obj_case_1.default(integrations, integration);
-    if (typeof value !== "object")
-        value = analytics_js_obj_case_1.default(this.options(), integration);
-    return typeof value === "object" ? value : {};
-};
-f.context = f.options;
-f.enabled = function (integration) {
-    var allEnabled = this.proxy("options.providers.all");
-    if (typeof allEnabled !== "boolean")
-        allEnabled = this.proxy("options.all");
-    if (typeof allEnabled !== "boolean")
-        allEnabled = this.proxy("integrations.all");
-    if (typeof allEnabled !== "boolean")
-        allEnabled = true;
-    var enabled = allEnabled && is_enabled_1.default(integration);
-    var options = this.integrations();
-    if (options.providers && options.providers.hasOwnProperty(integration)) {
-        enabled = options.providers[integration];
-    }
-    if (options.hasOwnProperty(integration)) {
-        var settings = options[integration];
-        if (typeof settings === "boolean") {
-            enabled = settings;
-        }
-        else {
-            enabled = true;
-        }
-    }
-    return !!enabled;
-};
-f.integrations = function () {
-    return (this.obj.integrations || this.proxy("options.providers") || this.options());
-};
-f.active = function () {
-    var active = this.proxy("options.active");
-    if (active === null || active === undefined)
-        active = true;
-    return active;
-};
-f.anonymousId = function () {
-    return this.field("anonymousId") || this.field("sessionId");
-};
-f.sessionId = f.anonymousId;
-f.groupId = Facade.proxy("options.groupId");
-f.traits = function (aliases) {
-    var ret = this.proxy("options.traits") || {};
-    var id = this.userId();
-    aliases = aliases || {};
-    if (id)
-        ret.id = id;
-    for (var alias in aliases) {
-        var value = this[alias] == null
-            ? this.proxy("options.traits." + alias)
-            : this[alias]();
-        if (value == null)
-            continue;
-        ret[aliases[alias]] = value;
-        delete ret[alias];
-    }
-    return ret;
-};
-f.library = function () {
-    var library = this.proxy("options.library");
-    if (!library)
-        return { name: "unknown", version: null };
-    if (typeof library === "string")
-        return { name: library, version: null };
-    return library;
-};
-f.device = function () {
-    var device = this.proxy("context.device");
-    if (typeof device !== "object" || device === null) {
-        device = {};
-    }
-    var library = this.library().name;
-    if (device.type)
-        return device;
-    if (library.indexOf("ios") > -1)
-        device.type = "ios";
-    if (library.indexOf("android") > -1)
-        device.type = "android";
-    return device;
-};
-f.userAgent = Facade.proxy("context.userAgent");
-f.timezone = Facade.proxy("context.timezone");
-f.timestamp = Facade.field("timestamp");
-f.channel = Facade.field("channel");
-f.ip = Facade.proxy("context.ip");
-f.userId = Facade.field("userId");
-function transform(obj) {
-    return clone_1.clone(obj);
-}
-//# sourceMappingURL=facade.js.map
-
-/***/ }),
-
-/***/ 994:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Identify = void 0;
-var facade_1 = __webpack_require__(526);
-var analytics_js_obj_case_1 = __importDefault(__webpack_require__(174));
-var inherits_1 = __importDefault(__webpack_require__(285));
-var is_email_1 = __importDefault(__webpack_require__(266));
-var new_date_1 = __importDefault(__webpack_require__(870));
-var trim = function (str) { return str.trim(); };
-function Identify(dictionary, opts) {
-    facade_1.Facade.call(this, dictionary, opts);
-}
-exports.Identify = Identify;
-inherits_1.default(Identify, facade_1.Facade);
-var i = Identify.prototype;
-i.action = function () {
-    return "identify";
-};
-i.type = i.action;
-i.traits = function (aliases) {
-    var ret = this.field("traits") || {};
-    var id = this.userId();
-    aliases = aliases || {};
-    if (id)
-        ret.id = id;
-    for (var alias in aliases) {
-        var value = this[alias] == null ? this.proxy("traits." + alias) : this[alias]();
-        if (value == null)
-            continue;
-        ret[aliases[alias]] = value;
-        if (alias !== aliases[alias])
-            delete ret[alias];
-    }
-    return ret;
-};
-i.email = function () {
-    var email = this.proxy("traits.email");
-    if (email)
-        return email;
-    var userId = this.userId();
-    if (is_email_1.default(userId))
-        return userId;
-};
-i.created = function () {
-    var created = this.proxy("traits.created") || this.proxy("traits.createdAt");
-    if (created)
-        return new_date_1.default(created);
-};
-i.name = function () {
-    var name = this.proxy("traits.name");
-    if (typeof name === "string") {
-        return trim(name);
-    }
-    var firstName = this.firstName();
-    var lastName = this.lastName();
-    if (firstName && lastName) {
-        return trim(firstName + " " + lastName);
-    }
-};
-i.uid = function () {
-    return this.userId() || this.username() || this.email();
-};
-i.description = function () {
-    return this.proxy("traits.description") || this.proxy("traits.background");
-};
-i.avatar = function () {
-    var traits = this.traits();
-    return (analytics_js_obj_case_1.default(traits, "avatar") || analytics_js_obj_case_1.default(traits, "photoUrl") || analytics_js_obj_case_1.default(traits, "avatarUrl"));
-};
-i.username = facade_1.Facade.proxy("traits.username");
-//# sourceMappingURL=identify.js.map
-
-/***/ }),
-
-/***/ 445:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Delete = exports.Screen = exports.Page = exports.Track = exports.Identify = exports.Facade = void 0;
-var facade_1 = __webpack_require__(526);
-Object.defineProperty(exports, "Facade", ({ enumerable: true, get: function () { return facade_1.Facade; } }));
-var identify_1 = __webpack_require__(994);
-Object.defineProperty(exports, "Identify", ({ enumerable: true, get: function () { return identify_1.Identify; } }));
-var track_1 = __webpack_require__(85);
-Object.defineProperty(exports, "Track", ({ enumerable: true, get: function () { return track_1.Track; } }));
-var page_1 = __webpack_require__(351);
-Object.defineProperty(exports, "Page", ({ enumerable: true, get: function () { return page_1.Page; } }));
-var screen_1 = __webpack_require__(525);
-Object.defineProperty(exports, "Screen", ({ enumerable: true, get: function () { return screen_1.Screen; } }));
-var delete_1 = __webpack_require__(717);
-Object.defineProperty(exports, "Delete", ({ enumerable: true, get: function () { return delete_1.Delete; } }));
-exports["default"] = __assign(__assign({}, facade_1.Facade), { Identify: identify_1.Identify,
-    Track: track_1.Track,
-    Page: page_1.Page,
-    Screen: screen_1.Screen,
-    Delete: delete_1.Delete });
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 266:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-var matcher = /.+\@.+\..+/;
-function isEmail(string) {
-    return matcher.test(string);
-}
-exports["default"] = isEmail;
-//# sourceMappingURL=is-email.js.map
-
-/***/ }),
-
-/***/ 243:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-var disabled = {
-    Salesforce: true,
-};
-function default_1(integration) {
-    return !disabled[integration];
-}
-exports["default"] = default_1;
-//# sourceMappingURL=is-enabled.js.map
-
-/***/ }),
-
-/***/ 351:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Page = void 0;
-var inherits_1 = __importDefault(__webpack_require__(285));
-var facade_1 = __webpack_require__(526);
-var track_1 = __webpack_require__(85);
-var is_email_1 = __importDefault(__webpack_require__(266));
-function Page(dictionary, opts) {
-    facade_1.Facade.call(this, dictionary, opts);
-}
-exports.Page = Page;
-inherits_1.default(Page, facade_1.Facade);
-var p = Page.prototype;
-p.action = function () {
-    return "page";
-};
-p.type = p.action;
-p.category = facade_1.Facade.field("category");
-p.name = facade_1.Facade.field("name");
-p.title = facade_1.Facade.proxy("properties.title");
-p.path = facade_1.Facade.proxy("properties.path");
-p.url = facade_1.Facade.proxy("properties.url");
-p.referrer = function () {
-    return (this.proxy("context.referrer.url") ||
-        this.proxy("context.page.referrer") ||
-        this.proxy("properties.referrer"));
-};
-p.properties = function (aliases) {
-    var props = this.field("properties") || {};
-    var category = this.category();
-    var name = this.name();
-    aliases = aliases || {};
-    if (category)
-        props.category = category;
-    if (name)
-        props.name = name;
-    for (var alias in aliases) {
-        var value = this[alias] == null ? this.proxy("properties." + alias) : this[alias]();
-        if (value == null)
-            continue;
-        props[aliases[alias]] = value;
-        if (alias !== aliases[alias])
-            delete props[alias];
-    }
-    return props;
-};
-p.email = function () {
-    var email = this.proxy("context.traits.email") || this.proxy("properties.email");
-    if (email)
-        return email;
-    var userId = this.userId();
-    if (is_email_1.default(userId))
-        return userId;
-};
-p.fullName = function () {
-    var category = this.category();
-    var name = this.name();
-    return name && category ? category + " " + name : name;
-};
-p.event = function (name) {
-    return name ? "Viewed " + name + " Page" : "Loaded a Page";
-};
-p.track = function (name) {
-    var json = this.json();
-    json.event = this.event(name);
-    json.timestamp = this.timestamp();
-    json.properties = this.properties();
-    return new track_1.Track(json, this.opts);
-};
-//# sourceMappingURL=page.js.map
-
-/***/ }),
-
-/***/ 525:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Screen = void 0;
-var inherits_1 = __importDefault(__webpack_require__(285));
-var page_1 = __webpack_require__(351);
-var track_1 = __webpack_require__(85);
-function Screen(dictionary, opts) {
-    page_1.Page.call(this, dictionary, opts);
-}
-exports.Screen = Screen;
-inherits_1.default(Screen, page_1.Page);
-Screen.prototype.action = function () {
-    return "screen";
-};
-Screen.prototype.type = Screen.prototype.action;
-Screen.prototype.event = function (name) {
-    return name ? "Viewed " + name + " Screen" : "Loaded a Screen";
-};
-Screen.prototype.track = function (name) {
-    var json = this.json();
-    json.event = this.event(name);
-    json.timestamp = this.timestamp();
-    json.properties = this.properties();
-    return new track_1.Track(json, this.opts);
-};
-//# sourceMappingURL=screen.js.map
-
-/***/ }),
-
-/***/ 85:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Track = void 0;
-var inherits_1 = __importDefault(__webpack_require__(285));
-var facade_1 = __webpack_require__(526);
-var identify_1 = __webpack_require__(994);
-var is_email_1 = __importDefault(__webpack_require__(266));
-function Track(dictionary, opts) {
-    facade_1.Facade.call(this, dictionary, opts);
-}
-exports.Track = Track;
-inherits_1.default(Track, facade_1.Facade);
-var t = Track.prototype;
-t.action = function () {
-    return "track";
-};
-t.type = t.action;
-t.event = facade_1.Facade.field("event");
-t.value = facade_1.Facade.proxy("properties.value");
-t.category = facade_1.Facade.proxy("properties.category");
-t.id = facade_1.Facade.proxy("properties.id");
-t.name = facade_1.Facade.proxy("properties.name");
-t.description = facade_1.Facade.proxy("properties.description");
-t.plan = facade_1.Facade.proxy("properties.plan");
-t.referrer = function () {
-    return (this.proxy("context.referrer.url") ||
-        this.proxy("context.page.referrer") ||
-        this.proxy("properties.referrer"));
-};
-t.query = facade_1.Facade.proxy("options.query");
-t.properties = function (aliases) {
-    var ret = this.field("properties") || {};
-    aliases = aliases || {};
-    for (var alias in aliases) {
-        var value = this[alias] == null ? this.proxy("properties." + alias) : this[alias]();
-        if (value == null)
-            continue;
-        ret[aliases[alias]] = value;
-        delete ret[alias];
-    }
-    return ret;
-};
-t.username = function () {
-    return (this.proxy("traits.username") ||
-        this.proxy("properties.username") ||
-        this.userId() ||
-        this.sessionId());
-};
-t.email = function () {
-    var email = this.proxy("traits.email") ||
-        this.proxy("properties.email") ||
-        this.proxy("options.traits.email");
-    if (email)
-        return email;
-    var userId = this.userId();
-    if (is_email_1.default(userId))
-        return userId;
-};
-t.revenue = function () {
-    var revenue = this.proxy("properties.revenue");
-    var event = this.event();
-    var orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
-    if (!revenue && event && event.match(orderCompletedRegExp)) {
-        revenue = this.proxy("properties.total");
-    }
-    return currency(revenue);
-};
-t.identify = function () {
-    var json = this.json();
-    json.traits = this.traits();
-    return new identify_1.Identify(json, this.opts);
-};
-function currency(val) {
-    if (!val)
-        return;
-    if (typeof val === "number") {
-        return val;
-    }
-    if (typeof val !== "string") {
-        return;
-    }
-    val = val.replace(/\$/g, "");
-    val = parseFloat(val);
-    if (!isNaN(val)) {
-        return val;
-    }
-}
-//# sourceMappingURL=track.js.map
-
-/***/ }),
-
 /***/ 564:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
@@ -1110,13 +497,42 @@ exports.parse = function (seconds) {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	!function() {
 /******/ 		// define __esModule on exports
@@ -4746,20 +4162,1197 @@ function unloadScript(src) {
     return Promise.resolve();
 }
 
-// EXTERNAL MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/index.js
-var dist = __webpack_require__(445);
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/clone.js
+function clone(properties) {
+    if (typeof properties !== 'object')
+        return properties;
+    if (Object.prototype.toString.call(properties) === '[object Object]') {
+        const temp = {};
+        for (const key in properties) {
+            if (Object.prototype.hasOwnProperty.call(properties, key)) {
+                temp[key] = clone(properties[key]);
+            }
+        }
+        return temp;
+    }
+    else if (Array.isArray(properties)) {
+        return properties.map(clone);
+    }
+    else {
+        // this is dangerous because it means this is not cloned
+        return properties;
+    }
+}
+
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/is-enabled.js
+
+// A few integrations are disabled by default. They must be explicitly enabled
+// by setting options[Provider] = true.
+let disabled = {
+    Salesforce: true,
+};
+/**
+ * Check whether an integration should be enabled by default.
+ *
+ * @ignore
+ * @param {string} integration
+ * @return {boolean}
+ */
+/* harmony default export */ function is_enabled(integration) {
+    return !disabled[integration];
+}
+
+// EXTERNAL MODULE: ../../node_modules/new-date/lib/index.js
+var lib = __webpack_require__(870);
+var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
+// EXTERNAL MODULE: ../../node_modules/@head.js/analytics.js-obj-case/index.js
+var analytics_js_obj_case = __webpack_require__(174);
+var analytics_js_obj_case_default = /*#__PURE__*/__webpack_require__.n(analytics_js_obj_case);
+// EXTERNAL MODULE: ../../node_modules/@head.js/analytics.js-isodate-traverse/lib/index.js
+var analytics_js_isodate_traverse_lib = __webpack_require__(564);
+var analytics_js_isodate_traverse_lib_default = /*#__PURE__*/__webpack_require__.n(analytics_js_isodate_traverse_lib);
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/facade.js
+
+// import address from "./address";
+
+
+
+
+
+/**
+ * A *Facade* is an object meant for creating convience wrappers around
+ * objects. When developing integrations, you probably want to look at its
+ * subclasses, such as {@link Track} or {@link Identify}, rather than this
+ * general-purpose class.
+ *
+ * This letructor will initialize a new `Facade` with an `obj` of arguments.
+ *
+ * If the inputted `obj` doesn't have a `timestamp` property, one will be added
+ * with the value `new Date()`. Otherwise, the `timestamp` property will be
+ * converted to a Date using the `new-date` package.
+ *
+ * By default, the inputted object will be defensively copied, and all ISO
+ * strings present in the string will be converted into Dates.
+ *
+ * @param {Object} obj - The object to wrap.
+ * @param {Object} opts - Options about what kind of Facade to create.
+ * @param {boolean} [opts.clone=true] - Whether to make defensive clones. If enabled,
+ * the inputted object will be cloned, and any objects derived from this facade
+ * will be cloned before being returned.
+ * @param {boolean} [opts.traverse=true] - Whether to perform ISODate-Traverse
+ * on the inputted object.
+ *
+ * @see {@link https://github.com/segmentio/new-date|new-date}
+ * @see {@link https://github.com/segmentio/isodate-traverse|isodate-traverse}
+ */
+function Facade(obj, opts) {
+    opts = opts || {};
+    this.raw = clone(obj);
+    if (!("clone" in opts))
+        opts.clone = true;
+    if (opts.clone)
+        obj = clone(obj);
+    if (!("traverse" in opts))
+        opts.traverse = true;
+    if (!("timestamp" in obj))
+        obj.timestamp = new Date();
+    else
+        obj.timestamp = lib_default()(obj.timestamp);
+    if (opts.traverse)
+        analytics_js_isodate_traverse_lib_default()(obj);
+    this.opts = opts;
+    this.obj = obj;
+}
+const f = Facade.prototype;
+/**
+ * Get a potentially-nested field in this facade. `field` should be a
+ * period-separated sequence of properties.
+ *
+ * If the first field passed in points to a function (e.g. the `field` passed
+ * in is `a.b.c` and this facade's `obj.a` is a function), then that function
+ * will be called, and then the deeper fields will be fetched (using obj-case)
+ * from what that function returns. If the first field isn't a function, then
+ * this function works just like obj-case.
+ *
+ * Because this function uses obj-case, the camel- or snake-case of the input
+ * is irrelevant.
+ *
+ * @example
+ * YourClass.prototype.height = function() {
+ *   return this.proxy('getDimensions.height') ||
+ *     this.proxy('props.size.side_length');
+ * }
+ * @param {string} field - A sequence of properties, joined by periods (`.`).
+ * @return {*} - A property of the inputted object.
+ * @see {@link https://github.com/segmentio/obj-case|obj-case}
+ */
+f.proxy = function (field) {
+    let fields = field.split(".");
+    field = fields.shift();
+    // Call a function at the beginning to take advantage of facaded fields
+    let obj = this[field] || this.obj[field];
+    if (!obj)
+        return obj;
+    if (typeof obj === "function")
+        obj = obj.call(this) || {};
+    if (fields.length === 0)
+        return this.opts.clone ? transform(obj) : obj;
+    obj = analytics_js_obj_case_default()(obj, fields.join("."));
+    return this.opts.clone ? transform(obj) : obj;
+};
+/**
+ * Directly access a specific `field` from the underlying object. Only
+ * "top-level" fields will work with this function. "Nested" fields *will not
+ * work* with this function.
+ *
+ * @param {string} field
+ * @return {*}
+ */
+f.field = function (field) {
+    let obj = this.obj[field];
+    return this.opts.clone ? transform(obj) : obj;
+};
+/**
+ * Utility method to always proxy a particular `field`. In other words, it
+ * returns a function that will always return `this.proxy(field)`.
+ *
+ * @example
+ * MyClass.prototype.height = Facade.proxy('options.dimensions.height');
+ *
+ * @param {string} field
+ * @return {Function}
+ */
+Facade.proxy = function (field) {
+    return function () {
+        return this.proxy(field);
+    };
+};
+/**
+ * Utility method to always access a `field`. In other words, it returns a
+ * function that will always return `this.field(field)`.
+ *
+ * @param {string} field
+ * @return {Function}
+ */
+Facade.field = function (field) {
+    return function () {
+        return this.field(field);
+    };
+};
+/**
+ * Create a helper function for fetching a "plural" thing.
+ *
+ * The generated method will take the inputted `path` and append an "s" to it
+ * and calls `this.proxy` with this "pluralized" path. If that produces an
+ * array, that will be returned. Otherwise, a one-element array containing
+ * `this.proxy(path)` will be returned.
+ *
+ * @example
+ * MyClass.prototype.birds = Facade.multi('animals.bird');
+ *
+ * @param {string} path
+ * @return {Function}
+ */
+Facade.multi = function (path) {
+    return function () {
+        let multi = this.proxy(path + "s");
+        if (Array.isArray(multi))
+            return multi;
+        let one = this.proxy(path);
+        if (one)
+            one = [this.opts.clone ? clone(one) : one];
+        return one || [];
+    };
+};
+/**
+ * Create a helper function for getting a "singular" thing.
+ *
+ * The generated method will take the inputted path and call
+ * `this.proxy(path)`. If a truthy thing is produced, it will be returned.
+ * Otherwise, `this.proxy(path + 's')` will be called, and if that produces an
+ * array the first element of that array will be returned. Otherwise,
+ * `undefined` is returned.
+ *
+ * @example
+ * MyClass.prototype.bird = Facade.one('animals.bird');
+ *
+ * @param {string} path
+ * @return {Function}
+ */
+Facade.one = function (path) {
+    return function () {
+        let one = this.proxy(path);
+        if (one)
+            return one;
+        let multi = this.proxy(path + "s");
+        if (Array.isArray(multi))
+            return multi[0];
+    };
+};
+/**
+ * Gets the underlying object this facade wraps around.
+ *
+ * If this facade has a property `type`, it will be invoked as a function and
+ * will be assigned as the property `type` of the outputted object.
+ *
+ * @return {Object}
+ */
+f.json = function () {
+    let ret = this.opts.clone ? clone(this.obj) : this.obj;
+    if (this.type)
+        ret.type = this.type();
+    return ret;
+};
+/**
+ * Gets a copy of the unmodified input object this facade wraps around.
+ *
+ * Unlike the `json` method which does make some subtle modifications
+ * to datetime values and the `type` property. This method returns a copy of
+ * the unmodified input object
+ *
+ * @return {Object}
+ */
+f.rawEvent = function () {
+    return this.raw;
+};
+/**
+ * Get the options of a call. If an integration is passed, only the options for
+ * that integration are included. If the integration is not enabled, then
+ * `undefined` is returned.
+ *
+ * Options are taken from the `options` property of the underlying object,
+ * falling back to the object's `context` or simply `{}`.
+ *
+ * @param {string} integration - The name of the integration to get settings
+ * for. Casing does not matter.
+ * @return {Object|undefined}
+ */
+f.options = function (integration) {
+    let obj = this.obj.options || this.obj.context || {};
+    let options = this.opts.clone ? clone(obj) : obj;
+    if (!integration)
+        return options;
+    if (!this.enabled(integration))
+        return;
+    let integrations = this.integrations();
+    let value = integrations[integration] || analytics_js_obj_case_default()(integrations, integration);
+    if (typeof value !== "object")
+        value = analytics_js_obj_case_default()(this.options(), integration);
+    return typeof value === "object" ? value : {};
+};
+/**
+ * An alias for {@link Facade#options}.
+ */
+f.context = f.options;
+/**
+ * Check whether an integration is enabled.
+ *
+ * Basically, this method checks whether this integration is explicitly
+ * enabled. If it isn'texplicitly mentioned, it checks whether it has been
+ * enabled at the global level. Some integrations (e.g. Salesforce), cannot
+ * enabled by these global event settings.
+ *
+ * More concretely, the deciding factors here are:
+ *
+ * 1. If `this.integrations()` has the integration set to `true`, return `true`.
+ * 2. If `this.integrations().providers` has the integration set to `true`, return `true`.
+ * 3. If integrations are set to default-disabled via global parameters (i.e.
+ * `options.providers.all`, `options.all`, or `integrations.all`), then return
+ * false.
+ * 4. If the integration is one of the special default-deny integrations
+ * (currently, only Salesforce), then return false.
+ * 5. Else, return true.
+ *
+ * @param {string} integration
+ * @return {boolean}
+ */
+f.enabled = function (integration) {
+    let allEnabled = this.proxy("options.providers.all");
+    if (typeof allEnabled !== "boolean")
+        allEnabled = this.proxy("options.all");
+    if (typeof allEnabled !== "boolean")
+        allEnabled = this.proxy("integrations.all");
+    if (typeof allEnabled !== "boolean")
+        allEnabled = true;
+    let enabled = allEnabled && is_enabled(integration);
+    let options = this.integrations();
+    // If the integration is explicitly enabled or disabled, use that
+    // First, check options.providers for backwards compatibility
+    if (options.providers && options.providers.hasOwnProperty(integration)) {
+        enabled = options.providers[integration];
+    }
+    // Next, check for the integration's existence in 'options' to enable it.
+    // If the settings are a boolean, use that, otherwise it should be enabled.
+    if (options.hasOwnProperty(integration)) {
+        let settings = options[integration];
+        if (typeof settings === "boolean") {
+            enabled = settings;
+        }
+        else {
+            enabled = true;
+        }
+    }
+    return !!enabled;
+};
+/**
+ * Get all `integration` options.
+ *
+ * @ignore
+ * @param {string} integration
+ * @return {Object}
+ */
+f.integrations = function () {
+    return (this.obj.integrations || this.proxy("options.providers") || this.options());
+};
+/**
+ * Check whether the user is active.
+ *
+ * @return {boolean}
+ */
+f.active = function () {
+    let active = this.proxy("options.active");
+    if (active === null || active === undefined)
+        active = true;
+    return active;
+};
+/**
+ * Get `sessionId / anonymousId`.
+ *
+ * @return {*}
+ */
+f.anonymousId = function () {
+    return this.field("anonymousId") || this.field("sessionId");
+};
+/**
+ * An alias for {@link Facade#anonymousId}.
+ *
+ * @function
+ * @return {string}
+ */
+f.sessionId = f.anonymousId;
+/**
+ * Get `groupId` from `context.groupId`.
+ *
+ * @function
+ * @return {string}
+ */
+f.groupId = Facade.proxy("options.groupId");
+/**
+ * Get the call's "traits". All event types can pass in traits, though {@link
+ * Identify} and {@link Group} override this implementation.
+ *
+ * Traits are gotten from `options.traits`, augmented with a property `id` with
+ * the event's `userId`.
+ *
+ * The parameter `aliases` is meant to transform keys in `options.traits` into
+ * new keys. Each alias like `{ "xxx": "yyy" }` will take whatever is at `xxx`
+ * in the traits, and move it to `yyy`. If `xxx` is a method of this facade,
+ * it'll be called as a function instead of treated as a key into the traits.
+ *
+ * @example
+ * let obj = { options: { traits: { foo: "bar" } }, anonymousId: "xxx" }
+ * let facade = new Facade(obj)
+ *
+ * facade.traits() // { "foo": "bar" }
+ * facade.traits({ "foo": "asdf" }) // { "asdf": "bar" }
+ * facade.traits({ "sessionId": "rofl" }) // { "rofl": "xxx" }
+ *
+ * @param {Object} aliases - A mapping from keys to the new keys they should be
+ * transformed to.
+ * @return {Object}
+ */
+f.traits = function (aliases) {
+    let ret = this.proxy("options.traits") || {};
+    let id = this.userId();
+    aliases = aliases || {};
+    if (id)
+        ret.id = id;
+    for (const alias in aliases) {
+        if (Object.prototype.hasOwnProperty.call(aliases, alias)) {
+            const value = this[alias] == null
+                ? this.proxy("options.traits." + alias)
+                : this[alias]();
+            if (value == null)
+                continue;
+            ret[aliases[alias]] = value;
+            delete ret[alias];
+        }
+    }
+    return ret;
+};
+/**
+ * The library and version of the client used to produce the message.
+ *
+ * If the library name cannot be determined, it is set to `"unknown"`. If the
+ * version cannot be determined, it is set to `null`.
+ *
+ * @return {{name: string, version: string}}
+ */
+f.library = function () {
+    let library = this.proxy("options.library");
+    if (!library)
+        return { name: "unknown", version: null };
+    if (typeof library === "string")
+        return { name: library, version: null };
+    return library;
+};
+/**
+ * Return the device information, falling back to an empty object.
+ *
+ * Interesting values of `type` are `"ios"` and `"android"`, but other values
+ * are possible if the client is doing something unusual with `context.device`.
+ *
+ * @return {{type: string}}
+ */
+f.device = function () {
+    let device = this.proxy("context.device");
+    if (typeof device !== "object" || device === null) {
+        device = {};
+    }
+    let library = this.library().name;
+    if (device.type)
+        return device;
+    if (library.indexOf("ios") > -1)
+        device.type = "ios";
+    if (library.indexOf("android") > -1)
+        device.type = "android";
+    return device;
+};
+/**
+ * Get the User-Agent from `context.userAgent`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return string
+ */
+f.userAgent = Facade.proxy("context.userAgent");
+/**
+ * Get the timezone from `context.timezone`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return string
+ */
+f.timezone = Facade.proxy("context.timezone");
+/**
+ * Get the timestamp from `context.timestamp`.
+ *
+ * @function
+ * @return string
+ */
+f.timestamp = Facade.field("timestamp");
+/**
+ * Get the channel from `channel`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return string
+ */
+f.channel = Facade.field("channel");
+/**
+ * Get the IP address from `context.ip`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return string
+ */
+f.ip = Facade.proxy("context.ip");
+/**
+ * Get the user ID from `userId`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return string
+ */
+f.userId = Facade.field("userId");
+/**
+ * Get the region from `traits`, `traits.address`, `properties`, or
+ * `properties.address`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @name region
+ * @function
+ * @memberof f
+ * @return {string}
+ */
+// address(f);
+/**
+ * Return the cloned and traversed object
+ *
+ * @ignore
+ * @param {*} obj
+ * @return {*}
+ */
+function transform(obj) {
+    return clone(obj);
+}
+
+// EXTERNAL MODULE: ../../node_modules/inherits/inherits_browser.js
+var inherits_browser = __webpack_require__(285);
+var inherits_browser_default = /*#__PURE__*/__webpack_require__.n(inherits_browser);
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/is-email.js
+const matcher = /.+\@.+\..+/;
+function isEmail(string) {
+    return matcher.test(string);
+}
+
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/identify.js
+
+
+
+
+
+
+let trim = (str) => str.trim();
+/**
+ * Initialize a new `Identify` facade with a `dictionary` of arguments.
+ *
+ * @param {Object} dictionary - The object to wrap.
+ * @param {string} [dictionary.userId] - The ID of the user.
+ * @param {string} [dictionary.anonymousId] - The anonymous ID of the user.
+ * @param {string} [dictionary.traits] - The user's traits.
+ * @param {Object} opts - Options about what kind of Facade to create.
+ *
+ * @augments Facade
+ */
+function Identify(dictionary, opts) {
+    Facade.call(this, dictionary, opts);
+}
+inherits_browser_default()(Identify, Facade);
+const i = Identify.prototype;
+/**
+ * Return the type of facade this is. This will always return `"identify"`.
+ *
+ * @return {string}
+ */
+i.action = function () {
+    return "identify";
+};
+/**
+ * An alias for {@link Identify#action}.
+ *
+ * @function
+ * @return {string}
+ */
+i.type = i.action;
+/**
+ * Get the user's traits. This is identical to how {@link Facade#traits} works,
+ * except it looks at `traits.*` instead of `options.traits.*`.
+ *
+ * Traits are gotten from `traits`, augmented with a property `id` with
+ * the event's `userId`.
+ *
+ * The parameter `aliases` is meant to transform keys in `traits` into new
+ * keys. Each alias like `{ "xxx": "yyy" }` will take whatever is at `xxx` in
+ * the traits, and move it to `yyy`. If `xxx` is a method of this facade, it'll
+ * be called as a function instead of treated as a key into the traits.
+ *
+ * @example
+ * let obj = { traits: { foo: "bar" }, anonymousId: "xxx" }
+ * let identify = new Identify(obj)
+ *
+ * identify.traits() // { "foo": "bar" }
+ * identify.traits({ "foo": "asdf" }) // { "asdf": "bar" }
+ * identify.traits({ "sessionId": "rofl" }) // { "rofl": "xxx" }
+ *
+ * @param {Object} aliases - A mapping from keys to the new keys they should be
+ * transformed to.
+ * @return {Object}
+ */
+i.traits = function (aliases) {
+    let ret = this.field("traits") || {};
+    let id = this.userId();
+    aliases = aliases || {};
+    if (id)
+        ret.id = id;
+    for (let alias in aliases) {
+        let value = this[alias] == null ? this.proxy("traits." + alias) : this[alias]();
+        if (value == null)
+            continue;
+        ret[aliases[alias]] = value;
+        if (alias !== aliases[alias])
+            delete ret[alias];
+    }
+    return ret;
+};
+/**
+ * Get the user's email from `traits.email`, falling back to `userId` only if
+ * it looks like a valid email.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+i.email = function () {
+    let email = this.proxy("traits.email");
+    if (email)
+        return email;
+    let userId = this.userId();
+    if (isEmail(userId))
+        return userId;
+};
+/**
+ * Get the time of creation of the user from `traits.created` or
+ * `traits.createdAt`.
+ *
+ * @return {Date}
+ */
+i.created = function () {
+    let created = this.proxy("traits.created") || this.proxy("traits.createdAt");
+    if (created)
+        return lib_default()(created);
+};
+/**
+ * Get the user's name `traits.name`, falling back to combining {@link
+ * Identify#firstName} and {@link Identify#lastName} if possible.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+i.name = function () {
+    let name = this.proxy("traits.name");
+    if (typeof name === "string") {
+        return trim(name);
+    }
+    let firstName = this.firstName();
+    let lastName = this.lastName();
+    if (firstName && lastName) {
+        return trim(firstName + " " + lastName);
+    }
+};
+/**
+ * Get the user's "unique id" from `userId`, `traits.username`, or
+ * `traits.email`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+i.uid = function () {
+    return this.userId() || this.username() || this.email();
+};
+/**
+ * Get the user's description from `traits.description` or `traits.background`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+i.description = function () {
+    return this.proxy("traits.description") || this.proxy("traits.background");
+};
+/**
+ * Get the URL of the user's avatar from `traits.avatar`, `traits.photoUrl`, or
+ * `traits.avatarUrl`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+i.avatar = function () {
+    let traits = this.traits();
+    return (analytics_js_obj_case_default()(traits, "avatar") || analytics_js_obj_case_default()(traits, "photoUrl") || analytics_js_obj_case_default()(traits, "avatarUrl"));
+};
+/**
+ * Get the user's username from `traits.username`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+i.username = Facade.proxy("traits.username");
+
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/track.js
+
+
+
+
+
+
+/**
+ * Initialize a new `Track` facade with a `dictionary` of arguments.
+ *
+ * @param {Object} dictionary - The object to wrap.
+ * @param {string} [dictionary.event] - The name of the event being tracked.
+ * @param {string} [dictionary.userId] - The ID of the user being tracked.
+ * @param {string} [dictionary.anonymousId] - The anonymous ID of the user.
+ * @param {string} [dictionary.properties] - Properties of the track event.
+ * @param {Object} opts - Options about what kind of Facade to create.
+ *
+ * @augments Facade
+ */
+function Track(dictionary, opts) {
+    Facade.call(this, dictionary, opts);
+}
+inherits_browser_default()(Track, Facade);
+let t = Track.prototype;
+/**
+ * Return the type of facade this is. This will always return `"track"`.
+ *
+ * @return {string}
+ */
+t.action = function () {
+    return "track";
+};
+/**
+ * An alias for {@link Track#action}.
+ *
+ * @function
+ * @return {string}
+ */
+t.type = t.action;
+/**
+ * Get the event name from `event`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+t.event = Facade.field("event");
+/**
+ * Get the event value, usually the monetary value, from `properties.value`.
+ *
+ * This *should* be a number, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {number}
+ */
+t.value = Facade.proxy("properties.value");
+/**
+ * Get the event cateogry from `properties.category`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+t.category = Facade.proxy("properties.category");
+/**
+ * Get the event ID from `properties.id`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+t.id = Facade.proxy("properties.id");
+/**
+ * Get the name of this event from `properties.name`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+t.name = Facade.proxy("properties.name");
+/**
+ * Get a description for this event from `properties.description`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+t.description = Facade.proxy("properties.description");
+/**
+ * Get a plan, as in the plan the user is on, for this event from
+ * `properties.plan`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string}
+ */
+t.plan = Facade.proxy("properties.plan");
+/**
+ * Get the referrer for this event from `context.referrer.url`,
+ * `context.page.referrer`, or `properties.referrer`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+t.referrer = function () {
+    // TODO re-examine whether this function is necessary
+    return (this.proxy("context.referrer.url") ||
+        this.proxy("context.page.referrer") ||
+        this.proxy("properties.referrer"));
+};
+/**
+ * Get the query for this event from `options.query`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @function
+ * @return {string|object}
+ */
+t.query = Facade.proxy("options.query");
+/**
+ * Get the page's properties. This is identical to how {@link Facade#traits}
+ * works, except it looks at `properties.*` instead of `options.traits.*`.
+ *
+ * Properties are gotten from `properties`.
+ *
+ * The parameter `aliases` is meant to transform keys in `properties` into new
+ * keys. Each alias like `{ "xxx": "yyy" }` will take whatever is at `xxx` in
+ * the traits, and move it to `yyy`. If `xxx` is a method of this facade, it'll
+ * be called as a function instead of treated as a key into the traits.
+ *
+ * @example
+ * let obj = { properties: { foo: "bar" }, anonymousId: "xxx" }
+ * let track = new Track(obj)
+ *
+ * track.traits() // { "foo": "bar" }
+ * track.traits({ "foo": "asdf" }) // { "asdf": "bar" }
+ * track.traits({ "sessionId": "rofl" }) // { "rofl": "xxx" }
+ *
+ * @param {Object} aliases - A mapping from keys to the new keys they should be
+ * transformed to.
+ * @return {Object}
+ */
+t.properties = function (aliases) {
+    let ret = this.field("properties") || {};
+    aliases = aliases || {};
+    for (const alias in aliases) {
+        if (Object.prototype.hasOwnProperty.call(aliases, alias)) {
+            const value = this[alias] == null
+                ? this.proxy("properties." + alias)
+                : this[alias]();
+            if (value == null)
+                continue;
+            ret[aliases[alias]] = value;
+            delete ret[alias];
+        }
+    }
+    return ret;
+};
+/**
+ * Get the username of the user for this event from `traits.username`,
+ * `properties.username`, `userId`, or `anonymousId`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string|undefined}
+ */
+t.username = function () {
+    return (this.proxy("traits.username") ||
+        this.proxy("properties.username") ||
+        this.userId() ||
+        this.sessionId());
+};
+/**
+ * Get the email of the user for this event from `trais.email`,
+ * `properties.email`, or `options.traits.email`, falling back to `userId` if
+ * it looks like a valid email.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string|undefined}
+ */
+t.email = function () {
+    let email = this.proxy("traits.email") ||
+        this.proxy("properties.email") ||
+        this.proxy("options.traits.email");
+    if (email)
+        return email;
+    let userId = this.userId();
+    if (isEmail(userId))
+        return userId;
+};
+/**
+ * Get the revenue for this event. // FIXME: GA
+ *
+ * If this is an "Order Completed" event, this will be the `properties.total`
+ * falling back to the `properties.revenue`. For all other events, this is
+ * simply taken from `properties.revenue`.
+ *
+ * If there are dollar signs in these properties, they will be removed. The
+ * result will be parsed into a number.
+ *
+ * @return {number}
+ */
+t.revenue = function () {
+    let revenue = this.proxy("properties.revenue");
+    let event = this.event();
+    let orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
+    // it's always revenue, unless it's called during an order completion.
+    if (!revenue && event && event.match(orderCompletedRegExp)) {
+        revenue = this.proxy("properties.total");
+    }
+    return currency(revenue);
+};
+/**
+ * Convert this event into an {@link Identify} facade.
+ *
+ * This works by taking this event's underlying object and creating an Identify
+ * from it. This event's traits, taken from `options.traits`, will be used as
+ * the Identify's traits.
+ *
+ * @return {Identify}
+ */
+t.identify = function () {
+    // TODO: remove me.
+    let json = this.json();
+    json.traits = this.traits();
+    return new Identify(json, this.opts);
+};
+/**
+ * Get float from currency value.
+ *
+ * @ignore
+ * @param {*} val
+ * @return {number}
+ */
+function currency(val) {
+    if (!val)
+        return;
+    if (typeof val === "number") {
+        return val;
+    }
+    if (typeof val !== "string") {
+        return;
+    }
+    val = val.replace(/\$/g, "");
+    val = parseFloat(val);
+    if (!isNaN(val)) {
+        return val;
+    }
+}
+
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/page.js
+
+
+
+
+
+/**
+ * Initialize a new `Page` facade with a `dictionary` of arguments.
+ *
+ * @param {Object} dictionary - The object to wrap.
+ * @param {string} [dictionary.category] - The page category.
+ * @param {string} [dictionary.name] - The page name.
+ * @param {string} [dictionary.properties] - The page properties.
+ * @param {Object} opts - Options about what kind of Facade to create.
+ *
+ * @augments Facade
+ */
+function Page(dictionary, opts) {
+    Facade.call(this, dictionary, opts);
+}
+inherits_browser_default()(Page, Facade);
+const p = Page.prototype;
+/**
+ * Return the type of facade this is. This will always return `"page"`.
+ *
+ * @return {string}
+ */
+p.action = function () {
+    return "page";
+};
+/**
+ * An alias for {@link Page#action}.
+ *
+ * @function
+ * @return {string}
+ */
+p.type = p.action;
+/**
+ * Get the page category from `category`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+p.category = Facade.field("category");
+/**
+ * Get the page name from `name`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+p.name = Facade.field("name");
+/**
+ * Get the page title from `properties.title`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+p.title = Facade.proxy("properties.title");
+/**
+ * Get the page path from `properties.path`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+p.path = Facade.proxy("properties.path");
+/**
+ * Get the page URL from `properties.url`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+p.url = Facade.proxy("properties.url");
+/**
+ * Get the HTTP referrer from `context.referrer.url`, `context.page.referrer`,
+ * or `properties.referrer`.
+ *
+ * This *should* be a string, but may not be if the client isn't adhering to
+ * the spec.
+ *
+ * @return {string}
+ */
+p.referrer = function () {
+    return (this.proxy("context.referrer.url") ||
+        this.proxy("context.page.referrer") ||
+        this.proxy("properties.referrer"));
+};
+/**
+ * Get the page's properties. This is identical to how {@link Facade#traits}
+ * works, except it looks at `properties.*` instead of `options.traits.*`.
+ *
+ * Properties are gotten from `properties`, augmented with the page's `name`
+ * and `category`.
+ *
+ * The parameter `aliases` is meant to transform keys in `properties` into new
+ * keys. Each alias like `{ "xxx": "yyy" }` will take whatever is at `xxx` in
+ * the traits, and move it to `yyy`. If `xxx` is a method of this facade, it'll
+ * be called as a function instead of treated as a key into the traits.
+ *
+ * @example
+ * let obj = { properties: { foo: "bar" }, anonymousId: "xxx" }
+ * let page = new Page(obj)
+ *
+ * page.traits() // { "foo": "bar" }
+ * page.traits({ "foo": "asdf" }) // { "asdf": "bar" }
+ * page.traits({ "sessionId": "rofl" }) // { "rofl": "xxx" }
+ *
+ * @param {Object} aliases - A mapping from keys to the new keys they should be
+ * transformed to.
+ * @return {Object}
+ */
+p.properties = function (aliases) {
+    let props = this.field("properties") || {};
+    let category = this.category();
+    let name = this.name();
+    aliases = aliases || {};
+    if (category)
+        props.category = category;
+    if (name)
+        props.name = name;
+    for (const alias in aliases) {
+        if (Object.prototype.hasOwnProperty.call(aliases, alias)) {
+            const value = this[alias] == null
+                ? this.proxy("properties." + alias)
+                : this[alias]();
+            if (value == null)
+                continue;
+            props[aliases[alias]] = value;
+            if (alias !== aliases[alias])
+                delete props[alias];
+        }
+    }
+    return props;
+};
+/**
+ * Get an event name from this page call. If `name` is present, this will be
+ * `Viewed $name Page`; otherwise, it will be `Loaded a Page`.
+ *
+ * @param {string} name - The name of this page.
+ * @return {string}
+ */
+p.event = function (name) {
+    return name ? "Viewed " + name + " Page" : "Loaded a Page";
+};
+/**
+ * Convert this Page to a {@link Track} facade. The inputted `name` will be
+ * converted to the Track's event name via {@link Page#event}.
+ *
+ * @param {string} name
+ * @return {Track}
+ */
+p.track = function (name) {
+    let json = this.json();
+    json.event = this.event(name);
+    json.timestamp = this.timestamp();
+    json.properties = this.properties();
+    return new Track(json, this.opts);
+};
+
+;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/index.js
+
+
+// import { Alias } from "./alias";
+// import { Group } from "./group";
+
+
+
+// import { Screen } from "./screen";
+// import { Delete } from "./delete";
+// export default {
+//   ...Facade,
+//   Alias,
+//   Group,
+//   Identify,
+//   Track,
+//   Page,
+//   Screen,
+//   Delete,
+// };
+
+
 ;// CONCATENATED MODULE: ./src/lib/to-facade.ts
 
 function to_facade_toFacade(evt, options) {
-    let fcd = new dist.Facade(evt, options);
+    let fcd = new Facade(evt, options);
     if (evt.type === 'track') {
-        fcd = new dist.Track(evt, options);
+        fcd = new Track(evt, options);
     }
     if (evt.type === 'identify') {
-        fcd = new dist.Identify(evt, options);
+        fcd = new Identify(evt, options);
     }
     if (evt.type === 'page') {
-        fcd = new dist.Page(evt, options);
+        fcd = new Page(evt, options);
     }
     // if (evt.type === 'alias') {
     //   fcd = new Alias(evt, options)
