@@ -57,10 +57,10 @@ export abstract class CoreEventQueue<
       this.emit('initialization_failure', plugin)
       console.warn(plugin.name, err)
 
-      ctx.log('warn', 'Failed to load destination', {
-        plugin: plugin.name,
-        error: err,
-      })
+      // ctx.log('warn', 'Failed to load destination', {
+      //   plugin: plugin.name,
+      //   error: err,
+      // })
 
       // Filter out the failed plugin by excluding it from the list
       this.plugins = this.plugins.filter((p) => p !== plugin)
@@ -100,7 +100,7 @@ export abstract class CoreEventQueue<
   }
 
   async dispatch(ctx: Ctx): Promise<Ctx> {
-    ctx.log('debug', 'Dispatching')
+    // ctx.log('debug', 'Dispatching')
     // ctx.stats.increment('message_dispatched')
 
     this.queue.push(ctx)
@@ -127,7 +127,7 @@ export abstract class CoreEventQueue<
   }
 
   async dispatchSingle(ctx: Ctx): Promise<Ctx> {
-    ctx.log('debug', 'Dispatching')
+    // ctx.log('debug', 'Dispatching')
     // ctx.stats.increment('message_dispatched')
 
     this.queue.updateAttempts(ctx)
@@ -179,11 +179,11 @@ export abstract class CoreEventQueue<
       const done = Date.now() - start
       this.emit('delivery_success', ctx)
       // ctx.stats.gauge('delivered', done)
-      ctx.log('debug', 'Delivered', ctx.event)
+      // ctx.log('debug', 'Delivered', ctx.event)
       return ctx
     } catch (err: any) {
       const error = err as Ctx | Error | ContextCancelation
-      ctx.log('error', 'Failed to deliver', error)
+      // ctx.log('error', 'Failed to deliver', error)
       this.emit('delivery_failure', ctx, error)
       // ctx.stats.increment('delivery_failed')
       throw err

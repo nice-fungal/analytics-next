@@ -13,7 +13,7 @@ export function attempt<Ctx extends CoreContext = CoreContext>(
   ctx: Ctx,
   plugin: CorePlugin<Ctx>
 ): Promise<Ctx | ContextCancelation | Error> {
-  ctx.log('debug', 'plugin', { plugin: plugin.name })
+  // ctx.log('debug', 'plugin', { plugin: plugin.name })
   const start = new Date().getTime()
 
   const hook = plugin[ctx.event.type]
@@ -38,18 +38,18 @@ export function attempt<Ctx extends CoreContext = CoreContext>(
       }
 
       if (err instanceof ContextCancelation) {
-        ctx.log('warn', err.type, {
-          plugin: plugin.name,
-          error: err,
-        })
+        // ctx.log('warn', err.type, {
+        //   plugin: plugin.name,
+        //   error: err,
+        // })
 
         return err
       }
 
-      ctx.log('error', 'plugin Error', {
-        plugin: plugin.name,
-        error: err,
-      })
+      // ctx.log('error', 'plugin Error', {
+      //   plugin: plugin.name,
+      //   error: err,
+      // })
       // ctx.stats.increment('plugin_error', 1, [`plugin:${plugin.name}`])
 
       return err
@@ -67,7 +67,7 @@ export function ensure<Ctx extends CoreContext = CoreContext>(
       return newContext
     }
 
-    ctx.log('debug', 'Context canceled')
+    // ctx.log('debug', 'Context canceled')
     // ctx.stats.increment('context_canceled')
     ctx.cancel(newContext)
   })
