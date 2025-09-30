@@ -3,7 +3,7 @@ import { CoreSegmentEvent } from '../events/interfaces'
 import { v4 as uuid } from '@lukeed/uuid'
 import { dset } from 'dset'
 import { CoreLogger, LogLevel, LogMessage } from '../logger'
-import { CoreStats, CoreMetric, NullStats } from '../stats'
+import { CoreStats, CoreMetric /* , NullStats */ } from '../stats'
 
 export interface SerializedContext {
   id: string
@@ -48,7 +48,8 @@ export abstract class CoreContext<
   constructor(
     event: Event,
     id = uuid(),
-    stats: CoreStats = new NullStats(),
+    // @ts-ignore
+    stats: CoreStats = 'new NullStats()',
     logger = new CoreLogger()
   ) {
     this.event = event

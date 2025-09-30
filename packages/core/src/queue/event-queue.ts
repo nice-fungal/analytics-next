@@ -101,7 +101,7 @@ export abstract class CoreEventQueue<
 
   async dispatch(ctx: Ctx): Promise<Ctx> {
     ctx.log('debug', 'Dispatching')
-    ctx.stats.increment('message_dispatched')
+    // ctx.stats.increment('message_dispatched')
 
     this.queue.push(ctx)
     const willDeliver = this.subscribeToDelivery(ctx)
@@ -128,7 +128,7 @@ export abstract class CoreEventQueue<
 
   async dispatchSingle(ctx: Ctx): Promise<Ctx> {
     ctx.log('debug', 'Dispatching')
-    ctx.stats.increment('message_dispatched')
+    // ctx.stats.increment('message_dispatched')
 
     this.queue.updateAttempts(ctx)
     ctx.attempts = 1
@@ -175,16 +175,17 @@ export abstract class CoreEventQueue<
     const start = Date.now()
     try {
       ctx = await this.flushOne(ctx)
+      // @ts-ignore unused
       const done = Date.now() - start
       this.emit('delivery_success', ctx)
-      ctx.stats.gauge('delivered', done)
+      // ctx.stats.gauge('delivered', done)
       ctx.log('debug', 'Delivered', ctx.event)
       return ctx
     } catch (err: any) {
       const error = err as Ctx | Error | ContextCancelation
       ctx.log('error', 'Failed to deliver', error)
       this.emit('delivery_failure', ctx, error)
-      ctx.stats.increment('delivery_failed')
+      // ctx.stats.increment('delivery_failed')
       throw err
     }
   }
@@ -316,7 +317,7 @@ export abstract class CoreEventQueue<
       }, 0)
     })
 
-    ctx.stats.increment('message_delivered')
+    // ctx.stats.increment('message_delivered')
 
     this.emit('message_delivered', ctx)
 

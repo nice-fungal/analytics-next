@@ -23,8 +23,9 @@ export function attempt<Ctx extends CoreContext = CoreContext>(
 
   const newCtx = tryAsync(() => hook.apply(plugin, [ctx]))
     .then((ctx) => {
+      // @ts-ignore unused
       const done = new Date().getTime() - start
-      ctx.stats.gauge('plugin_time', done, [`plugin:${plugin.name}`])
+      // ctx.stats.gauge('plugin_time', done, [`plugin:${plugin.name}`])
 
       return ctx
     })
@@ -49,7 +50,7 @@ export function attempt<Ctx extends CoreContext = CoreContext>(
         plugin: plugin.name,
         error: err,
       })
-      ctx.stats.increment('plugin_error', 1, [`plugin:${plugin.name}`])
+      // ctx.stats.increment('plugin_error', 1, [`plugin:${plugin.name}`])
 
       return err
     })
@@ -67,7 +68,7 @@ export function ensure<Ctx extends CoreContext = CoreContext>(
     }
 
     ctx.log('debug', 'Context canceled')
-    ctx.stats.increment('context_canceled')
+    // ctx.stats.increment('context_canceled')
     ctx.cancel(newContext)
   })
 }
