@@ -80,24 +80,24 @@ export abstract class CoreEventQueue<
     }
   }
 
-  async deregister(
-    ctx: Ctx,
-    plugin: CorePlugin<Ctx>,
-    instance: CoreAnalytics
-  ): Promise<void> {
-    try {
-      if (plugin.unload) {
-        await Promise.resolve(plugin.unload(ctx, instance))
-      }
+  // async deregister(
+  //   ctx: Ctx,
+  //   plugin: CorePlugin<Ctx>,
+  //   instance: CoreAnalytics
+  // ): Promise<void> {
+  //   try {
+  //     if (plugin.unload) {
+  //       await Promise.resolve(plugin.unload(ctx, instance))
+  //     }
 
-      this.plugins = this.plugins.filter((p) => p.name !== plugin.name)
-    } catch (e) {
-      ctx.log('warn', 'Failed to unload destination', {
-        plugin: plugin.name,
-        error: e,
-      })
-    }
-  }
+  //     this.plugins = this.plugins.filter((p) => p.name !== plugin.name)
+  //   } catch (e) {
+  //     ctx.log('warn', 'Failed to unload destination', {
+  //       plugin: plugin.name,
+  //       error: e,
+  //     })
+  //   }
+  // }
 
   async dispatch(ctx: Ctx): Promise<Ctx> {
     // ctx.log('debug', 'Dispatching')

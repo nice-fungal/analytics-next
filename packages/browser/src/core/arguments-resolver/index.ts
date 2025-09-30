@@ -167,22 +167,22 @@ export const resolveUserArguments = <T extends Traits, U extends WithId>(
 /**
  * Helper for alias method
  */
-export function resolveAliasArguments(
-  to: string | number,
-  from?: string | number | Options,
-  options?: Options | Callback,
-  callback?: Callback
-): [string, string | null, Options, Callback | undefined] {
-  if (isNumber(to)) to = to.toString() // Legacy behaviour - allow integers for alias calls
-  if (isNumber(from)) from = from.toString()
-  const args = [to, from, options, callback]
+// export function resolveAliasArguments(
+//   to: string | number,
+//   from?: string | number | Options,
+//   options?: Options | Callback,
+//   callback?: Callback
+// ): [string, string | null, Options, Callback | undefined] {
+//   if (isNumber(to)) to = to.toString() // Legacy behaviour - allow integers for alias calls
+//   if (isNumber(from)) from = from.toString()
+//   const args = [to, from, options, callback]
 
-  const [aliasTo = to, aliasFrom = null] = args.filter(isString)
-  const [opts = {}] = args.filter(isPlainObject)
-  const resolvedCallback = args.find(isFunction) as Callback | undefined
+//   const [aliasTo = to, aliasFrom = null] = args.filter(isString)
+//   const [opts = {}] = args.filter(isPlainObject)
+//   const resolvedCallback = args.find(isFunction) as Callback | undefined
 
-  return [aliasTo, aliasFrom, opts, resolvedCallback]
-}
+//   return [aliasTo, aliasFrom, opts, resolvedCallback]
+// }
 
 type ResolveUser<T extends Traits> = (
   id?: ID | object,
@@ -195,6 +195,6 @@ export type IdentifyParams = Parameters<ResolveUser<UserTraits>>
 export type GroupParams = Parameters<ResolveUser<GroupTraits>>
 export type EventParams = Parameters<typeof resolveArguments>
 export type PageParams = Parameters<typeof resolvePageArguments>
-export type AliasParams = Parameters<typeof resolveAliasArguments>
+// export type AliasParams = Parameters<typeof resolveAliasArguments>
 
 export type DispatchedEvent = Context

@@ -53,8 +53,8 @@ import { PluginFactory } from '../../plugins/remote-loader'
 // import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
 import { popPageContext } from '../buffer'
 
-const deprecationWarning =
-  'This is being deprecated and will be not be available in future releases of Analytics JS'
+// const deprecationWarning =
+//   'This is being deprecated and will be not be available in future releases of Analytics JS'
 
 // // reference any pre-existing "analytics" object so a user can restore the reference
 // const global: any = getGlobal()
@@ -624,14 +624,14 @@ export class Analytics
 //     return version
 //   }
 
-  /* @deprecated - noop */
-  async initialize(
-    _settings?: AnalyticsSettings,
-    _options?: InitOptions
-  ): Promise<Analytics> {
-    console.warn(deprecationWarning)
-    return Promise.resolve(this)
-  }
+  // /* @deprecated - noop */
+  // async initialize(
+  //   _settings?: AnalyticsSettings,
+  //   _options?: InitOptions
+  // ): Promise<Analytics> {
+  //   console.warn(deprecationWarning)
+  //   return Promise.resolve(this)
+  // }
 
 //   init = this.initialize.bind(this)
 
