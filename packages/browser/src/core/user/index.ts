@@ -8,7 +8,7 @@ import {
   StorageObject,
   StorageSettings,
   StoreType,
-  applyCookieOptions,
+  // applyCookieOptions,
   initializeStorages,
   // isArrayOfStoreType,
 } from '../storage'
@@ -236,6 +236,7 @@ export class User implements WithId {
    */
   private createStorage<T extends StorageObject = StorageObject>(
     options: UserOptions,
+    // @ts-ignore
     cookieOpts?: CookieOptions,
     filterStores?: (value: StoreType) => boolean
   ): UniversalStorage<T> {
@@ -273,7 +274,8 @@ export class User implements WithId {
     }
 
     return new UniversalStorage(
-      initializeStorages(applyCookieOptions(stores, cookieOpts))
+      // initializeStorages(applyCookieOptions(stores, cookieOpts))
+      initializeStorages(stores)
     )
   }
 }
