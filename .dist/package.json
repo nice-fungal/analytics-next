@@ -1,0 +1,11 @@
+{
+  "name": "@head.js/analytics.js",
+  "version": "1.74.0-4",
+  "main": "analytics.js",
+  "scripts": {
+    "dist": "terser --comments false --compress --timings --format beautify --output ./analytics.js ./standalone.js"
+  },
+  "devDependencies": {
+    "terser": "5.5.1"
+  }
+}

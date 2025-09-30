@@ -792,20 +792,6 @@ const resolveUserArguments = (user) => {
         ];
     };
 };
-/**
- * Helper for alias method
- */
-function resolveAliasArguments(to, from, options, callback) {
-    if (isNumber(to))
-        to = to.toString(); // Legacy behaviour - allow integers for alias calls
-    if (isNumber(from))
-        from = from.toString();
-    const args = [to, from, options, callback];
-    const [aliasTo = to, aliasFrom = null] = args.filter(isString);
-    const [opts = {}] = args.filter(isPlainObject);
-    const resolvedCallback = args.find(isFunction);
-    return [aliasTo, aliasFrom, opts, resolvedCallback];
-}
 
 ;// CONCATENATED MODULE: ./src/core/connection/index.ts
 // import { isBrowser } from '../environment'
@@ -856,126 +842,7 @@ function dset(obj, keys, val) {
 	}
 }
 
-;// CONCATENATED MODULE: ../core/dist/esm/logger/index.js
-class CoreLogger {
-    constructor() {
-        this._logs = [];
-    }
-    log(level, message, extras) {
-        const time = new Date();
-        this._logs.push({
-            level,
-            message,
-            time,
-            extras,
-        });
-    }
-    get logs() {
-        return this._logs;
-    }
-    flush() {
-        if (this.logs.length > 1) {
-            const formatted = this._logs.reduce((logs, log) => {
-                var _a, _b;
-                const line = Object.assign(Object.assign({}, log), { json: JSON.stringify(log.extras, null, ' '), extras: log.extras });
-                delete line['time'];
-                let key = (_b = (_a = log.time) === null || _a === void 0 ? void 0 : _a.toISOString()) !== null && _b !== void 0 ? _b : '';
-                if (logs[key]) {
-                    key = `${key}-${Math.random()}`;
-                }
-                return Object.assign(Object.assign({}, logs), { [key]: line });
-            }, {});
-            // ie doesn't like console.table
-            if (console.table) {
-                console.table(formatted);
-            }
-            else {
-                console.log(formatted);
-            }
-        }
-        else {
-            this.logs.forEach((logEntry) => {
-                const { level, message, extras } = logEntry;
-                if (level === 'info' || level === 'debug') {
-                    console.log(message, extras !== null && extras !== void 0 ? extras : '');
-                }
-                else {
-                    console[level](message, extras !== null && extras !== void 0 ? extras : '');
-                }
-            });
-        }
-        this._logs = [];
-    }
-}
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ../core/dist/esm/stats/index.js
-const compactMetricType = (type) => {
-    const enums = {
-        gauge: 'g',
-        counter: 'c',
-    };
-    return enums[type];
-};
-class CoreStats {
-    constructor() {
-        this.metrics = [];
-    }
-    increment(metric, by = 1, tags) {
-        this.metrics.push({
-            metric,
-            value: by,
-            tags: tags !== null && tags !== void 0 ? tags : [],
-            type: 'counter',
-            timestamp: Date.now(),
-        });
-    }
-    gauge(metric, value, tags) {
-        this.metrics.push({
-            metric,
-            value,
-            tags: tags !== null && tags !== void 0 ? tags : [],
-            type: 'gauge',
-            timestamp: Date.now(),
-        });
-    }
-    flush() {
-        const formatted = this.metrics.map((m) => (Object.assign(Object.assign({}, m), { tags: m.tags.join(',') })));
-        // ie doesn't like console.table
-        if (console.table) {
-            console.table(formatted);
-        }
-        else {
-            console.log(formatted);
-        }
-        this.metrics = [];
-    }
-    /**
-     * compact keys for smaller payload
-     */
-    serialize() {
-        return this.metrics.map((m) => {
-            return {
-                m: m.metric,
-                v: m.value,
-                t: m.tags,
-                k: compactMetricType(m.type),
-                e: m.timestamp,
-            };
-        });
-    }
-}
-class NullStats extends CoreStats {
-    gauge(..._args) { }
-    increment(..._args) { }
-    flush(..._args) { }
-    serialize(..._args) {
-        return [];
-    }
-}
-//# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ../core/dist/esm/context/index.js
-
-
 
 
 class context_ContextCancelation {
@@ -987,10 +854,13 @@ class context_ContextCancelation {
     }
 }
 class CoreContext {
-    constructor(event, id = v4(), stats = new NullStats(), logger = new CoreLogger()) {
+    constructor(event, id = v4(), 
+    // @ts-ignore
+    stats = 'new NullStats()', logger = 'new CoreLogger()') {
         this.attempts = 0;
         this.event = event;
         this._id = id;
+        // @ts-ignore
         this.logger = logger;
         this.stats = stats;
     }
@@ -1047,153 +917,16 @@ class CoreContext {
     }
 }
 //# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ./src/lib/get-global.ts
-// This an imperfect polyfill for globalThis
-const getGlobal = () => {
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
-    }
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    return null;
-};
-
-;// CONCATENATED MODULE: ./src/lib/fetch.ts
-// import unfetch from 'unfetch'
-
-/**
- * Wrapper around native `fetch` containing `unfetch` fallback.
- */
-const fetch = (...args) => {
-    const global = getGlobal();
-    // @ts-ignore
-    return ((global && global.fetch))(...args);
-};
-
-;// CONCATENATED MODULE: ./src/generated/version.ts
-// This file is generated.
-const version = '1.74.0';
-
-;// CONCATENATED MODULE: ./src/core/constants/index.ts
-const SEGMENT_API_HOST = 'api.segment.io/v1';
-
-;// CONCATENATED MODULE: ./src/core/stats/remote-metrics.ts
-
-
-
-
-const createRemoteMetric = (metric, tags, versionType) => {
-    const formattedTags = tags.reduce((acc, t) => {
-        const [k, v] = t.split(':');
-        acc[k] = v;
-        return acc;
-    }, {});
-    return {
-        type: 'Counter',
-        metric,
-        value: 1,
-        tags: Object.assign(Object.assign({}, formattedTags), { library: 'analytics.js', library_version: versionType === 'web' ? `next-${version}` : `npm:next-${version}` }),
-    };
-};
-function logError(err) {
-    console.error('Error sending segment performance metrics', err);
-}
-class RemoteMetrics {
-    constructor(options) {
-        var _a, _b, _c, _d, _e;
-        this.host = (_a = options === null || options === void 0 ? void 0 : options.host) !== null && _a !== void 0 ? _a : SEGMENT_API_HOST;
-        this.sampleRate = (_b = options === null || options === void 0 ? void 0 : options.sampleRate) !== null && _b !== void 0 ? _b : 1;
-        this.flushTimer = (_c = options === null || options === void 0 ? void 0 : options.flushTimer) !== null && _c !== void 0 ? _c : 30 * 1000; /* 30s */
-        this.maxQueueSize = (_d = options === null || options === void 0 ? void 0 : options.maxQueueSize) !== null && _d !== void 0 ? _d : 20;
-        this.protocol = (_e = options === null || options === void 0 ? void 0 : options.protocol) !== null && _e !== void 0 ? _e : 'https';
-        this.queue = [];
-        if (this.sampleRate > 0) {
-            let flushing = false;
-            const run = () => {
-                if (flushing) {
-                    return;
-                }
-                flushing = true;
-                this.flush().catch(logError);
-                flushing = false;
-                setTimeout(run, this.flushTimer);
-            };
-            run();
-        }
-    }
-    increment(metric, tags) {
-        // All metrics are part of an allow list in Tracking API
-        if (!metric.includes('analytics_js.')) {
-            return;
-        }
-        // /m doesn't like empty tags
-        if (tags.length === 0) {
-            return;
-        }
-        if (Math.random() > this.sampleRate) {
-            return;
-        }
-        if (this.queue.length >= this.maxQueueSize) {
-            return;
-        }
-        const remoteMetric = createRemoteMetric(metric, tags, getVersionType());
-        this.queue.push(remoteMetric);
-        if (metric.includes('error')) {
-            this.flush().catch(logError);
-        }
-    }
-    async flush() {
-        if (this.queue.length <= 0) {
-            return;
-        }
-        await this.send().catch((error) => {
-            logError(error);
-            this.sampleRate = 0;
-        });
-    }
-    async send() {
-        const payload = { series: this.queue };
-        this.queue = [];
-        const headers = { 'Content-Type': 'text/plain' };
-        const url = `${this.protocol}://${this.host}/m`;
-        return fetch(url, {
-            headers,
-            body: JSON.stringify(payload),
-            method: 'POST',
-        });
-    }
-}
-
-;// CONCATENATED MODULE: ./src/core/stats/index.ts
-
-
-let remoteMetrics;
-class Stats extends CoreStats {
-    static initRemoteMetrics(options) {
-        remoteMetrics = new RemoteMetrics(options);
-    }
-    increment(metric, by, tags) {
-        super.increment(metric, by, tags);
-        remoteMetrics === null || remoteMetrics === void 0 ? void 0 : remoteMetrics.increment(metric, tags !== null && tags !== void 0 ? tags : []);
-    }
-}
-
 ;// CONCATENATED MODULE: ./src/core/context/index.ts
 
-
+// import { Stats } from '../stats'
 class Context extends CoreContext {
     static system() {
         return new this({ type: 'track', event: 'system' });
     }
     constructor(event, id) {
-        super(event, id, new Stats());
+        // @ts-ignore
+        super(event, id, 'new Stats()');
     }
 }
 
@@ -2275,7 +2008,7 @@ async function tryAsync(fn) {
     }
 }
 function attempt(ctx, plugin) {
-    ctx.log('debug', 'plugin', { plugin: plugin.name });
+    // ctx.log('debug', 'plugin', { plugin: plugin.name })
     const start = new Date().getTime();
     const hook = plugin[ctx.event.type];
     if (hook === undefined) {
@@ -2283,8 +2016,9 @@ function attempt(ctx, plugin) {
     }
     const newCtx = tryAsync(() => hook.apply(plugin, [ctx]))
         .then((ctx) => {
+        // @ts-ignore unused
         const done = new Date().getTime() - start;
-        ctx.stats.gauge('plugin_time', done, [`plugin:${plugin.name}`]);
+        // ctx.stats.gauge('plugin_time', done, [`plugin:${plugin.name}`])
         return ctx;
     })
         .catch((err) => {
@@ -2293,17 +2027,17 @@ function attempt(ctx, plugin) {
             throw err;
         }
         if (err instanceof context_ContextCancelation) {
-            ctx.log('warn', err.type, {
-                plugin: plugin.name,
-                error: err,
-            });
+            // ctx.log('warn', err.type, {
+            //   plugin: plugin.name,
+            //   error: err,
+            // })
             return err;
         }
-        ctx.log('error', 'plugin Error', {
-            plugin: plugin.name,
-            error: err,
-        });
-        ctx.stats.increment('plugin_error', 1, [`plugin:${plugin.name}`]);
+        // ctx.log('error', 'plugin Error', {
+        //   plugin: plugin.name,
+        //   error: err,
+        // })
+        // ctx.stats.increment('plugin_error', 1, [`plugin:${plugin.name}`])
         return err;
     });
     return newCtx;
@@ -2313,8 +2047,8 @@ function ensure(ctx, plugin) {
         if (newContext instanceof CoreContext) {
             return newContext;
         }
-        ctx.log('debug', 'Context canceled');
-        ctx.stats.increment('context_canceled');
+        // ctx.log('debug', 'Context canceled')
+        // ctx.stats.increment('context_canceled')
         ctx.cancel(newContext);
     });
 }
@@ -2351,10 +2085,10 @@ class CoreEventQueue extends Emitter {
             this.failedInitializations.push(plugin.name);
             this.emit('initialization_failure', plugin);
             console.warn(plugin.name, err);
-            ctx.log('warn', 'Failed to load destination', {
-                plugin: plugin.name,
-                error: err,
-            });
+            // ctx.log('warn', 'Failed to load destination', {
+            //   plugin: plugin.name,
+            //   error: err,
+            // })
             // Filter out the failed plugin by excluding it from the list
             this.plugins = this.plugins.filter((p) => p !== plugin);
         };
@@ -2373,23 +2107,26 @@ class CoreEventQueue extends Emitter {
             }
         }
     }
-    async deregister(ctx, plugin, instance) {
-        try {
-            if (plugin.unload) {
-                await Promise.resolve(plugin.unload(ctx, instance));
-            }
-            this.plugins = this.plugins.filter((p) => p.name !== plugin.name);
-        }
-        catch (e) {
-            ctx.log('warn', 'Failed to unload destination', {
-                plugin: plugin.name,
-                error: e,
-            });
-        }
-    }
+    // async deregister(
+    //   ctx: Ctx,
+    //   plugin: CorePlugin<Ctx>,
+    //   instance: CoreAnalytics
+    // ): Promise<void> {
+    //   try {
+    //     if (plugin.unload) {
+    //       await Promise.resolve(plugin.unload(ctx, instance))
+    //     }
+    //     this.plugins = this.plugins.filter((p) => p.name !== plugin.name)
+    //   } catch (e) {
+    //     ctx.log('warn', 'Failed to unload destination', {
+    //       plugin: plugin.name,
+    //       error: e,
+    //     })
+    //   }
+    // }
     async dispatch(ctx) {
-        ctx.log('debug', 'Dispatching');
-        ctx.stats.increment('message_dispatched');
+        // ctx.log('debug', 'Dispatching')
+        // ctx.stats.increment('message_dispatched')
         this.queue.push(ctx);
         const willDeliver = this.subscribeToDelivery(ctx);
         this.scheduleFlush(0);
@@ -2412,8 +2149,8 @@ class CoreEventQueue extends Emitter {
         });
     }
     async dispatchSingle(ctx) {
-        ctx.log('debug', 'Dispatching');
-        ctx.stats.increment('message_dispatched');
+        // ctx.log('debug', 'Dispatching')
+        // ctx.stats.increment('message_dispatched')
         this.queue.updateAttempts(ctx);
         ctx.attempts = 1;
         return this.deliver(ctx).catch((err) => {
@@ -2450,17 +2187,18 @@ class CoreEventQueue extends Emitter {
         const start = Date.now();
         try {
             ctx = await this.flushOne(ctx);
+            // @ts-ignore unused
             const done = Date.now() - start;
             this.emit('delivery_success', ctx);
-            ctx.stats.gauge('delivered', done);
-            ctx.log('debug', 'Delivered', ctx.event);
+            // ctx.stats.gauge('delivered', done)
+            // ctx.log('debug', 'Delivered', ctx.event)
             return ctx;
         }
         catch (err) {
             const error = err;
-            ctx.log('error', 'Failed to deliver', error);
+            // ctx.log('error', 'Failed to deliver', error)
             this.emit('delivery_failure', ctx, error);
-            ctx.stats.increment('delivery_failed');
+            // ctx.stats.increment('delivery_failed')
             throw err;
         }
     }
@@ -2555,7 +2293,7 @@ class CoreEventQueue extends Emitter {
                 Promise.all(attempts).then(resolve).catch(reject);
             }, 0);
         });
-        ctx.stats.increment('message_delivered');
+        // ctx.stats.increment('message_delivered')
         this.emit('message_delivered', ctx);
         const afterCalls = after.map((after) => attempt(ctx, after));
         await Promise.all(afterCalls);
@@ -2787,7 +2525,7 @@ function initializeStorages(args) {
  */
 function applyCookieOptions(storeTypes, cookieOptions) {
     return storeTypes.map((s) => {
-        if (cookieOptions && s === types_StoreType.Cookie) {
+        if (cookieOptions && s === StoreType.Cookie) {
             return {
                 name: s,
                 settings: cookieOptions,
@@ -2928,7 +2666,9 @@ class User {
      * @param filterStores filter function to apply to any StoreTypes (skipped if options specify using a custom storage)
      * @returns a Storage object
      */
-    createStorage(options, cookieOpts, filterStores) {
+    createStorage(options, 
+    // @ts-ignore
+    cookieOpts, filterStores) {
         let stores = [
             types_StoreType.LocalStorage,
             // StoreType.Cookie,
@@ -2956,7 +2696,9 @@ class User {
         if (filterStores) {
             stores = stores.filter(filterStores);
         }
-        return new UniversalStorage(initializeStorages(applyCookieOptions(stores, cookieOpts)));
+        return new UniversalStorage(
+        // initializeStorages(applyCookieOptions(stores, cookieOpts))
+        initializeStorages(stores));
     }
 }
 User.defaults = defaults;
@@ -2988,6 +2730,10 @@ const is_thenable_isThenable = (value) => typeof value === 'object' &&
     value !== null &&
     'then' in value &&
     typeof value.then === 'function';
+
+;// CONCATENATED MODULE: ./src/generated/version.ts
+// This file is generated.
+const version = '1.74.0';
 
 ;// CONCATENATED MODULE: ./src/core/buffer/index.ts
 
@@ -3227,7 +2973,8 @@ class AnalyticsBuffered {
 
 // import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
 
-const deprecationWarning = 'This is being deprecated and will be not be available in future releases of Analytics JS';
+// const deprecationWarning =
+//   'This is being deprecated and will be not be available in future releases of Analytics JS'
 // // reference any pre-existing "analytics" object so a user can restore the reference
 // const global: any = getGlobal()
 // const _analytics = global?.analytics
@@ -3572,28 +3319,6 @@ class Analytics extends Emitter {
             callback(res);
             return res;
         });
-    }
-    // analytics-classic api
-    // noConflict(): Analytics {
-    //   console.warn(deprecationWarning)
-    //   setGlobalAnalytics(_analytics ?? this)
-    //   return this
-    // }
-    // normalize(msg: SegmentEvent): SegmentEvent {
-    //   console.warn(deprecationWarning)
-    //   return this.eventFactory['normalize'](msg)
-    // }
-    //   get failedInitializations(): string[] {
-    //     console.warn(deprecationWarning)
-    //     return this.queue.failedInitializations
-    //   }
-    //   get VERSION(): string {
-    //     return version
-    //   }
-    /* @deprecated - noop */
-    async initialize(_settings, _options) {
-        console.warn(deprecationWarning);
-        return Promise.resolve(this);
     }
 }
 /**
@@ -4184,24 +3909,6 @@ function clone(properties) {
     }
 }
 
-;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/is-enabled.js
-
-// A few integrations are disabled by default. They must be explicitly enabled
-// by setting options[Provider] = true.
-let disabled = {
-    Salesforce: true,
-};
-/**
- * Check whether an integration should be enabled by default.
- *
- * @ignore
- * @param {string} integration
- * @return {boolean}
- */
-/* harmony default export */ function is_enabled(integration) {
-    return !disabled[integration];
-}
-
 // EXTERNAL MODULE: ../../node_modules/new-date/lib/index.js
 var lib = __webpack_require__(870);
 var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
@@ -4215,7 +3922,7 @@ var analytics_js_isodate_traverse_lib_default = /*#__PURE__*/__webpack_require__
 
 // import address from "./address";
 
-
+// import isEnabled from "./is-enabled";
 
 
 
@@ -4474,7 +4181,7 @@ f.enabled = function (integration) {
         allEnabled = this.proxy("integrations.all");
     if (typeof allEnabled !== "boolean")
         allEnabled = true;
-    let enabled = allEnabled && is_enabled(integration);
+    let enabled = allEnabled /* && isEnabled(integration) */;
     let options = this.integrations();
     // If the integration is explicitly enabled or disabled, use that
     // First, check options.providers for backwards compatibility
@@ -4595,28 +4302,6 @@ f.library = function () {
     if (typeof library === "string")
         return { name: library, version: null };
     return library;
-};
-/**
- * Return the device information, falling back to an empty object.
- *
- * Interesting values of `type` are `"ios"` and `"android"`, but other values
- * are possible if the client is doing something unusual with `context.device`.
- *
- * @return {{type: string}}
- */
-f.device = function () {
-    let device = this.proxy("context.device");
-    if (typeof device !== "object" || device === null) {
-        device = {};
-    }
-    let library = this.library().name;
-    if (device.type)
-        return device;
-    if (library.indexOf("ios") > -1)
-        device.type = "ios";
-    if (library.indexOf("android") > -1)
-        device.type = "android";
-    return device;
 };
 /**
  * Get the User-Agent from `context.userAgent`.
@@ -5092,28 +4777,6 @@ t.email = function () {
         return userId;
 };
 /**
- * Get the revenue for this event. // FIXME: GA
- *
- * If this is an "Order Completed" event, this will be the `properties.total`
- * falling back to the `properties.revenue`. For all other events, this is
- * simply taken from `properties.revenue`.
- *
- * If there are dollar signs in these properties, they will be removed. The
- * result will be parsed into a number.
- *
- * @return {number}
- */
-t.revenue = function () {
-    let revenue = this.proxy("properties.revenue");
-    let event = this.event();
-    let orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
-    // it's always revenue, unless it's called during an order completion.
-    if (!revenue && event && event.match(orderCompletedRegExp)) {
-        revenue = this.proxy("properties.total");
-    }
-    return currency(revenue);
-};
-/**
  * Convert this event into an {@link Identify} facade.
  *
  * This works by taking this event's underlying object and creating an Identify
@@ -5128,28 +4791,6 @@ t.identify = function () {
     json.traits = this.traits();
     return new Identify(json, this.opts);
 };
-/**
- * Get float from currency value.
- *
- * @ignore
- * @param {*} val
- * @return {number}
- */
-function currency(val) {
-    if (!val)
-        return;
-    if (typeof val === "number") {
-        return val;
-    }
-    if (typeof val !== "string") {
-        return;
-    }
-    val = val.replace(/\$/g, "");
-    val = parseFloat(val);
-    if (!isNaN(val)) {
-        return val;
-    }
-}
 
 ;// CONCATENATED MODULE: ../../node_modules/@head.js/analytics.js-facade/dist/page.js
 
@@ -5682,6 +5323,24 @@ routingMiddleware) {
     await Promise.all(pluginPromises);
     return allPlugins.filter(Boolean);
 }
+
+;// CONCATENATED MODULE: ./src/lib/get-global.ts
+// This an imperfect polyfill for globalThis
+const getGlobal = () => {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    return null;
+};
 
 ;// CONCATENATED MODULE: ./src/core/inspector/index.ts
 var _a;
