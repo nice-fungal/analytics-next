@@ -50,10 +50,11 @@ export abstract class CoreContext<
     id = uuid(),
     // @ts-ignore
     stats: CoreStats = 'new NullStats()',
-    logger = new CoreLogger()
+    logger = 'new CoreLogger()'
   ) {
     this.event = event
     this._id = id
+    // @ts-ignore
     this.logger = logger
     this.stats = stats
   }

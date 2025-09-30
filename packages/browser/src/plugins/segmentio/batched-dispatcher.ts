@@ -116,8 +116,9 @@ export default function batch(
       const batch = buffer
       buffer = []
       return sendBatch(batch)?.catch((error) => {
+        // @ts-ignore unused
         const ctx = Context.system()
-        ctx.log('error', 'Error sending batch', error)
+        // ctx.log('error', 'Error sending batch', error)
         if (attempt <= (config?.maxRetries ?? 10)) {
           if (error.name === 'RateLimitError') {
             rateLimitTimeout = error.retryTimeout
